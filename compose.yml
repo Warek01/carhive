@@ -1,0 +1,44 @@
+name: carhive
+
+services:
+   redis:
+      image: redis:alpine
+      volumes:
+         - redis-data:/data
+      ports:
+         - "6379:6379"
+
+   account-db:
+      image: postgres:17-alpine
+      environment:
+         POSTGRES_DB: account_db
+         POSTGRES_USER: ${ACCOUNT_DB_USER}
+         POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+      ports:
+         - "5432:5432"
+      networks:
+         - carhive-network
+      volumes:
+         - account-db-data:/var/lib/postgresql/data
+
+   listing-db:
+      image: postgres:17-alpine
+      environment:
+         POSTGRES_DB: listing_db
+         POSTGRES_USER: ${LISTING_DB_USER}
+         POSTGRES_PASSWORD: ${LISTING_DB_PASSWORD}
+      ports:
+         - "5433:5432"
+      networks:
+         - carhive-network
+      volumes:
+         - listing-db-data:/var/lib/postgresql/data
+
+
+volumes:
+   redis-data: { }
+   account-db-data: { }
+   listing-db-data: { }
+
+networks:
+   carhive-network: { }
