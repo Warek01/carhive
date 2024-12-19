@@ -1,2 +1,15 @@
 {
+   "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
+      "incremental": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "removeComments": true,
+      "noImplicitAny": true,
+      "paths": {
+         "@/*": ["./src/*"]
+      }
+   },
+   "exclude": ["node_modules"]
 }
