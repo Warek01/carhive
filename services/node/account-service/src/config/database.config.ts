@@ -1,4 +1,7 @@
-import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import {
+   TypeOrmModuleAsyncOptions,
+   TypeOrmModuleOptions,
+} from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { AppEnv } from '@/common/types/env';
@@ -15,4 +18,4 @@ export const databaseConfig: TypeOrmModuleAsyncOptions = {
       entities: ['**/*.entity.js'],
       synchronize: conf.get('NODE_ENV') === 'development',
    }),
-}
+};

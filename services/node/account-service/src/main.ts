@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { INestApplication, Logger, VersioningType } from '@nestjs/common';
+import {
+   INestApplication,
+   Logger,
+   ValidationPipe,
+   VersioningType,
+} from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { AppEnv } from '@/common/types/env';
 
 import { AppModule } from '@/app.module';
+import { globalValidationPipeConfig } from '@/config/global-validation-pipe.config';
 
 async function bootstrap() {
    const logger = new Logger(bootstrap.name, { timestamp: true });
@@ -27,6 +33,7 @@ async function bootstrap() {
       prefix: 'v',
       defaultVersion: '1',
    });
+   app.useGlobalPipes(new ValidationPipe(globalValidationPipeConfig));
 
    const swaggerConfig = new DocumentBuilder()
       .setTitle('CarHive Account Service')
