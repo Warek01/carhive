@@ -4,7 +4,7 @@ import {
 } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 
-import { AppEnv } from '@/common/types/env';
+import { AppEnv } from '@/common/types/app-env';
 
 export const databaseConfig: TypeOrmModuleAsyncOptions = {
    inject: [ConfigService],

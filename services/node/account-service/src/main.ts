@@ -8,7 +8,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { AppEnv } from '@/common/types/env';
+import { AppEnv } from '@/common/types/app-env';
 
 import { AppModule } from '@/app.module';
 import { globalValidationPipeConfig } from '@/config/global-validation-pipe.config';

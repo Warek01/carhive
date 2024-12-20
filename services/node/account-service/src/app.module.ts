@@ -8,6 +8,7 @@ import { databaseConfig } from '@/config/database.config';
 import { envConfig } from '@/config/env.config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
+import { HealthModule } from './health/health.module';
 
 @Module({
    imports: [
@@ -15,6 +16,7 @@ import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
       TypeOrmModule.forRootAsync(databaseConfig),
       AuthModule,
       UserModule,
+      HealthModule,
    ],
    controllers: [],
    providers: [
