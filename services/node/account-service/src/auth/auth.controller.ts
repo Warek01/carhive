@@ -22,19 +22,19 @@ import { UserDto } from '@/user/dto/response/user.dto';
 @ApiTags('Auth')
 export class AuthController {
    constructor(
-      private readonly _authService: AuthService,
-      private readonly _userService: UserService,
+      private readonly authService: AuthService,
+      private readonly userService: UserService,
    ) {}
 
    @Post('login')
    async login(@Body() loginDto: LoginDto) {
-      const user = await this._userService.findOneByEmail(loginDto.email);
+      const user = await this.userService.findOneByEmail(loginDto.email);
 
       if (user === null) {
          throw new NotFoundException();
       }
 
-      const passwordCorrect = await this._authService.checkPassword(
+      const passwordCorrect = await this.authService.checkPassword(
          user,
          loginDto.password,
       );
@@ -43,12 +43,12 @@ export class AuthController {
          throw new UnauthorizedException();
       }
 
-      return this._authService.createToken(user);
+      return this.authService.createToken(user);
    }
 
    @Post('register')
    async register(@Body() registerDto: RegisterDto) {
-      const user = await this._userService.create({
+      const user = await this.userService.create({
          email: registerDto.email,
          password: registerDto.password,
          role: UserRole.User,
@@ -62,7 +62,7 @@ export class AuthController {
    validate(@Query('token') token: string) {
       return plainToInstance(
          TokenValidationResponseDto,
-         this._authService.validateToken(token),
+         this.authService.validateToken(token),
       );
    }
 }

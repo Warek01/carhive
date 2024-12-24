@@ -1,10 +1,29 @@
 name: carhive
 
 services:
-   redis:
+   cache:
       image: redis:alpine
-      volumes: [ redis-data:/data ]
+      volumes: [ cache-data:/data ]
       ports: [ "6379:6379" ]
+
+   proxy:
+      image: nginx:alpine
+      environment: { }
+      volumes:
+         - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      networks: [ carhive-network ]
+      ports: [ "8080:80" ]
+
+   gateway:
+      build:
+         context: services/node/gateway
+      depends_on:
+         - proxy
+         - account-service
+      networks: [ carhive-network ]
+      ports: [ "3001:3000" ]
+      init: true
+      env_file: [ services/node/gateway/.env.production ]
 
    account-db:
       image: postgres:17-alpine
@@ -22,7 +41,7 @@ services:
          POSTGRES_DB: listing_db
          POSTGRES_USER: ${LISTING_DB_USER}
          POSTGRES_PASSWORD: ${LISTING_DB_PASSWORD}
-      ports: [ "5433:5432"]
+      ports: [ "5433:5432" ]
       networks: [ carhive-network ]
       volumes: [ listing-db-data:/var/lib/postgresql/data ]
 
@@ -33,12 +52,12 @@ services:
       depends_on:
          - account-db
       networks: [ carhive-network ]
-      ports: [ "3000:3000" ]
+      ports: [ "3001:3000" ]
       init: true
       env_file: [ services/node/account-service/.env.production ]
 
 volumes:
-   redis-data: { }
+   cache-data: { }
    account-db-data: { }
    listing-db-data: { }
 

@@ -1,5 +1,6 @@
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { JsonWebTokenError } from '@nestjs/jwt';
 import { ApiProperty } from '@nestjs/swagger';
+import { DecodedJwt } from '@/auth/types/decoded-jwt.types';
 
 export class TokenValidationResponseDto {
    @ApiProperty({ type: Boolean })
@@ -7,4 +8,7 @@ export class TokenValidationResponseDto {
 
    @ApiProperty({ type: JsonWebTokenError })
    error: JsonWebTokenError | null = null;
+
+   @ApiProperty()
+   decoded: DecodedJwt | null = null;
 }
