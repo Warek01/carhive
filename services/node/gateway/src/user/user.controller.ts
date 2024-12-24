@@ -26,11 +26,11 @@ import { UpdateUserDto } from '@/user/dto/request/update-user.dto';
 import { PaginatedRequestDto } from '@/common/dto/request/paginated-request.dto';
 import { UsersGetDto } from '@/user/dto/response/users-get.dto';
 import { CreateUserDto } from '@/user/dto/request/create-user.dto';
-import { AuthGuard } from '@/auth/guards/auth.guard';
+import { Role } from '@/auth/decorators/roles.decroator';
+import { UserRole } from '@/user/enums/user-role.enum';
 
 @Controller('user')
 @ApiTags('User')
-@UseGuards(AuthGuard)
 @ApiBearerAuth()
 @ApiNotFoundResponse()
 @ApiForbiddenResponse()
@@ -40,15 +40,22 @@ export class UserController {
    constructor(private readonly userService: UserService) {}
 
    @Get(':id')
-   @ApiOperation({ summary: 'Get user details' })
+   @Role(UserRole.User)
+   @ApiOperation({
+      summary: 'Get user details',
+      description: 'Required role: <b>User</b>',
+   })
    @ApiOkResponse({ type: UserDto })
-
    getOne(@Param('id') id: number): Promise<UserDto> {
       return this.userService.getOne(id);
    }
 
    @Patch(':id')
-   @ApiOperation({ summary: 'Update a user' })
+   @Role(UserRole.Admin)
+   @ApiOperation({
+      summary: 'Update a user',
+      description: 'Required role: <b>Admin</b>',
+   })
    @ApiOkResponse({ type: UserDto })
    update(
       @Param('id') id: number,
@@ -58,28 +65,44 @@ export class UserController {
    }
 
    @Delete(':id')
-   @ApiOperation({ summary: 'Soft delete a user' })
+   @Role(UserRole.Admin)
+   @ApiOperation({
+      summary: 'Soft delete a user',
+      description: 'Required role: <b>Admin</b>',
+   })
    @ApiOkResponse({ type: UserDto })
    delete(@Param('id') id: number): Promise<UserDto> {
       return this.userService.delete(id);
    }
 
    @Get('')
-   @ApiOperation({ summary: 'Get multiple users' })
+   @Role(UserRole.User)
+   @ApiOperation({
+      summary: 'Get multiple users',
+      description: 'Required role: <b>User</b>',
+   })
    @ApiOkResponse({ type: UsersGetDto })
    get(@Query() queryDto: PaginatedRequestDto): Promise<UsersGetDto> {
       return this.userService.get(queryDto);
    }
 
    @Post('')
-   @ApiOperation({ summary: 'Create a user' })
+   @Role(UserRole.Admin)
+   @ApiOperation({
+      summary: 'Create a user',
+      description: 'Required role: <b>Admin</b>',
+   })
    @ApiOkResponse({ type: UserDto })
    create(@Body() createDto: CreateUserDto): Promise<UserDto> {
       return this.userService.create(createDto);
    }
 
    @Patch(':id/restore')
-   @ApiOperation({ summary: 'Restore a soft deleted user' })
+   @Role(UserRole.Admin)
+   @ApiOperation({
+      summary: 'Restore a soft deleted user',
+      description: 'Required role: <b>Admin</b>',
+   })
    @ApiOkResponse({ type: UserDto })
    restore(@Param('id') id: number): Promise<UserDto> {
       return this.userService.restore(id);
