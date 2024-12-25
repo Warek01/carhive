@@ -8,7 +8,10 @@ import {
    MemoryHealthIndicator,
 } from '@nestjs/terminus';
 
+import { Public } from '@/auth/decorators/auth.decorator';
+
 @Controller('health')
+@Public()
 @ApiTags('Health')
 export class HealthController {
    private readonly _heapThreshold = 512 * 1024 * 1024;

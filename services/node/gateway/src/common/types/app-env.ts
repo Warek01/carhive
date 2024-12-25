@@ -8,4 +8,6 @@ export interface AppEnv {
    LISTING_SERVICE_URL: string;
    RECOMMENDATION_SERVICE_URL: string;
    SCRAPING_SERVICE_URL: string;
+
+   ACCOUNT_SERVICE_API_KEY: string;
 }

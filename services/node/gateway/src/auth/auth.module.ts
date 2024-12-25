@@ -14,6 +14,9 @@ import { AuthService } from './auth.service';
          inject: [ConfigService],
          useFactory: (config: ConfigService<AppEnv>) => ({
             baseURL: `${config.get('ACCOUNT_SERVICE_URL')}/api/v1/auth/`,
+            headers: {
+               'X-API-KEY': config.get('ACCOUNT_SERVICE_API_KEY'),
+            },
          }),
       }),
    ],

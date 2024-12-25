@@ -11,5 +11,7 @@ export interface AppEnv {
    JWT_SECRET: string;
    JWT_EXPIRES_IN: string;
 
+   API_KEY: string;
+
    NODE_ENV: 'development' | 'production';
 }

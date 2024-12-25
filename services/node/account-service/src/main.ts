@@ -31,6 +31,16 @@ async function bootstrap() {
    const swaggerConfig = new DocumentBuilder()
       .setTitle('CarHive Account Service')
       .setVersion('1.0.0')
+      .addGlobalParameters({
+         in: 'header',
+         required: true,
+         name: 'X-API-KEY',
+         style: 'simple',
+         allowEmptyValue: false,
+         schema: {
+            default: 'secret-key',
+         },
+      })
       .build();
 
    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
