@@ -7,7 +7,6 @@ import {
    Patch,
    Post,
    Query,
-   UseGuards,
 } from '@nestjs/common';
 import {
    ApiBadRequestResponse,

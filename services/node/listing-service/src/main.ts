@@ -3,9 +3,9 @@ import { INestApplication, Logger, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { AppEnv } from '@/common/types/app-env';
 
 import { AppModule } from '@/app.module';
+import { AppEnv } from '@/common/types/app-env';
 
 async function bootstrap() {
    const logger = new Logger(bootstrap.name, { timestamp: true });
@@ -29,7 +29,7 @@ async function bootstrap() {
    });
 
    const swaggerConfig = new DocumentBuilder()
-      .setTitle('CarHive Account Service')
+      .setTitle('CarHive Listing Service')
       .setVersion('1.0.0')
       .addGlobalParameters({
          in: 'header',
@@ -46,7 +46,7 @@ async function bootstrap() {
    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
    SwaggerModule.setup('/docs', app, swaggerDocument, {
       jsonDocumentUrl: '/docs/swagger.json',
-      customSiteTitle: 'Account Service docs',
+      customSiteTitle: 'Listing Service docs',
       useGlobalPrefix: true,
    });
 
