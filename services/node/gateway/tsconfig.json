@@ -1,19 +1,18 @@
+// For IDE type inference and checks, build config is handled by swc
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "ES2021",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "incremental": true,
+    "noEmit": true,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": false,
+    "incremental": true,
+    "module": "commonjs",
+    "target": "ES2021",
+    "experimentalDecorators": true,
+    "baseUrl": "./",
     "strict": true,
-    "removeComments": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "isolatedModules": true,
     "noImplicitAny": true,
     "paths": {
       "@/*": [
