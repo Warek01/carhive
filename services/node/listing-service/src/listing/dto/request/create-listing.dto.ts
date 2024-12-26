@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { CarStatus } from '@/listing/enums/car-status.enum';
-import { BodyStyle } from '@/listing/enums/body-style.enum';
-import { Drivetrain } from '@/listing/enums/drivetrain.enum';
-import { FuelType } from '@/listing/enums/fuel-type.enum';
-import { Transmission } from '@/listing/enums/transmission.enum';
 import { CreateListingMetadataDto } from '@/listing/dto/request/create-listing-metadata.dto';
-import { ListingStatus } from '@/listing/enums/listing-status.enum';
+import {
+   BodyStyle,
+   CarStatus,
+   Currency,
+   Drivetrain,
+   FuelType,
+   ListingStatus,
+   Transmission,
+} from '@/listing/enums';
 
 export class CreateListingDto {
    @ApiProperty({
@@ -88,4 +91,13 @@ export class CreateListingDto {
       example: ListingStatus.Available,
    })
    listingStatus?: ListingStatus;
+
+   @ApiProperty({
+      type: String,
+      enum: Currency,
+      enumName: 'CurrencyEnum',
+      nullable: true,
+      example: Currency.Usd,
+   })
+   currency: Currency;
 }

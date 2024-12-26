@@ -1,29 +1,120 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
+
+import { ListingStatus } from '@/listing/enums/listing-status.enum';
+import { CarStatus } from '@/listing/enums/car-status.enum';
+import { BodyStyle } from '@/listing/enums/body-style.enum';
+import { Drivetrain } from '@/listing/enums/drivetrain.enum';
+import { FuelType } from '@/listing/enums/fuel-type.enum';
+import { Transmission } from '@/listing/enums/transmission.enum';
+import { Currency } from '@/listing/enums/currency.enum';
+import { ListingMetadataDto } from '@/listing/dto/response/listing-metadata.dto';
 
 @Exclude()
 export class ListingDto {
-   @Expose()
    @ApiProperty({ type: Number })
-   id: number = null!;
-
    @Expose()
+   id: number;
+
+   @ApiProperty({ type: Date })
+   @Expose()
+   updatedAt: Date;
+
+   @ApiProperty({ type: Date })
+   @Expose()
+   createdAt: Date;
+
+   @ApiProperty({ type: [String] })
+   @Expose()
+   images: string[];
+
    @ApiProperty({ type: String, nullable: true })
-   brand: string | null = null;
-
    @Expose()
+   description?: string;
+
    @ApiProperty({ type: String, nullable: true })
-   model: string | null = null;
-
    @Expose()
+   brand?: string;
+
+   @ApiProperty({ type: String, nullable: true })
+   @Expose()
+   model?: string;
+
    @ApiProperty({ type: Number, nullable: true })
-   price: number | null = null;
-
    @Expose()
-   @ApiProperty({ type: String, nullable: true })
-   publishDate: string = null!;
+   price?: number;
 
+   @ApiProperty({
+      type: String,
+      nullable: true,
+      enum: Currency,
+      enumName: 'CurrencyEnum',
+   })
    @Expose()
+   currency?: Currency;
+
    @ApiProperty({ type: String, nullable: true })
-   createdAt: string = null!;
+   @Expose()
+   color?: string;
+
+   @ApiProperty({
+      type: String,
+      enum: ListingStatus,
+      enumName: 'ListingStatusEnum',
+   })
+   @Expose()
+   listingStatus: ListingStatus = ListingStatus.Draft;
+
+   @ApiProperty({
+      type: String,
+      nullable: true,
+      enum: CarStatus,
+      enumName: 'CarStatusEnum',
+   })
+   @Expose()
+   carStatus?: CarStatus;
+
+   @ApiProperty({
+      type: String,
+      nullable: true,
+      enum: BodyStyle,
+      enumName: 'BodyStyleEnum',
+   })
+   @Expose()
+   bodyStyle?: BodyStyle;
+
+   @ApiProperty({
+      type: String,
+      nullable: true,
+      enum: Drivetrain,
+      enumName: 'DrivetrainEnum',
+   })
+   @Expose()
+   drivetrain?: Drivetrain;
+
+   @ApiProperty({
+      type: String,
+      nullable: true,
+      enum: FuelType,
+      enumName: 'FuelTypeEnum',
+   })
+   @Expose()
+   fuelType?: FuelType;
+
+   @ApiProperty({
+      type: String,
+      nullable: true,
+      enum: Transmission,
+      enumName: 'TransmissionEnum',
+   })
+   @Expose()
+   transmission?: Transmission;
+
+   @ApiProperty({
+      type: ListingMetadataDto,
+      nullable: true,
+   })
+   @Expose()
+   @Type(() => ListingMetadataDto)
+   metadata?: ListingMetadataDto;
 }

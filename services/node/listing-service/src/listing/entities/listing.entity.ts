@@ -16,6 +16,7 @@ import { Drivetrain } from '@/listing/enums/drivetrain.enum';
 import { FuelType } from '@/listing/enums/fuel-type.enum';
 import { Transmission } from '@/listing/enums/transmission.enum';
 import { ListingMetadata } from '@/listing/entities/listing-metadata.entity';
+import { Currency } from '@/listing/enums/currency.enum';
 
 @Entity('listings')
 export class Listing {
@@ -47,6 +48,15 @@ export class Listing {
 
    @Column({ name: 'price', type: 'double precision', nullable: true })
    price?: number;
+
+   @Column({
+      name: 'currency',
+      type: 'enum',
+      nullable: true,
+      enum: Currency,
+      enumName: 'currency',
+   })
+   currency?: Currency;
 
    @Column({ name: 'color', length: 255, nullable: true })
    color?: string;

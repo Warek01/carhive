@@ -10,6 +10,7 @@ import { RolesGuard } from '@/auth/guards/roles.guard';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import { globalValidationPipeConfig } from '@/config/global-validation-pipe.config';
+import { ListingModule } from './listing/listing.module';
 
 @Module({
    imports: [
@@ -17,6 +18,7 @@ import { globalValidationPipeConfig } from '@/config/global-validation-pipe.conf
       HealthModule,
       AuthModule,
       UserModule,
+      ListingModule,
    ],
    controllers: [],
    providers: [

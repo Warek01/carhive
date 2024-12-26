@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { databaseConfig } from '@/config/database.config';
 import { envConfig } from '@/config/env.config';
@@ -26,6 +26,10 @@ import { ListingModule } from '@/listing/listing.module';
       {
          provide: APP_INTERCEPTOR,
          useClass: LoggingInterceptor,
+      },
+      {
+         provide: APP_PIPE,
+         useValue: new ValidationPipe({ transform: true }),
       },
    ],
    exports: [],

@@ -1,22 +1,22 @@
 import {
    Body,
    Controller,
-   Delete,
    Get,
    NotFoundException,
    Param,
+   ParseBoolPipe,
    ParseIntPipe,
    Post,
    Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 
 import { ListingDto } from '@/listing/dto/response/listing.dto';
-import { PaginatedRequestDto } from '@/common/dto/request/paginated-request.dto';
-import { ListingGetDto } from '@/listing/dto/response/listing-get.dto';
 import { ListingService } from '@/listing/listing.service';
 import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
+import { GetListingsRequestDto } from '@/listing/dto/request/get-listings-request.dto';
+import { GetListingsResponseDto } from '@/listing/dto/response/get-listings-response.dto';
 
 @Controller('listing')
 @ApiTags('Listing')
@@ -24,13 +24,14 @@ export class ListingController {
    constructor(private readonly listingService: ListingService) {}
 
    @Get('')
-   async get(@Query() queryDto: PaginatedRequestDto): Promise<ListingGetDto> {
+   async get(
+      @Query() queryDto: GetListingsRequestDto,
+   ): Promise<GetListingsResponseDto> {
       const [listings, count] = await this.listingService.get(queryDto);
-      return plainToInstance(ListingGetDto, {
+      return plainToInstance(GetListingsResponseDto, {
          items: listings,
          totalItems: count,
-         page: Math.floor(count / queryDto.limit),
-         itemsPerPage: queryDto.limit,
+         page: Math.floor(queryDto.offset / queryDto.limit),
       });
    }
 
@@ -41,25 +42,22 @@ export class ListingController {
    }
 
    @Get(':id')
-   async getOne(@Param('id', ParseIntPipe) id: number): Promise<ListingDto> {
-      const listing = await this.listingService.getOne(id);
+   @ApiQuery({
+      name: 'includeMetadata',
+      type: Boolean,
+      required: false,
+      default: true,
+   })
+   async getOne(
+      @Param('id', ParseIntPipe) id: number,
+      @Query('includeMetadata', ParseBoolPipe) includeMetadata: boolean = false,
+   ): Promise<ListingDto> {
+      const listing = await this.listingService.getOne(id, includeMetadata);
 
       if (!listing) {
          throw new NotFoundException();
       }
 
-      return plainToInstance(ListingDto, listing);
-   }
-
-   @Delete(':id')
-   async delete(@Param('id') id: number): Promise<ListingDto> {
-      const listing = await this.listingService.getOne(id);
-
-      if (!listing) {
-         throw new NotFoundException();
-      }
-
-      await this.listingService.delete(listing);
       return plainToInstance(ListingDto, listing);
    }
 }
