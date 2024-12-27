@@ -1,29 +1,26 @@
-FROM node:22-alpine AS builder
+FROM node:22-slim AS builder
 WORKDIR /app
 
-RUN apk update
-RUN apk upgrade
 RUN npm upgrade -g
 RUN npm i -g -f pnpm
 
 COPY package.json .
 COPY pnpm-lock.yaml .
-RUN pnpm i
+RUN pnpm i --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM node:22-alpine AS production
+FROM node:22-slim AS production
 WORKDIR /app
 
-RUN apk update
-RUN apk upgrade
-RUN apk add curl
 RUN npm upgrade -g
 RUN npm i -g -f pnpm
+RUN apt-get -y update && apt-get -y install curl
 
 COPY package.json .
 COPY pnpm-lock.yaml .
-RUN pnpm i --prod
+
+RUN pnpm i --prod --frozen-lockfile
 COPY --from=builder /app/dist/ dist/
 
 ENTRYPOINT ["pnpm", "start:prod"]
