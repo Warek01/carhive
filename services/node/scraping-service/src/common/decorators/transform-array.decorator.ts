@@ -4,5 +4,7 @@ import { Transform } from 'class-transformer';
 // Transforms the value into an array if is not of array type, ex: 1 => [1]
 export const TransformArray = () =>
    applyDecorators(
-      Transform(({ value }) => (Array.isArray(value) ? value : [value])),
+      Transform(({ value }) =>
+         value !== undefined && Array.isArray(value) ? value : [value],
+      ),
    );

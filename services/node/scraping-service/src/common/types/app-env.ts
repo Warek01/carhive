@@ -5,6 +5,9 @@ export interface AppEnv {
    DB_HOST: string;
    DB_PORT: string;
 
+   CACHE_HOST: string;
+   CACHE_PORT: string;
+
    HTTP_HOST: string;
    HTTP_PORT: string;
 

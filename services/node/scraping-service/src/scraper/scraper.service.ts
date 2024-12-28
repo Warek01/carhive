@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { Browser, LaunchOptions, Page, ResourceType } from 'puppeteer';
 import { ConfigService } from '@nestjs/config';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import AdBlockPlugin from 'puppeteer-extra-plugin-adblocker';
@@ -15,6 +17,9 @@ import AnonymizeUaPlugin from 'puppeteer-extra-plugin-anonymize-ua';
 import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
 import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy';
 import { AppEnv } from '@/common/types/app-env';
+import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
+import { AppQueueName } from '@/common/enums/app-queue-name.enum';
+import { FullScrapeRequestDto } from '@/scraper/dto/request/full-scrape-request.dto';
 
 @Injectable()
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
@@ -23,7 +28,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
    private readonly WINDOW_HEIGHT = 720;
    private readonly WINDOW_WIDTH = 1280;
 
-   private readonly DockerLaunchOptions: LaunchOptions = {
+   private readonly DOCKER_LAUNCH_OPTIONS: LaunchOptions = {
       headless: true,
       executablePath: '/usr/bin/google-chrome',
       args: [
@@ -38,7 +43,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       },
    };
 
-   private readonly LocalLaunchOptions: LaunchOptions = {
+   private readonly LOCAL_LAUNCH_OPTIONS: LaunchOptions = {
       headless: false,
       args: [`--window-size=${this.WINDOW_WIDTH},${this.WINDOW_HEIGHT}`],
       downloadBehavior: {
@@ -46,20 +51,41 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       },
    };
 
-   private readonly BlockedResourceTypes: ResourceType[] = [
+   private readonly BLOCKED_RESOURCE_TYPES: ResourceType[] = [
       'image',
       'font',
       'stylesheet',
    ];
 
-   private readonly StrategyBases: Array<typeof BaseScrapingStrategy> = [
-      Scraping999Strategy,
-   ];
+   private readonly SCRAPING_STRATEGIES: Record<
+      SupportedPlatform,
+      new (page: Page, queue: Queue) => BaseScrapingStrategy
+   > = {
+      [SupportedPlatform.TripleNineMd]: Scraping999Strategy,
+   };
 
    private browser: Browser;
-   private strategies: BaseScrapingStrategy[];
 
-   constructor(private readonly config: ConfigService<AppEnv>) {}
+   constructor(
+      private readonly config: ConfigService<AppEnv>,
+      @InjectQueue(AppQueueName.Scraping)
+      private readonly scrapingQueue: Queue,
+   ) {}
+
+   async scrapePlatform({
+      platform,
+      startPage,
+      endPage,
+   }: FullScrapeRequestDto): Promise<void> {
+      this.logger.log(
+         `Starting scraping ${platform} on pages: ${startPage ?? 'start'}-${endPage ?? 'end'}`,
+      );
+      const ScrapingStrategy = this.SCRAPING_STRATEGIES[platform];
+      const page = await this.createPage();
+      const strategy = new ScrapingStrategy(page, this.scrapingQueue);
+      await strategy.scrape(startPage, endPage);
+      await page.close();
+   }
 
    async onModuleDestroy(): Promise<void> {
       await this.browser.close();
@@ -70,8 +96,8 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
       const launchOptions: LaunchOptions =
          this.config.get('NODE_ENV') === 'production'
-            ? this.DockerLaunchOptions
-            : this.LocalLaunchOptions;
+            ? this.DOCKER_LAUNCH_OPTIONS
+            : this.LOCAL_LAUNCH_OPTIONS;
 
       puppeteer
          .use(StealthPlugin())
@@ -84,34 +110,20 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
          )
          .use(
             BlockResourcesPlugin({
-               blockedTypes: new Set(this.BlockedResourceTypes),
+               blockedTypes: new Set(this.BLOCKED_RESOURCE_TYPES),
             }),
          )
          .use(AnonymizeUaPlugin());
 
       this.browser = await puppeteer.launch(launchOptions);
       this.logger.log('Browser launched');
-
-      this.strategies = [];
-      for (const StrategyBase of this.StrategyBases) {
-         const page = await this.createPage();
-         const strategy = new StrategyBase(page);
-         this.strategies.push(strategy);
-         this.logger.log(`Initialized strategy ${StrategyBase.name}`);
-      }
-
-      this.checkNewListings();
    }
 
-   private scheduleChecks(): void {
-      // setInterval(() => this.checkNewListings());
-   }
+   // TODO: implement
+   private scheduleChecks(): void {}
 
-   private checkNewListings() {
-      for (const strategy of this.strategies) {
-         strategy.scrape();
-      }
-   }
+   // TODO: implement
+   private checkNewListings(): void {}
 
    private async createPage(): Promise<Page> {
       const page = await this.browser.newPage();

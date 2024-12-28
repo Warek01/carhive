@@ -1,26 +1,16 @@
-import { Page } from 'puppeteer';
-
-import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
 import { Logger } from '@nestjs/common';
 
+import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
+import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
+
 export class Scraping999Strategy extends BaseScrapingStrategy {
-   private readonly PAGE_URL =
+   protected readonly PAGE_BASE_URL =
       'https://999.md/ro/list/transport/cars?hide_duplicates=yes&sort_type=date_desc&view_type=short';
+   protected readonly PLATFORM = SupportedPlatform.TripleNineMd;
 
-   private readonly logger = new Logger(Scraping999Strategy.name);
+   protected readonly logger = new Logger(Scraping999Strategy.name);
 
-   constructor(page: Page) {
-      super(page);
-   }
-
-   override async scrape() {
-      await this.page.goto(this.PAGE_URL, { waitUntil: 'load' });
-      this.logger.log('Page loaded');
-      console.log(await this.detectNrOfPages());
-      console.log(await this.extract());
-   }
-
-   private async extract(): Promise<string[]> {
+   protected async extract(): Promise<string[]> {
       const table = await this.page.$('table.ads-list-table');
 
       if (!table) {
@@ -33,7 +23,11 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       });
    }
 
-   private async detectNrOfPages(): Promise<number> {
+   protected getPageUrl(pageIndex: number): string {
+      return `${this.PAGE_BASE_URL}&page=${pageIndex + 1}`;
+   }
+
+   protected async getNrOfPages(): Promise<number> {
       const paginator = await this.page.$('.paginator');
 
       if (!paginator) {
