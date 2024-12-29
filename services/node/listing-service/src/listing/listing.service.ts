@@ -7,7 +7,7 @@ import { ListingStatus } from '@/listing/enums';
 import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 import { ListingMetadata } from '@/listing/entities/listing-metadata.entity';
 import { GetListingsRequestDto } from '@/listing/dto/request/get-listings-request.dto';
-import { ListingOrderByValues } from '@/listing/constants/listing-order-by-values.constants';
+import { LISTING_ORDER_BY_VALUES } from '@/listing/constants/listing-order-by-values.constants';
 
 @Injectable()
 export class ListingService {
@@ -127,7 +127,7 @@ export class ListingService {
          query = query.leftJoinAndSelect('listing.metadata', 'metadata');
       }
       if (dto.orderBy) {
-         const [sort, order] = ListingOrderByValues[dto.orderBy];
+         const [sort, order] = LISTING_ORDER_BY_VALUES[dto.orderBy];
          query = query.orderBy(`listing.${sort}`, order);
       }
 

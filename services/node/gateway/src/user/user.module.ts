@@ -4,9 +4,8 @@ import { ConfigService } from '@nestjs/config';
 
 import { AppEnv } from '@/common/types/app-env';
 import { AuthModule } from '@/auth/auth.module';
-
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { UserController } from '@/user/user.controller';
+import { UserService } from '@/user/user.service';
 
 @Module({
    imports: [

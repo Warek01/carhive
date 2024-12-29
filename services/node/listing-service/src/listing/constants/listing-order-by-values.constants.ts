@@ -1,7 +1,7 @@
 import { ListingOrderBy } from '@/listing/enums';
 
 // typeorm order by + offset + take bug https://github.com/typeorm/typeorm/issues/4742#issuecomment-783857414
-export const ListingOrderByValues: Record<
+export const LISTING_ORDER_BY_VALUES: Record<
    ListingOrderBy,
    [string, 'ASC' | 'DESC']
 > = {

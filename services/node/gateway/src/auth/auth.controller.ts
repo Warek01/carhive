@@ -9,9 +9,9 @@ import {
    ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/request/login.dto';
-import { RegisterDto } from './dto/request/register.dto';
+import { AuthService } from '@/auth/auth.service';
+import { LoginDto } from '@/auth/dto/request/login.dto';
+import { RegisterDto } from '@/auth/dto/request/register.dto';
 import { Public } from '@/auth/decorators/auth.decorator';
 
 @Controller('auth')
@@ -20,13 +20,13 @@ import { Public } from '@/auth/decorators/auth.decorator';
 @ApiBadRequestResponse()
 @ApiUnauthorizedResponse()
 export class AuthController {
-   constructor(private readonly _authService: AuthService) {}
+   constructor(private readonly authService: AuthService) {}
 
    @Post('login')
    @ApiOperation({ summary: 'Sign In', description: 'Required role: none' })
    @ApiOkResponse({ type: String })
    login(@Body() body: LoginDto): Promise<string> {
-      return this._authService.login(body);
+      return this.authService.login(body);
    }
 
    @Post('register')
@@ -35,6 +35,6 @@ export class AuthController {
    @ApiConflictResponse()
    @ApiCreatedResponse({ type: String })
    register(@Body() body: RegisterDto): Promise<string> {
-      return this._authService.register(body);
+      return this.authService.register(body);
    }
 }

@@ -9,8 +9,7 @@ import { databaseConfig } from '@/config/database.config';
 import { envConfig } from '@/config/env.config';
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import { ApiKeyGuard } from '@/common/guards/api-key.guard';
-
-import { HealthModule } from './health/health.module';
+import { HealthModule } from '@/health/health.module';
 
 @Module({
    imports: [

@@ -12,26 +12,27 @@ import {
 @Controller('health')
 @ApiTags('Health')
 export class HealthController {
-   private readonly _heapThreshold = 512 * 1024 * 1024;
+   // 512 MB
+   private readonly HEAP_THRESHOLD = 512 * 1024 * 1024;
 
    constructor(
-      private readonly _health: HealthCheckService,
-      private readonly _db: TypeOrmHealthIndicator,
-      private readonly _disk: DiskHealthIndicator,
-      private readonly _memory: MemoryHealthIndicator,
+      private readonly health: HealthCheckService,
+      private readonly db: TypeOrmHealthIndicator,
+      private readonly disk: DiskHealthIndicator,
+      private readonly memory: MemoryHealthIndicator,
    ) {}
 
    @Get()
    @HealthCheck()
    check(): Promise<HealthCheckResult> {
-      return this._health.check([
-         () => this._db.pingCheck('db'),
+      return this.health.check([
+         () => this.db.pingCheck('db'),
          () =>
-            this._disk.checkStorage('storage', {
+            this.disk.checkStorage('storage', {
                path: '/',
                thresholdPercent: 0.85,
             }),
-         () => this._memory.checkHeap('mem-heap', this._heapThreshold),
+         () => this.memory.checkHeap('mem-heap', this.HEAP_THRESHOLD),
       ]);
    }
 }

@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { AppEnv } from '@/common/types/app-env';
 
-export const databaseConfig: TypeOrmModuleAsyncOptions = {
+export const DB_CONFIG: TypeOrmModuleAsyncOptions = {
    inject: [ConfigService],
    useFactory: (conf: ConfigService<AppEnv>): TypeOrmModuleOptions => ({
       type: 'postgres',

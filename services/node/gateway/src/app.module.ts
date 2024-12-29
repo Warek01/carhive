@@ -5,16 +5,16 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { HealthModule } from '@/health/health.module';
 import { AuthModule } from '@/auth/auth.module';
 import { UserModule } from '@/user/user.module';
-import { envConfig } from '@/config/env.config';
+import { ENV_CONFIG } from '@/config/env.config';
 import { RolesGuard } from '@/auth/guards/roles.guard';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
-import { globalValidationPipeConfig } from '@/config/global-validation-pipe.config';
+import { GLOBAL_VALIDATION_PIPE_CONFIG } from '@/config/global-validation-pipe.config';
 import { ListingModule } from './listing/listing.module';
 
 @Module({
    imports: [
-      ConfigModule.forRoot(envConfig),
+      ConfigModule.forRoot(ENV_CONFIG),
       HealthModule,
       AuthModule,
       UserModule,
@@ -36,7 +36,7 @@ import { ListingModule } from './listing/listing.module';
       },
       {
          provide: APP_PIPE,
-         useValue: new ValidationPipe(globalValidationPipeConfig),
+         useValue: new ValidationPipe(GLOBAL_VALIDATION_PIPE_CONFIG),
       },
    ],
    exports: [],

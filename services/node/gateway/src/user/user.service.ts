@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 import { BaseMicroserviceService } from '@/common/classes/base-microservice-service';
-import { UserEndpoints } from '@/user/constants/user-paths.constants';
+import { userEndpoints } from '@/user/constants/user-paths.constants';
 import { UserDto } from '@/user/dto/response/user.dto';
 import { UpdateUserDto } from '@/user/dto/request/update-user.dto';
 import { PaginatedRequestDto } from '@/common/dto/request/paginated-request.dto';
@@ -19,14 +19,14 @@ export class UserService extends BaseMicroserviceService {
 
    getOne(id: number): Promise<UserDto> {
       return this.forwardRequest({
-         url: UserEndpoints.getOne({ id: id.toString() }),
+         url: userEndpoints.getOne({ id: id.toString() }),
          method: 'GET',
       });
    }
 
    update(id: number, updateDto: UpdateUserDto): Promise<UserDto> {
       return this.forwardRequest({
-         url: UserEndpoints.update({ id: id.toString() }),
+         url: userEndpoints.update({ id: id.toString() }),
          method: 'POST',
          data: updateDto,
       });
@@ -34,14 +34,14 @@ export class UserService extends BaseMicroserviceService {
 
    delete(id: number): Promise<UserDto> {
       return this.forwardRequest({
-         url: UserEndpoints.delete({ id: id.toString() }),
+         url: userEndpoints.delete({ id: id.toString() }),
          method: 'DELETE',
       });
    }
 
    get(queryDto: PaginatedRequestDto): Promise<UsersGetDto> {
       return this.forwardRequest({
-         url: UserEndpoints.get(),
+         url: userEndpoints.get(),
          method: 'GET',
          params: queryDto,
       });
@@ -49,7 +49,7 @@ export class UserService extends BaseMicroserviceService {
 
    create(createDto: CreateUserDto): Promise<UserDto> {
       return this.forwardRequest({
-         url: UserEndpoints.create(),
+         url: userEndpoints.create(),
          method: 'POST',
          data: createDto,
       });
@@ -57,7 +57,7 @@ export class UserService extends BaseMicroserviceService {
 
    restore(id: number): Promise<UserDto> {
       return this.forwardRequest({
-         url: UserEndpoints.restore({ id: id.toString() }),
+         url: userEndpoints.restore({ id: id.toString() }),
          method: 'PATCH',
       });
    }

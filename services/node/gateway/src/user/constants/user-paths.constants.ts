@@ -1,7 +1,7 @@
 import { compile } from 'path-to-regexp';
 
 // Endpoints of User module of account service
-export const UserEndpoints = {
+export const userEndpoints = {
    // GET /:id
    getOne: compile(':id'),
    // PATCH /:id

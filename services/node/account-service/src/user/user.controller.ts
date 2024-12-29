@@ -27,7 +27,7 @@ import { UsersGetDto } from '@/user/dto/response/users-get.dto';
 @Controller('user')
 @ApiTags('User')
 export class UserController {
-   constructor(private readonly _userService: UserService) {}
+   constructor(private readonly userService: UserService) {}
 
    @Get(':id')
    async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
@@ -37,7 +37,7 @@ export class UserController {
 
    @Get()
    async get(@Query() requestDto: PaginatedRequestDto): Promise<UsersGetDto> {
-      const [users, count] = await this._userService.get(
+      const [users, count] = await this.userService.get(
          requestDto.offset,
          requestDto.limit,
       );
@@ -55,13 +55,13 @@ export class UserController {
    @Post()
    @HttpCode(HttpStatus.CREATED)
    async create(@Body() dto: CreateUserDto) {
-      const user = await this._userService.findOneByEmail(dto.email);
+      const user = await this.userService.findOneByEmail(dto.email);
 
       if (user !== null) {
          throw new ConflictException();
       }
 
-      return this._userService.create(dto);
+      return this.userService.create(dto);
    }
 
    @Patch(':id')
@@ -70,7 +70,7 @@ export class UserController {
       @Body() updateDto: UpdateUserDto,
    ): Promise<UserDto> {
       const user = await this._findOneOrNotFound(id);
-      await this._userService.update(user, updateDto);
+      await this.userService.update(user, updateDto);
       return plainToInstance(UserDto, user);
    }
 
@@ -78,7 +78,7 @@ export class UserController {
    @Delete(':id')
    async delete(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
       const user = await this._findOneOrNotFound(id);
-      await this._userService.delete(user);
+      await this.userService.delete(user);
       return plainToInstance(UserDto, user);
    }
 
@@ -86,13 +86,13 @@ export class UserController {
    @Patch(':id/restore')
    async restore(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
       const user = await this._findOneOrNotFound(id);
-      await this._userService.restore(user);
+      await this.userService.restore(user);
       return plainToInstance(UserDto, user);
    }
 
    /** @throws NotFoundException */
    private async _findOneOrNotFound(id: number): Promise<User> {
-      const user = await this._userService.findOne(id);
+      const user = await this.userService.findOne(id);
 
       if (user === null) {
          throw new NotFoundException();

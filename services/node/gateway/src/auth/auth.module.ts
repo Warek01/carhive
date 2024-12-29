@@ -4,9 +4,8 @@ import { ConfigService } from '@nestjs/config';
 
 import { AppEnv } from '@/common/types/app-env';
 import { AuthGuard } from '@/auth/guards/auth.guard';
-
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from '@/auth/auth.controller';
+import { AuthService } from '@/auth/auth.service';
 
 @Module({
    imports: [

@@ -5,7 +5,7 @@ import { LoginDto } from '@/auth/dto/request/login.dto';
 import { RegisterDto } from '@/auth/dto/request/register.dto';
 import { BaseMicroserviceService } from '@/common/classes/base-microservice-service';
 import { TokenValidationResponse } from '@/auth/types/token-validation-response.types';
-import { AuthEndpoints } from '@/auth/constants/auth-endpoints.constants';
+import { authEndpoints } from '@/auth/constants/auth-endpoints.constants';
 
 @Injectable()
 export class AuthService extends BaseMicroserviceService {
@@ -17,7 +17,7 @@ export class AuthService extends BaseMicroserviceService {
 
    login(dto: LoginDto): Promise<string> {
       return this.forwardRequest({
-         url: AuthEndpoints.login(),
+         url: authEndpoints.login(),
          method: 'POST',
          data: dto,
       });
@@ -25,7 +25,7 @@ export class AuthService extends BaseMicroserviceService {
 
    register(dto: RegisterDto): Promise<string> {
       return this.forwardRequest({
-         url: AuthEndpoints.register(),
+         url: authEndpoints.register(),
          method: 'POST',
          data: dto,
       });
@@ -33,7 +33,7 @@ export class AuthService extends BaseMicroserviceService {
 
    async validate(token: string): Promise<TokenValidationResponse> {
       return this.forwardRequest({
-         url: AuthEndpoints.validate(),
+         url: authEndpoints.validate(),
          params: { token },
          method: 'GET',
       });

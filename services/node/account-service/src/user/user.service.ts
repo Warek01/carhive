@@ -8,22 +8,22 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { validate } from 'class-validator';
 
-import { User } from './entities/user.entity';
+import { User } from '@/user/entities/user.entity';
 import { CreateUserDto } from '@/user/dto/request/create-user.dto';
 import { UpdateUserDto } from '@/user/dto/request/update-user.dto';
 
 @Injectable()
 export class UserService {
    constructor(
-      @InjectRepository(User) private readonly _userRepo: Repository<User>,
+      @InjectRepository(User) private readonly userRepo: Repository<User>,
    ) {}
 
    findOne(id: number): Promise<User | null> {
-      return this._userRepo.findOneBy({ id });
+      return this.userRepo.findOneBy({ id });
    }
 
    findOneByEmail(email: string): Promise<User | null> {
-      return this._userRepo.findOneBy({ email });
+      return this.userRepo.findOneBy({ email });
    }
 
    async create(dto: CreateUserDto): Promise<User> {
@@ -35,7 +35,7 @@ export class UserService {
       user.createdAt = new Date();
       user.role = dto.role;
 
-      return this._userRepo.save(user);
+      return this.userRepo.save(user);
    }
 
    async update(user: User, updateDto: UpdateUserDto): Promise<User> {
@@ -58,23 +58,23 @@ export class UserService {
          throw new BadRequestException(errors[0]);
       }
 
-      return await this._userRepo.save(user);
+      return await this.userRepo.save(user);
    }
 
    async delete(user: User): Promise<User> {
       user.deleted = true;
       user.deletedAt = new Date();
-      return this._userRepo.save(user);
+      return this.userRepo.save(user);
    }
 
    async restore(user: User): Promise<User> {
       user.deleted = false;
       user.deletedAt = null;
-      return this._userRepo.save(user);
+      return this.userRepo.save(user);
    }
 
    async get(offset: number, limit: number): Promise<[User[], number]> {
-      return this._userRepo.findAndCount({
+      return this.userRepo.findAndCount({
          take: limit,
          skip: offset,
       });
