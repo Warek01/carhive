@@ -37,7 +37,7 @@ services:
          - scraping-service
          - listing-service
       networks: [ carhive-network ]
-      ports: [ "3004:3000" ]
+      ports: [ "3005:3000" ]
       init: true
       env_file: [ services/node/gateway/.env.production ]
       healthcheck:
