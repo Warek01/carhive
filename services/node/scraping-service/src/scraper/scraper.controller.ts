@@ -10,8 +10,7 @@ export class ScraperController {
    constructor(private readonly scraperService: ScraperService) {}
 
    @Post('full-scrape')
-   fullScrape(@Query() dto: FullScrapeRequestDto): void {
-      // TODO: return a job ID
+   fullScrape(@Query() dto: FullScrapeRequestDto) {
       this.scraperService.scrapePlatform(dto);
    }
 }

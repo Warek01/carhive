@@ -1,4 +1,5 @@
 import {
+   Inject,
    Injectable,
    Logger,
    OnModuleDestroy,
@@ -6,8 +7,6 @@ import {
 } from '@nestjs/common';
 import { Browser, LaunchOptions, Page, ResourceType } from 'puppeteer';
 import { ConfigService } from '@nestjs/config';
-import { Queue } from 'bullmq';
-import { InjectQueue } from '@nestjs/bullmq';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import AdBlockPlugin from 'puppeteer-extra-plugin-adblocker';
@@ -18,8 +17,9 @@ import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strateg
 import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy';
 import { AppEnv } from '@/common/types/app-env';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
-import { AppQueueName } from '@/common/enums/app-queue-name.enum';
 import { FullScrapeRequestDto } from '@/scraper/dto/request/full-scrape-request.dto';
+import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.constants';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
@@ -59,7 +59,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
    private readonly SCRAPING_STRATEGIES: Record<
       SupportedPlatform,
-      new (page: Page, queue: Queue) => BaseScrapingStrategy
+      new (page: Page, client: ClientProxy) => BaseScrapingStrategy
    > = {
       [SupportedPlatform.TripleNineMd]: Scraping999Strategy,
    };
@@ -68,8 +68,8 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
    constructor(
       private readonly config: ConfigService<AppEnv>,
-      @InjectQueue(AppQueueName.Scraping)
-      private readonly scrapingQueue: Queue,
+      @Inject(SCRAPER_QUEUE_TOKEN)
+      private readonly scrapingQueueClient: ClientProxy,
    ) {}
 
    async scrapePlatform({
@@ -82,7 +82,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       );
       const ScrapingStrategy = this.SCRAPING_STRATEGIES[platform];
       const page = await this.createPage();
-      const strategy = new ScrapingStrategy(page, this.scrapingQueue);
+      const strategy = new ScrapingStrategy(page, this.scrapingQueueClient);
       await strategy.scrape(startPage, endPage);
       await page.close();
    }

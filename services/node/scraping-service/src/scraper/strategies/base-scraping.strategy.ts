@@ -1,10 +1,12 @@
 import { Page } from 'puppeteer';
-import { Queue } from 'bullmq';
 import { Logger } from '@nestjs/common';
 
 import { sleep } from '@/common/functions/sleep';
 import { batch } from '@/common/functions/batch';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import { ScrapingBatch } from '@/scraper/types/scraping-batch.types';
 
 export abstract class BaseScrapingStrategy {
    protected abstract PAGE_BASE_URL: string;
@@ -17,7 +19,7 @@ export abstract class BaseScrapingStrategy {
 
    constructor(
       protected readonly page: Page,
-      private readonly queue: Queue,
+      private readonly scrapingQueueClient: ClientProxy,
    ) {}
 
    // Extract the urls from the pages and
@@ -26,9 +28,11 @@ export abstract class BaseScrapingStrategy {
       await this.page.goto(this.getPageUrl(startPage), { waitUntil: 'load' });
       endPage ??= await this.getNrOfPages();
 
-      for (let currentPage = startPage; currentPage < endPage; currentPage++) {
+      for (let currentPage = startPage; currentPage <= endPage; currentPage++) {
          const urls = await this.extract();
-         this.logger.log(`${this.PLATFORM} extracted ${currentPage}/${endPage}`)
+         this.logger.log(
+            `${this.PLATFORM} extracted ${currentPage}/${endPage}`,
+         );
          const batches = batch(urls, this.BATCH_SIZE);
          await this.publishUrls(batches);
          await this.delay();
@@ -43,12 +47,14 @@ export abstract class BaseScrapingStrategy {
    protected abstract getNrOfPages(): Promise<number>;
 
    // Publish urls for scrapers
-   protected async publishUrls(batches: string[][]): Promise<void> {
-      const jobs = batches.map((batch) => ({
-         name: this.PLATFORM,
-         data: { batch },
-      }));
-      await this.queue.addBulk(jobs);
+   protected publishUrls(batches: string[][]): void {
+      for (const batch of batches) {
+         const data: ScrapingBatch = {
+            platform: this.PLATFORM,
+            data: batch,
+         };
+         this.scrapingQueueClient.emit('scraping', data);
+      }
    }
 
    // Extract urls from current page

@@ -8,6 +8,8 @@ export interface AppEnv {
    CACHE_HOST: string;
    CACHE_PORT: string;
 
+   MESSAGE_QUEUE_URL: string;
+
    HTTP_HOST: string;
    HTTP_PORT: string;
 

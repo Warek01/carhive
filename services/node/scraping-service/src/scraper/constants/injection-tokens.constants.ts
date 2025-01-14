@@ -1,0 +1,1 @@
+export const SCRAPER_QUEUE_TOKEN = 'SCRAPING_QUEUE';

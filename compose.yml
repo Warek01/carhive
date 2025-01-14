@@ -2,13 +2,25 @@ name: carhive
 
 services:
    cache:
-      image: redis:alpine
+      image: redis:7-alpine
       volumes: [ cache-data:/data ]
       ports: [ "6379:6379" ]
       networks: [ carhive-network ]
 
+   message-queue:
+      image: rabbitmq:4-management-alpine
+      environment:
+         RABBITMQ_DEFAULT_USER: ${MESSAGE_QUEUE_USER}
+         RABBITMQ_DEFAULT_PASS: ${MESSAGE_QUEUE_PASSWORD}
+      networks: [ carhive-network ]
+      ports:
+         - "5672:5672"
+         - "15672:15672"
+      volumes:
+         - message-queue-data:/var/lib/rabbitmq
+
    proxy:
-      image: nginx:alpine
+      image: nginx:1.27-alpine
       environment: { }
       volumes:
          - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -22,10 +34,22 @@ services:
          context: services/node/gateway
       depends_on:
          - account-service
+         - scraping-service
+         - listing-service
       networks: [ carhive-network ]
       ports: [ "3004:3000" ]
       init: true
       env_file: [ services/node/gateway/.env.production ]
+      healthcheck:
+        &nodejs-healthcheck
+         test: [
+            "CMD", "curl", "-X", "GET", "http://localhost:3000/api/v1/health",
+            "-H", "accept: application/json", "-H", "X-API-KEY: ${API_KEY}"
+         ]
+         interval: 30s
+         timeout: 2s
+         retries: 3
+         start_period: 10s
 
    account-db:
       image: postgres:17-alpine
@@ -56,16 +80,7 @@ services:
       ports: [ "3001:3000" ]
       init: true
       env_file: [ services/node/account-service/.env.production ]
-      healthcheck:
-        &nodejs-healthcheck
-         test: [
-            "CMD", "curl", "-X", "GET", "http://localhost:3000/api/v1/health",
-            "-H", "accept: application/json", "-H", "X-API-KEY: ${API_KEY}"
-         ]
-         interval: 30s
-         timeout: 2s
-         retries: 3
-         start_period: 10s
+      healthcheck: *nodejs-healthcheck
 
    listing-service:
       build:
@@ -81,14 +96,28 @@ services:
       build:
          context: services/node/scraping-service
       ports: [ "3003:3000" ]
+      depends_on:
+         - cache
       networks: [ carhive-network ]
       env_file: [ services/node/scraping-service/.env.production ]
+      healthcheck: *nodejs-healthcheck
+
+   scraping-worker:
+      build:
+         context: services/node/scraping-worker
+      ports: [ "3004:3000" ]
+      depends_on:
+         - cache
+         - scraping-service
+      networks: [ carhive-network ]
+      env_file: [ services/node/scraping-worker/.env.production ]
       healthcheck: *nodejs-healthcheck
 
 volumes:
    cache-data: { }
    account-db-data: { }
    listing-db-data: { }
+   message-queue-data: { }
 
 networks:
    carhive-network: { }
