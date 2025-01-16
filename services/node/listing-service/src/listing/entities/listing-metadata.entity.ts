@@ -9,6 +9,7 @@ import {
 
 import { ListingAuthor } from '@/listing/types/listing-author.types';
 import { Listing } from '@/listing/entities/listing.entity';
+import { Platform } from '@/listing/enums';
 
 @Entity('listing_metadata')
 export class ListingMetadata {
@@ -18,14 +19,19 @@ export class ListingMetadata {
    @Column({ name: 'original_id', length: 255 })
    originalId: string;
 
-   @Column({ name: 'full_url', length: 255 })
-   fullUrl: string;
-
-   @Column({ name: 'relative_url', length: 255 })
-   relativeUrl: string;
+   @Column({ name: 'url', length: 255 })
+   url: string;
 
    @Column({ name: 'created_at' })
    createdAt: Date;
+
+   @Column({
+      name: 'platform',
+      type: 'enum',
+      enum: Platform,
+      enumName: 'platform',
+   })
+   platform: Platform;
 
    @OneToOne(() => Listing, (listing) => listing.metadata)
    @JoinColumn({

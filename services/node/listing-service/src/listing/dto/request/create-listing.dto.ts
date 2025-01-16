@@ -99,5 +99,5 @@ export class CreateListingDto {
       nullable: true,
       example: Currency.Usd,
    })
-   currency: Currency;
+   currency?: Currency;
 }

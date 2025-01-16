@@ -1,19 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ListingAuthor } from '@/listing/types/listing-author.types';
+import { Platform } from '@/listing/enums';
 
 export class CreateListingMetadataDto {
    @ApiProperty({ type: String, example: '67903000' })
    originalId: string;
 
    @ApiProperty({ type: String, example: 'https://999.md/ro/67903000' })
-   fullUrl: string;
-
-   @ApiProperty({ type: String, example: '/ro/67903000' })
-   relativeUrl: string;
+   url: string;
 
    @ApiProperty({ type: Date, example: new Date().toISOString() })
    createdAt: Date;
+
+   @ApiProperty({
+      type: String,
+      enum: Platform,
+      enumName: 'PlatformEnum',
+      example: Platform.TripleNineMd,
+   })
+   platform: Platform;
 
    @ApiProperty({
       example: {

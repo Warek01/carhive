@@ -159,10 +159,10 @@ export class ListingService {
       metadata.listing = listing;
       metadata.listingId = listing.id;
       metadata.author = dto.metadata.author;
-      metadata.fullUrl = dto.metadata.fullUrl;
-      metadata.relativeUrl = dto.metadata.relativeUrl;
+      metadata.url = dto.metadata.url;
       metadata.originalId = dto.metadata.originalId;
       metadata.createdAt = dto.metadata.createdAt;
+      metadata.platform = dto.metadata.platform;
 
       await this.metadataRepo.save(metadata);
 

@@ -15,11 +15,7 @@ export class ListingMetadataDto {
 
    @ApiProperty({ type: String })
    @Expose()
-   fullUrl: string;
-
-   @ApiProperty({ type: String })
-   @Expose()
-   relativeUrl: string;
+   url: string;
 
    @ApiProperty({ type: Date })
    @Expose()
