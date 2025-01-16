@@ -1,11 +1,11 @@
 import { Page } from 'puppeteer';
 import { Logger } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { TimeoutError } from 'puppeteer';
 
 import { sleep } from '@/common/functions/sleep';
 import { batch } from '@/common/functions/batch';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { ScrapingBatch } from '@/scraper/types/scraping-batch.types';
 
 export abstract class BaseScrapingStrategy {
@@ -25,7 +25,20 @@ export abstract class BaseScrapingStrategy {
    // Extract the urls from the pages and
    async scrape(startPage?: number, endPage?: number): Promise<void> {
       startPage ??= 1;
-      await this.page.goto(this.getPageUrl(startPage), { waitUntil: 'load' });
+      const url = this.getPageUrl(startPage);
+      try {
+         await this.page.goto(url, {
+            waitUntil: 'load',
+         });
+      } catch (err) {
+         if (err instanceof TimeoutError) {
+            this.logger.error(`Timeout error to url ${url}`);
+            return
+         }
+
+         throw err
+      }
+
       endPage ??= await this.getNrOfPages();
 
       for (let currentPage = startPage; currentPage <= endPage; currentPage++) {
@@ -34,8 +47,8 @@ export abstract class BaseScrapingStrategy {
             `${this.PLATFORM} extracted ${currentPage}/${endPage}`,
          );
          const batches = batch(urls, this.BATCH_SIZE);
-         await this.publishUrls(batches);
-         await this.delay();
+         this.publishUrls(batches);
+         await this.randomDelay();
          await this.page.goto(this.getPageUrl(currentPage + 1), {
             waitUntil: 'load',
          });
@@ -61,7 +74,7 @@ export abstract class BaseScrapingStrategy {
    protected abstract extract(): Promise<string[]>;
 
    // Produce a random delay between navigations
-   protected async delay(): Promise<void> {
+   protected async randomDelay(): Promise<void> {
       const ms = Math.floor(
          Math.random() * (this.MAX_DELAY - this.MIN_DELAY + 1) + this.MIN_DELAY,
       );
