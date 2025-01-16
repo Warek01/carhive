@@ -1,11 +1,8 @@
 export interface AppEnv {
-   DB_USER: string;
-   DB_PASSWORD: string;
-   DB_NAME: string;
-   DB_HOST: string;
-   DB_PORT: string;
-
    SCRAPING_QUEUE_URL: string;
+
+   LISTING_SERVICE_URL: string;
+   LISTING_SERVICE_API_KEY: string;
 
    HTTP_PORT: string;
    HTTP_HOST: string;

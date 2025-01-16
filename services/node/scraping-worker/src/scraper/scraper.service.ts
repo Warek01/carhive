@@ -15,8 +15,10 @@ import AnonymizeUaPlugin from 'puppeteer-extra-plugin-anonymize-ua';
 import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
 import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy';
 import { AppEnv } from '@/common/types/app-env';
-import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
-import { FullScrapeRequestDto } from '@/scraper/dto/request/full-scrape-request.dto';
+import { ScrapingBatch } from '@/scraper/types/scraping-batch.types';
+import { sleep } from '@/common/functions/sleep';
+import { Platform } from '@/listing/enums';
+import { ListingService } from '@/listing/listing.service';
 
 @Injectable()
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
@@ -24,6 +26,8 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
    private readonly WINDOW_HEIGHT = 720;
    private readonly WINDOW_WIDTH = 1280;
+   private readonly MIN_DELAY = 300;
+   private readonly MAX_DELAY = 3000;
 
    private readonly DOCKER_LAUNCH_OPTIONS: LaunchOptions = {
       headless: true,
@@ -55,17 +59,54 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
    ];
 
    private readonly SCRAPING_STRATEGIES: Record<
-      SupportedPlatform,
+      Platform,
       new (page: Page) => BaseScrapingStrategy
    > = {
-      [SupportedPlatform.TripleNineMd]: Scraping999Strategy,
+      [Platform.TripleNineMd]: Scraping999Strategy,
    };
 
+   // Resolves to the browser instance
+   private browserPromise: Promise<Browser>;
    private browser: Browser;
 
-   constructor(private readonly config: ConfigService<AppEnv>) {}
+   constructor(
+      private readonly config: ConfigService<AppEnv>,
+      private readonly listingService: ListingService,
+   ) {}
 
-   async scrapePlatform({ platform }: FullScrapeRequestDto): Promise<void> {}
+   async scrapePlatform(batch: ScrapingBatch): Promise<void> {
+      // Wait if browser not initialized yet
+      await this.browserPromise;
+
+      this.logger.log(
+         `Scraping ${batch.data.length} pages of ${batch.platform}`,
+      );
+      const page = await this.createPage();
+      try {
+         const Strategy = this.SCRAPING_STRATEGIES[batch.platform];
+         const strategy = new Strategy(page);
+
+         for (let i = 0; i < batch.data.length; i++) {
+            const url = batch.data[i];
+            this.logger.log(
+               `Extracting ${url} (${i + 1}/${batch.data.length})`,
+            );
+            const createDto = await strategy.extract(url);
+            const createRes = await this.listingService.create(createDto);
+            console.log(createRes);
+            console.log(createDto);
+            this.logger.log(
+               `Successfully extracted ${url} (${i + 1}/${batch.data.length})`,
+            );
+            await this.randomDelay();
+         }
+      } catch (err) {
+         console.error(err);
+         this.logger.error(err);
+      }
+
+      await page.close();
+   }
 
    async onModuleDestroy(): Promise<void> {
       await this.browser.close();
@@ -93,7 +134,8 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
          )
          .use(AnonymizeUaPlugin());
 
-      this.browser = await puppeteer.launch(launchOptions);
+      this.browserPromise = puppeteer.launch(launchOptions);
+      this.browser = await this.browserPromise;
       this.logger.log('Browser launched');
    }
 
@@ -104,5 +146,13 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
          height: this.WINDOW_HEIGHT,
       });
       return page;
+   }
+
+   // Produce a random delay between navigations
+   private async randomDelay(): Promise<void> {
+      const ms = Math.floor(
+         Math.random() * (this.MAX_DELAY - this.MIN_DELAY + 1) + this.MIN_DELAY,
+      );
+      return sleep(ms);
    }
 }

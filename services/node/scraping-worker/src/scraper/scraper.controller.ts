@@ -1,12 +1,25 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import {
+   Ctx,
+   MessagePattern,
+   Payload,
+   RmqContext,
+} from '@nestjs/microservices';
 
 import { ScrapingBatch } from '@/scraper/types/scraping-batch.types';
+import { ScraperService } from '@/scraper/scraper.service';
+import { ack } from '@/common/functions/ack';
 
 @Controller()
 export class ScraperController {
+   constructor(private readonly scraperService: ScraperService) {}
+
    @MessagePattern('scraping')
-   scrape(data: ScrapingBatch) {
-      console.log(data);
+   async scrapePlatform(
+      @Payload() data: ScrapingBatch,
+      @Ctx() ctx: RmqContext,
+   ): Promise<void> {
+      await this.scraperService.scrapePlatform(data);
+      ack(ctx);
    }
 }
