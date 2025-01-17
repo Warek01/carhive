@@ -33,7 +33,9 @@ export class ListingMetadata {
    })
    platform: Platform;
 
-   @OneToOne(() => Listing, (listing) => listing.metadata)
+   @OneToOne(() => Listing, (listing) => listing.metadata, {
+      onDelete: 'CASCADE',
+   })
    @JoinColumn({
       name: 'listing_id',
       referencedColumnName: 'id',

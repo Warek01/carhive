@@ -151,6 +151,8 @@ export class ListingService {
       listing.color = dto.color;
       listing.carStatus = dto.carStatus;
       listing.currency = dto.currency;
+      listing.title = dto.title;
+      listing.productionYear = dto.productionYear;
 
       await this.listingRepo.save(listing);
 

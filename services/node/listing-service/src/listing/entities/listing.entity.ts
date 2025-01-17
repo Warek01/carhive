@@ -32,6 +32,12 @@ export class Listing {
    @Column({ name: 'images', array: true, type: 'varchar' })
    images: string[];
 
+   @Column({ name: 'title' })
+   title: string;
+
+   @Column({ name: 'production_year', nullable: true, type: 'int' })
+   productionYear?: number;
+
    @OneToOne(() => ListingMetadata, (metadata) => metadata.listing)
    metadata?: Relation<ListingMetadata>;
 

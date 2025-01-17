@@ -20,11 +20,17 @@ export class CreateListingDto {
    })
    images: string[];
 
+   @ApiProperty({ type: String, example: 'Test litings' })
+   title: string;
+
    @ApiProperty({ type: CreateListingMetadataDto })
    metadata: CreateListingMetadataDto;
 
    @ApiProperty({ type: String, nullable: true, example: 'test car' })
    description?: string;
+
+   @ApiProperty({ type: Number, nullable: true, example: 2020 })
+   productionYear?: number;
 
    @ApiProperty({ type: String, nullable: true, example: 'Toyota' })
    brand?: string;

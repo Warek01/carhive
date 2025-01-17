@@ -28,6 +28,13 @@ export class ListingDto {
    @Expose()
    images: string[];
 
+   @ApiProperty({ type: String })
+   @Expose()
+   title: string;
+
+   @ApiProperty({ type: Number })
+   productionYear?: number;
+
    @ApiProperty({ type: String, nullable: true })
    @Expose()
    description?: string;
