@@ -97,7 +97,7 @@ services:
          context: services/node/scraping-service
       ports: [ "3003:3000" ]
       depends_on:
-         - cache
+         - message-queue
       networks: [ carhive-network ]
       env_file: [ services/node/scraping-service/.env.production ]
       healthcheck: *nodejs-healthcheck
@@ -106,9 +106,9 @@ services:
       build:
          context: services/node/scraping-worker
       ports: [ "3004:3000" ]
+      scale: 1
       depends_on:
-         - cache
-         - scraping-service
+         - message-queue
       networks: [ carhive-network ]
       env_file: [ services/node/scraping-worker/.env.production ]
       healthcheck: *nodejs-healthcheck
