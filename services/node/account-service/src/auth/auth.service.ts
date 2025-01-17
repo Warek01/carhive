@@ -30,8 +30,6 @@ export class AuthService {
          const verifyResult =
             await this.jwtService.verifyAsync<DecodedJwt>(token);
 
-         console.log(verifyResult);
-
          const res = new TokenValidationResponseDto();
          res.valid = true;
          res.decoded = verifyResult;
