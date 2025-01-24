@@ -113,6 +113,14 @@ services:
       env_file: [ services/node/scraping-worker/.env.production ]
       healthcheck: *nodejs-healthcheck
 
+   ui:
+      build:
+         context:
+            services/node/ui
+      ports: ["3000:3000"]
+      networks: [carhive-network]
+      env_file: [services/node/ui/.env.production]
+
 volumes:
    cache-data: { }
    account-db-data: { }
