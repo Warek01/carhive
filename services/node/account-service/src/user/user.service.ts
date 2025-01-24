@@ -79,4 +79,8 @@ export class UserService {
          skip: offset,
       });
    }
+
+   async exists(username: string): Promise<boolean> {
+      return this.userRepo.existsBy({ username });
+   }
 }

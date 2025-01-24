@@ -1,5 +1,6 @@
 import {
    Body,
+   ConflictException,
    Controller,
    Get,
    NotFoundException,
@@ -16,7 +17,7 @@ import { TokenValidationResponseDto } from '@/auth/dto/response/token-validation
 import { LoginDto } from '@/auth/dto/request/login.dto';
 import { RegisterDto } from '@/auth/dto/request/register.dto';
 import { UserRole } from '@/user/enums/user-role.enum';
-import { UserDto } from '@/user/dto/response/user.dto';
+import { AuthDto } from '@/auth/dto/response/auth.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -27,7 +28,7 @@ export class AuthController {
    ) {}
 
    @Post('login')
-   async login(@Body() loginDto: LoginDto) {
+   async login(@Body() loginDto: LoginDto): Promise<AuthDto> {
       const user = await this.userService.findOneByEmail(loginDto.email);
 
       if (user === null) {
@@ -43,23 +44,32 @@ export class AuthController {
          throw new UnauthorizedException();
       }
 
-      return this.authService.createToken(user);
+      const token = await this.authService.createToken(user);
+
+      return plainToInstance(AuthDto, { user, token });
    }
 
    @Post('register')
-   async register(@Body() registerDto: RegisterDto) {
+   async register(@Body() registerDto: RegisterDto): Promise<AuthDto> {
+      const exists = await this.userService.exists(registerDto.username);
+
+      if (exists) {
+         throw new ConflictException();
+      }
+
       const user = await this.userService.create({
          email: registerDto.email,
          password: registerDto.password,
          role: UserRole.User,
          username: registerDto.username,
       });
+      const token = await this.authService.createToken(user);
 
-      return plainToInstance(UserDto, user);
+      return plainToInstance(AuthDto, { user, token });
    }
 
    @Get('validate')
-   validate(@Query('token') token: string) {
+   validate(@Query('token') token: string): TokenValidationResponseDto {
       return plainToInstance(
          TokenValidationResponseDto,
          this.authService.validateToken(token),
