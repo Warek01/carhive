@@ -1,7 +1,9 @@
 import { FC } from 'react';
 import { Box, Link, Stack, Grid2, Typography } from '@mui/material';
 import NextLink from 'next/link';
+
 import { appRoute } from '@/config/app-route';
+import { ThemeSwitcher } from '@/components';
 
 const Header: FC = () => {
    return (
@@ -19,7 +21,9 @@ const Header: FC = () => {
                   </Link>
                </Stack>
             </Grid2>
-            <Grid2 size={3}></Grid2>
+            <Grid2 size={3}>
+               <ThemeSwitcher />
+            </Grid2>
          </Grid2>
       </Box>
    );

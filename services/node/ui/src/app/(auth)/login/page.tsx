@@ -1,5 +1,11 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+
+import { LoginForm } from '@/features/auth/components';
 
 export default async function Page() {
-   return <Typography variant="h1">Login</Typography>;
+   return (
+      <Box>
+         <LoginForm />
+      </Box>
+   );
 }

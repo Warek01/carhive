@@ -3,10 +3,12 @@ import { PropsWithChildren } from 'react';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import { Box, ThemeProvider } from '@mui/material';
+import { Toaster } from 'react-hot-toast';
 
 import './globals.css';
 import { theme } from '@/config/theme';
 import { Header } from '@/components';
+import { ProtectedRoutesManager } from '@/features/auth/components';
 
 const roboto = Roboto({
    weight: ['300', '400', '500', '700'],
@@ -31,6 +33,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
          <body className={`${roboto.variable} ${roboto.className}`}>
             <AppRouterCacheProvider>
                <ThemeProvider theme={theme}>
+                  <Toaster />
+                  <ProtectedRoutesManager />
                   <Box>
                      <Header />
                      <Box flexDirection="row">{children}</Box>
