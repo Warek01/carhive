@@ -3,10 +3,10 @@ import { INestApplication, Logger, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 import { AppEnv } from '@/common/types/app-env';
-
-import { AppModule } from './app.module';
+import { AppModule } from '@/app.module';
 
 async function bootstrap() {
    const logger = new Logger(bootstrap.name, { timestamp: true });
@@ -29,6 +29,7 @@ async function bootstrap() {
       prefix: 'v',
       defaultVersion: '1',
    });
+   app.use(cookieParser());
 
    const swaggerConfig = new DocumentBuilder()
       .setTitle('CarHive Gateway')

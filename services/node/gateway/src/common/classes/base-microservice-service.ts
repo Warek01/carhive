@@ -16,7 +16,7 @@ import {
    UnauthorizedException,
    UnsupportedMediaTypeException,
 } from '@nestjs/common';
-import { AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, isAxiosError } from 'axios';
 
 /** Handles requests that should be forwarded to a microservice */
 export abstract class BaseMicroserviceService {
@@ -27,6 +27,7 @@ export abstract class BaseMicroserviceService {
       this.httpService = httpService;
    }
 
+   // Simulates redirecting to the microservice
    protected async forwardRequest<TResponse>(
       config: AxiosRequestConfig,
    ): Promise<TResponse> {
@@ -35,15 +36,24 @@ export abstract class BaseMicroserviceService {
          const response = await firstValueFrom(response$);
          return response.data;
       } catch (err) {
-         this._throwIfAxiosClientError(err);
+         this.throwIfAxiosClientError(err);
          this.logger.error(err);
          throw new InternalServerErrorException();
       }
    }
 
-   private _throwIfAxiosClientError(err: unknown): void {
+   // Makes a request to the microservice
+   protected async request<TResponse>(
+      config: AxiosRequestConfig,
+   ): Promise<TResponse> {
+      const response$ = this.httpService.request<TResponse>(config);
+      const response = await firstValueFrom(response$);
+      return response.data;
+   }
+
+   private throwIfAxiosClientError(err: unknown): void {
       if (
-         err instanceof AxiosError &&
+         isAxiosError(err) &&
          err.response!.status >= 400 &&
          err.response!.status < 500
       ) {

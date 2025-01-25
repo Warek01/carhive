@@ -4,11 +4,12 @@ import {
    Injectable,
    UnauthorizedException,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { Reflector } from '@nestjs/core';
 
 import { AuthService } from '@/auth/auth.service';
 import { IS_PUBLIC_DECORATOR_KEY } from '@/auth/decorators/auth.decorator';
+import { AuthCookie } from '@/auth/enums/auth-cookie.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -27,8 +28,10 @@ export class AuthGuard implements CanActivate {
          return true;
       }
 
-      const request = context.switchToHttp().getRequest<Request>();
-      const token = this.extractTokenFromHeader(request);
+      const httpContext = context.switchToHttp();
+      const request = httpContext.getRequest<Request>();
+      const response = httpContext.getResponse<Response>();
+      const token = request.cookies[AuthCookie.AccessToken];
 
       if (!token) {
          throw new UnauthorizedException();
@@ -36,18 +39,14 @@ export class AuthGuard implements CanActivate {
 
       const result = await this.authService.validate(token);
 
+      // Get rid of token if expired or other mismatches
       if (!result.valid) {
+         response.clearCookie(AuthCookie.AccessToken, { httpOnly: true });
          throw new UnauthorizedException(result.error);
       }
 
       (request as any)['user'] = result.decoded;
 
       return true;
-   }
-
-   private extractTokenFromHeader(request: Request): string | null {
-      const header: string | null = request.headers.authorization ?? null;
-      const [type, token] = header?.split(' ') ?? [];
-      return type === 'Bearer' ? token : null;
    }
 }
