@@ -10,4 +10,5 @@ export interface AppEnv {
    SCRAPING_SERVICE_URL: string;
 
    ACCOUNT_SERVICE_API_KEY: string;
+   LISTING_SERVICE_API_KEY: string;
 }

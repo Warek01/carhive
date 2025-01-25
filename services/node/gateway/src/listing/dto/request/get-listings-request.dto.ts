@@ -16,6 +16,7 @@ import {
    TransformInt,
 } from '@/common/decorators';
 import { ListingOrderBy } from '@/listing/enums/listing-order-by.enum';
+import { Expose } from 'class-transformer';
 
 export class GetListingsRequestDto extends PaginatedRequestDto {
    @ApiProperty({ type: Number, required: false })
@@ -123,7 +124,7 @@ export class GetListingsRequestDto extends PaginatedRequestDto {
    @TransformArray()
    currencies?: Currency[];
 
-   @ApiProperty({ type: Boolean, required: false, default: true })
+   @ApiProperty({ type: String, required: false, example: 'true' })
    @TransformBool()
    includeMetadata?: boolean = true;
 
