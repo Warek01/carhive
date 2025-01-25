@@ -6,9 +6,9 @@ import { Box, ThemeProvider } from '@mui/material';
 import { Toaster } from 'react-hot-toast';
 
 import './globals.css';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { theme } from '@/config/theme';
 import { Header } from '@/components';
-import { ProtectedRoutesManager } from '@/features/auth/components';
 
 const roboto = Roboto({
    weight: ['300', '400', '500', '700'],
@@ -29,12 +29,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
    return (
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
          <body className={`${roboto.variable} ${roboto.className}`}>
             <AppRouterCacheProvider>
                <ThemeProvider theme={theme}>
                   <Toaster />
-                  <ProtectedRoutesManager />
+                  <InitColorSchemeScript attribute="class" />
                   <Box>
                      <Header />
                      <Box flexDirection="row">{children}</Box>

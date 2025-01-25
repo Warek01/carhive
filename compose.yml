@@ -117,9 +117,10 @@ services:
       build:
          context:
             services/node/ui
-      ports: ["3000:3000"]
-      networks: [carhive-network]
-      env_file: [services/node/ui/.env.production]
+      ports: [ "3000:3000" ]
+      networks: [ carhive-network ]
+      env_file: [ services/node/ui/.env.production ]
+      profiles: [ ui ]
 
 volumes:
    cache-data: { }

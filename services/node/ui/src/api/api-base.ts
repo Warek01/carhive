@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
+import qs from 'qs';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export abstract class ApiBase {
    protected abstract readonly BASE_PATH: string;
@@ -6,32 +7,53 @@ export abstract class ApiBase {
 
    private readonly BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-   constructor(private readonly token?: string) {
+   constructor() {
       this.axios = axios.create({
          baseURL: this.BASE_URL,
-         headers: {
-            Authorization: token ? `Bearer ${token}` : undefined,
-         },
+         withCredentials: true,
+         paramsSerializer: (params) => qs.stringify(params),
       });
    }
 
-   protected async get<T>(path: string): Promise<T> {
-      const res = await this.axios.get(`${this.BASE_PATH}/${path}`);
+   protected async get<T>(
+      path: string,
+      config?: AxiosRequestConfig<any>,
+   ): Promise<T> {
+      const res = await this.axios.get(`${this.BASE_PATH}/${path}`, config);
       return res.data;
    }
 
-   protected async post<T>(path: string, data: any): Promise<T> {
-      const res = await this.axios.post(`${this.BASE_PATH}/${path}`, data);
+   protected async post<T>(
+      path: string,
+      data: any,
+      config?: AxiosRequestConfig<any>,
+   ): Promise<T> {
+      const res = await this.axios.post(
+         `${this.BASE_PATH}/${path}`,
+         data,
+         config,
+      );
       return res.data;
    }
 
-   protected async patch<T>(path: string, data: any): Promise<T> {
-      const res = await this.axios.patch(`${this.BASE_PATH}/${path}`, data);
+   protected async patch<T>(
+      path: string,
+      data: any,
+      config?: AxiosRequestConfig<any>,
+   ): Promise<T> {
+      const res = await this.axios.patch(
+         `${this.BASE_PATH}/${path}`,
+         data,
+         config,
+      );
       return res.data;
    }
 
-   protected async delete<T>(path: string): Promise<T> {
-      const res = await this.axios.delete(`${this.BASE_PATH}/${path}`);
+   protected async delete<T>(
+      path: string,
+      config?: AxiosRequestConfig<any>,
+   ): Promise<T> {
+      const res = await this.axios.delete(`${this.BASE_PATH}/${path}`, config);
       return res.data;
    }
 }

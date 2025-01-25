@@ -9,17 +9,23 @@ import { LoginDto } from '@/features/auth/types/login';
 import { appRoute } from '@/config/app-route';
 import { AuthApi } from '@/features/auth/api/auth-api';
 import { toastAuthError } from '@/features/auth/utils/toast-auth-error';
-import { LocalStorageItem } from '@/config/local-storage-item';
+import { AppLocalStorageItem } from '@/config/app-local-storage-item';
+import { useDetectSessionExpired } from '@/features/auth/hooks/use-detect-session-expired';
 
 const LoginForm: FC = () => {
-   const api = new AuthApi();
+   useDetectSessionExpired();
+
    const router = useRouter();
 
    const handleSubmit = useCallback(
       async (values: LoginDto, formikHelpers: FormikHelpers<LoginDto>) => {
          try {
-            const res = await api.login(values);
-            localStorage.setItem(LocalStorageItem.AccessToken, res.token);
+            const user = await AuthApi.getSingleton().login(values);
+            localStorage.setItem(
+               AppLocalStorageItem.AuthenticatedUser,
+               JSON.stringify(user),
+            );
+
             router.push(appRoute.home());
          } catch (err) {
             toastAuthError(err);

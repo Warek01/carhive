@@ -5,8 +5,14 @@ export const appRoute = {
 
    // Listing
    listing: compile('/listing'),
-   /** @property id */
    listingDetails: compile('/listing/:id'),
+
+   // User
+   user: compile('/me'),
+   userPreferences: '/me/preferences',
+
+   // About
+   about: compile('/about'),
 
    // Auth
    login: compile('/login'),
