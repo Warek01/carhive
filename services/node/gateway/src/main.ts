@@ -18,9 +18,11 @@ async function bootstrap() {
    const httpHost = config.get('HTTP_HOST');
 
    app.enableCors({
-      origin: '*',
-      allowedHeaders: '*',
-      methods: '*',
+      origin: [
+         'http://localhost:3000',
+         'http://localhost:8080',
+         'http://localhost:3005',
+      ],
       credentials: true,
    });
    app.setGlobalPrefix('/api');

@@ -41,6 +41,7 @@ export class AuthController {
    ): Promise<UserDto> {
       const data = await this.authService.login(body);
       response.cookie(AuthCookie.AccessToken, data.token, { httpOnly: true });
+      response.cookie(AuthCookie.Authenticated, true);
       return data.user;
    }
 
@@ -55,6 +56,7 @@ export class AuthController {
    ): Promise<UserDto> {
       const data = await this.authService.register(body);
       response.cookie(AuthCookie.AccessToken, data.token, { httpOnly: true });
+      response.cookie(AuthCookie.Authenticated, true);
       return data.user;
    }
 
@@ -65,5 +67,6 @@ export class AuthController {
    })
    unauthorize(@Res({ passthrough: true }) response: Response) {
       response.clearCookie(AuthCookie.AccessToken, { httpOnly: true });
+      response.clearCookie(AuthCookie.Authenticated);
    }
 }
