@@ -1,8 +1,8 @@
 'use client';
 
+import { BrightnessAuto, DarkMode, LightMode } from '@mui/icons-material';
+import { IconButton, useColorScheme } from '@mui/material';
 import { FC, useCallback, useMemo } from 'react';
-import { Box, Button, useColorScheme } from '@mui/material';
-import { LightMode, DarkMode, BrightnessAuto } from '@mui/icons-material';
 
 type Mode = 'light' | 'dark' | 'system';
 
@@ -22,19 +22,18 @@ const ThemeSwitcher: FC = () => {
    const { mode, setMode } = useColorScheme();
 
    const handleSwitch = useCallback(() => {
-      setMode(modeSwitchMap[mode!]);
+      setMode(mode ? modeSwitchMap[mode] : 'system');
    }, [mode]);
 
-   const Icon = useMemo(() => modeIconMap[mode!], [mode]);
-
-   if (!mode) {
-      return <Box></Box>;
-   }
+   const Icon = useMemo(
+      () => (mode ? modeIconMap[mode] : modeIconMap.system),
+      [mode],
+   );
 
    return (
-      <Button onClick={handleSwitch}>
+      <IconButton onClick={handleSwitch} disabled={!mode}>
          <Icon width={32} height={32} />
-      </Button>
+      </IconButton>
    );
 };
 

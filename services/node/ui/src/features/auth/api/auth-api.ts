@@ -13,11 +13,15 @@ export class AuthApi extends ApiBase {
       return AuthApi.singleton;
    }
 
-   async login(data: LoginDto): Promise<User> {
+   login(data: LoginDto): Promise<User> {
       return this.post('login', data);
    }
 
-   async register(data: RegisterDto): Promise<User> {
+   register(data: RegisterDto): Promise<User> {
       return this.post('register', data);
+   }
+
+   logout(): Promise<void> {
+      return this.post('unauthorize', null);
    }
 }

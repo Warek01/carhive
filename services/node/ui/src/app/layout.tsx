@@ -1,18 +1,21 @@
-import { Metadata, Viewport } from 'next';
-import { PropsWithChildren } from 'react';
+import { ThemeProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
+import { Metadata, Viewport } from 'next';
 import { Roboto } from 'next/font/google';
-import { Box, ThemeProvider } from '@mui/material';
+import { PropsWithChildren } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import './globals.css';
-import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
-import { theme } from '@/config/theme';
 import { Header } from '@/components';
+import { theme } from '@/config/theme';
+import { AuthContextProvider } from '@/features/auth/context/auth-context';
+
+import './globals.css';
 
 const roboto = Roboto({
    weight: ['300', '400', '500', '700'],
    subsets: ['latin'],
+   preload: true,
    display: 'swap',
    variable: '--font-roboto',
 });
@@ -35,10 +38,12 @@ export default function RootLayout({ children }: PropsWithChildren) {
                <ThemeProvider theme={theme}>
                   <Toaster />
                   <InitColorSchemeScript attribute="class" />
-                  <Box>
-                     <Header />
-                     <Box flexDirection="row">{children}</Box>
-                  </Box>
+                  <AuthContextProvider>
+                     <div className="flex min-h-screen flex-col">
+                        <Header />
+                        <div className="flex grow-1 flex-col">{children}</div>
+                     </div>
+                  </AuthContextProvider>
                </ThemeProvider>
             </AppRouterCacheProvider>
          </body>

@@ -1,6 +1,6 @@
 import { ApiBase } from '@/api/api-base';
-import { PaginatedRequest, PaginatedResponse } from '@/types/api';
 import { Listing, ListingAuthor } from '@/features/listing/types/listing';
+import { PaginatedRequest, PaginatedResponse } from '@/types/api';
 
 export class ListingApi extends ApiBase {
    private static singleton: ListingApi = null!;

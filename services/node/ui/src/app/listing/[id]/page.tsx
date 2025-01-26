@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+
 import { PageProps } from '@/types/next';
 
 interface Params {

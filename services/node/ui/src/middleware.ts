@@ -1,9 +1,9 @@
-import { NextResponse, NextRequest, MiddlewareConfig } from 'next/server';
-import { decode, JwtPayload } from 'jsonwebtoken';
+import { JwtPayload, decode } from 'jsonwebtoken';
+import { MiddlewareConfig, NextRequest, NextResponse } from 'next/server';
 
+import { AppCookie } from '@/config/app-cookie';
 import { appRoute } from '@/config/app-route';
 import { PROTECTED_ROUTES } from '@/config/protected-routes';
-import { AppCookie } from '@/config/app-cookie';
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
    const token = request.cookies.get(AppCookie.AccessToken);
@@ -21,8 +21,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
    if (!token) {
       for (const route of PROTECTED_ROUTES) {
-         if (route.startsWith(request.nextUrl.pathname)) {
+         if (request.nextUrl.pathname.startsWith(route)) {
             const redirectUrl = new URL(appRoute.login(), request.url);
+            console.log('Redirecting', route, request.nextUrl.pathname);
             return NextResponse.redirect(redirectUrl);
          }
       }

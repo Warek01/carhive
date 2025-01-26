@@ -9,7 +9,6 @@ export const appRoute = {
 
    // User
    user: compile('/me'),
-   userPreferences: '/me/preferences',
 
    // About
    about: compile('/about'),

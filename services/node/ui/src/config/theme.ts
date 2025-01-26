@@ -1,7 +1,7 @@
 'use client';
 
-import { createTheme } from '@mui/material/styles';
 import { amber } from '@mui/material/colors';
+import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
    typography: {

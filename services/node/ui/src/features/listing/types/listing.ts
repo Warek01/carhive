@@ -1,11 +1,11 @@
 import {
+   BodyStyle,
    CarStatus,
    Currency,
    Drivetrain,
+   FuelType,
    ListingStatus,
    Transmission,
-   BodyStyle,
-   FuelType,
 } from '@/features/listing/enums';
 
 export interface Listing {

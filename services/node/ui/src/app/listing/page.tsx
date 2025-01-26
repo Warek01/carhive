@@ -1,8 +1,8 @@
 import { Box, Link, Stack } from '@mui/material';
 import NextLink from 'next/link';
 
-import { ListingApi } from '@/features/listing/api/listing-api';
 import { appRoute } from '@/config/app-route';
+import { ListingApi } from '@/features/listing/api/listing-api';
 
 export default async function Page() {
    const listings = await ListingApi.getSingleton().getListings({

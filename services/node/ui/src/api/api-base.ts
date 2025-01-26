@@ -1,5 +1,5 @@
-import qs from 'qs';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import qs from 'qs';
 
 export abstract class ApiBase {
    protected abstract readonly BASE_PATH: string;

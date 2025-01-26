@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios';
-import toast from 'react-hot-toast';
 import { StatusCodes } from 'http-status-codes';
+import toast from 'react-hot-toast';
 
 export function toastAuthError(err: unknown) {
    if (isAxiosError(err)) {

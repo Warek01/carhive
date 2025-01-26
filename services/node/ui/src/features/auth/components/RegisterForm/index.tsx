@@ -9,19 +9,22 @@ import { appRoute } from '@/config/app-route';
 import { AuthApi } from '@/features/auth/api/auth-api';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { useDetectSessionExpired } from '@/features/auth/hooks/use-detect-session-expired';
-import { LoginDto } from '@/features/auth/types/login';
+import { RegisterDto } from '@/features/auth/types/register';
 import { toastAuthError } from '@/features/auth/utils/toast-auth-error';
 import { cn } from '@/utils/cn';
 
-const LoginForm: FC = () => {
+const RegisterForm: FC = () => {
    useDetectSessionExpired();
    const { setUser } = useAuth();
    const router = useRouter();
 
    const handleSubmit = useCallback(
-      async (values: LoginDto, formikHelpers: FormikHelpers<LoginDto>) => {
+      async (
+         values: RegisterDto,
+         formikHelpers: FormikHelpers<RegisterDto>,
+      ) => {
          try {
-            const user = await AuthApi.getSingleton().login(values);
+            const user = await AuthApi.getSingleton().register(values);
             setUser(user);
             router.push(appRoute.home());
          } catch (err) {
@@ -34,7 +37,9 @@ const LoginForm: FC = () => {
    return (
       <Card elevation={3} sx={{ p: 3 }}>
          <Formik
-            initialValues={{ email: '', password: '' } as LoginDto}
+            initialValues={
+               { email: '', password: '', username: '' } as RegisterDto
+            }
             onSubmit={handleSubmit}
          >
             {({ isSubmitting }) => (
@@ -45,12 +50,18 @@ const LoginForm: FC = () => {
                   )}
                >
                   <Field placeholder="Email" name="email" type="email" />
+                  <Field placeholder="Usename" name="username" type="text" />
                   <Field
                      placeholder="Password"
                      name="password"
                      type="password"
                   />
-                  <Button type="submit">Login</Button>
+                  <Field
+                     placeholder="Repeat password"
+                     name="passwordRepeat"
+                     type="password"
+                  />
+                  <Button type="submit">Register</Button>
                </Form>
             )}
          </Formik>
@@ -58,4 +69,4 @@ const LoginForm: FC = () => {
    );
 };
 
-export default LoginForm;
+export default RegisterForm;
