@@ -6,7 +6,7 @@ import { ListingApi } from '@/features/listing/api/listing-api';
 
 export default async function Page() {
    const listings = await ListingApi.getSingleton().getListings({
-      limit: 10,
+      limit: 100,
       offset: 0,
    });
 
