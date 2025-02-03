@@ -82,6 +82,17 @@ services:
       env_file: [ services/node/account-service/.env.production ]
       healthcheck: *nodejs-healthcheck
 
+   recommendation-service:
+      build:
+         context: services/node/recommendation-service
+      depends_on:
+         - cache
+      networks: [ carhive-network ]
+      init: true
+      ports: [ "3006:3000" ]
+      env_file: [ services/node/recommendation-service/.env.production ]
+      healthcheck: *nodejs-healthcheck
+
    listing-service:
       build:
          context: services/node/listing-service
