@@ -5,6 +5,7 @@ services:
       image: redis:7-alpine
       volumes: [ cache-data:/data ]
       ports: [ "6379:6379" ]
+      command: redis-server --requirepass ${CACHE_PASSWORD} --protected-mode yes
       networks: [ carhive-network ]
 
    message-queue:
@@ -85,8 +86,6 @@ services:
    recommendation-service:
       build:
          context: services/node/recommendation-service
-      depends_on:
-         - cache
       networks: [ carhive-network ]
       init: true
       ports: [ "3006:3000" ]

@@ -46,7 +46,7 @@ async function bootstrap() {
    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
    SwaggerModule.setup('/docs', app, swaggerDocument, {
       jsonDocumentUrl: '/docs/swagger.json',
-      customSiteTitle: 'Listing Service docs',
+      customSiteTitle: 'Recommendation Service docs',
       useGlobalPrefix: true,
    });
 
