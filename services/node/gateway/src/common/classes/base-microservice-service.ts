@@ -20,12 +20,10 @@ import { AxiosRequestConfig, isAxiosError } from 'axios';
 
 /** Handles requests that should be forwarded to a microservice */
 export abstract class BaseMicroserviceService {
-   protected readonly httpService: HttpService;
-   protected abstract readonly logger: Logger;
-
-   protected constructor(httpService: HttpService) {
-      this.httpService = httpService;
-   }
+   protected constructor(
+      protected readonly httpService: HttpService,
+      protected readonly logger: Logger,
+   ) {}
 
    // Simulates redirecting to the microservice
    protected async forwardRequest<TResponse>(

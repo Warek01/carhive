@@ -10,7 +10,8 @@ import { RolesGuard } from '@/auth/guards/roles.guard';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import { GLOBAL_VALIDATION_PIPE_CONFIG } from '@/config/global-validation-pipe.config';
-import { ListingModule } from './listing/listing.module';
+import { ListingModule } from '@/listing/listing.module';
+import { RecommendationModule } from '@/recommendation/recommendation.module';
 
 @Module({
    imports: [
@@ -19,6 +20,7 @@ import { ListingModule } from './listing/listing.module';
       AuthModule,
       UserModule,
       ListingModule,
+      RecommendationModule,
    ],
    controllers: [],
    providers: [

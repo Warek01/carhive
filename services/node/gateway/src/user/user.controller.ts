@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import {
    ApiBadRequestResponse,
-   ApiBearerAuth,
+   ApiCookieAuth,
    ApiForbiddenResponse,
    ApiNotFoundResponse,
    ApiOkResponse,
@@ -30,7 +30,7 @@ import { UserRole } from '@/user/enums/user-role.enum';
 
 @Controller('user')
 @ApiTags('User')
-@ApiBearerAuth()
+@ApiCookieAuth()
 @ApiNotFoundResponse()
 @ApiForbiddenResponse()
 @ApiUnauthorizedResponse()

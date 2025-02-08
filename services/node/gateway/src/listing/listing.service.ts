@@ -10,10 +10,8 @@ import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 
 @Injectable()
 export class ListingService extends BaseMicroserviceService {
-   protected readonly logger = new Logger(ListingService.name);
-
    constructor(httpService: HttpService) {
-      super(httpService);
+      super(httpService, new Logger(ListingService.name));
    }
 
    get(dto: GetListingsRequestDto): Promise<PaginatedResponseDto<Listing>> {

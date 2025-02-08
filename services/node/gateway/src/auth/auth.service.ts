@@ -10,10 +10,8 @@ import { AuthResponse } from '@/auth/types/auth-response.types';
 
 @Injectable()
 export class AuthService extends BaseMicroserviceService {
-   protected readonly logger = new Logger(AuthService.name);
-
    constructor(httpService: HttpService) {
-      super(httpService);
+      super(httpService, new Logger(AuthService.name));
    }
 
    login(dto: LoginDto): Promise<AuthResponse> {

@@ -11,4 +11,6 @@ export interface AppEnv {
 
    ACCOUNT_SERVICE_API_KEY: string;
    LISTING_SERVICE_API_KEY: string;
+   RECOMMENDATION_SERVICE_API_KEY: string;
+   SCRAPING_SERVICE_API_KEY: string;
 }

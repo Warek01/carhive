@@ -11,10 +11,8 @@ import { CreateUserDto } from '@/user/dto/request/create-user.dto';
 
 @Injectable()
 export class UserService extends BaseMicroserviceService {
-   protected readonly logger = new Logger(UserService.name);
-
    constructor(httpService: HttpService) {
-      super(httpService);
+      super(httpService, new Logger(UserService.name));
    }
 
    getOne(id: number): Promise<UserDto> {

@@ -6,7 +6,11 @@ import {
    UseInterceptors,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiQuery } from '@nestjs/swagger';
-import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
+import {
+   CACHE_MANAGER,
+   CacheInterceptor,
+   CacheTTL,
+} from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
 import { AiService } from '@/ai/ai.service';
@@ -20,6 +24,7 @@ export class AiController {
    ) {}
 
    @Get('generate')
+   @CacheTTL(86_400_000) // 1 day
    @ApiOkResponse({ type: AiResponseDto })
    @UseInterceptors(CacheInterceptor)
    @ApiQuery({ name: 'params', required: true, type: String, isArray: true })
