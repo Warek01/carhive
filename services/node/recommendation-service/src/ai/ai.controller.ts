@@ -2,11 +2,10 @@ import {
    Controller,
    Get,
    Inject,
-   ParseArrayPipe,
    Query,
    UseInterceptors,
 } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { CACHE_MANAGER, CacheInterceptor } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
@@ -23,9 +22,10 @@ export class AiController {
    @Get('generate')
    @ApiOkResponse({ type: AiResponseDto })
    @UseInterceptors(CacheInterceptor)
+   @ApiQuery({ name: 'params', required: true, type: String, isArray: true })
    async generate(
-      @Query('params', ParseArrayPipe) params: string[],
+      @Query('params') params: string[] | string,
    ): Promise<AiResponseDto> {
-      return this.aiService.request(params);
+      return this.aiService.generate(params);
    }
 }
