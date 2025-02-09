@@ -35,7 +35,6 @@
     "@nestjs/schematics": "^11.0.0",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.14",
-    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.1",
     "prettier": "^3.4.2",

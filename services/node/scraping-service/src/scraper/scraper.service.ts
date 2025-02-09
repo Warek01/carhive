@@ -17,7 +17,7 @@ import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strateg
 import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy';
 import { AppEnv } from '@/common/types/app-env';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
-import { FullScrapeRequestDto } from '@/scraper/dto/request/full-scrape-request.dto';
+import { ScrapePlatformRequestDto } from '@/scraper/dto/request/scrape-platform-request.dto';
 import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.constants';
 import { ClientProxy } from '@nestjs/microservices';
 
@@ -76,7 +76,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       platform,
       startPage,
       endPage,
-   }: FullScrapeRequestDto): Promise<void> {
+   }: ScrapePlatformRequestDto): Promise<void> {
       this.logger.log(
          `Starting scraping ${platform} on pages: ${startPage ?? 'start'}-${endPage ?? 'end'}`,
       );

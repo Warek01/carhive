@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
 import { TransformInt } from '@/common/decorators';
+import { SupportedPlatform } from '@/scraping/enums/supported-platform.enum';
 
-export class FullScrapeRequestDto {
+export class ScrapePlatformRequestDto {
    @ApiProperty({
       type: String,
       enum: SupportedPlatform,

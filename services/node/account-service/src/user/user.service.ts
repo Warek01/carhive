@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { validate } from 'class-validator';
 
 import { User } from '@/user/entities/user.entity';
@@ -31,7 +31,7 @@ export class UserService {
 
       user.email = dto.email;
       user.username = dto.username;
-      user.password = await bcrypt.hash(dto.password, 13);
+      user.password = await hash(dto.password, 13);
       user.createdAt = new Date();
       user.role = dto.role;
 

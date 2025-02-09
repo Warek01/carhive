@@ -1,26 +1,22 @@
-FROM node:22-slim AS builder
+FROM node:22-slim AS base
 WORKDIR /app
+RUN npm i -g corepack
+RUN corepack enable
+COPY package.json pnpm-lock.yaml ./
 
-RUN npm upgrade -g
-RUN npm i -g -f pnpm
+FROM base AS builder
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
-COPY package.json .
-COPY pnpm-lock.yaml .
-RUN pnpm i --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM node:22-slim AS production
-WORKDIR /app
-
-RUN npm upgrade -g
-RUN npm i -g -f pnpm
+FROM base AS production
 RUN apt-get -y update && apt-get -y install curl
 
-COPY package.json .
-COPY pnpm-lock.yaml .
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile --prod
 
-RUN pnpm i --prod --frozen-lockfile
 COPY --from=builder /app/dist/ dist/
 
 ENTRYPOINT ["pnpm", "start:prod"]

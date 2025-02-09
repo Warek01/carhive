@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
-import bcrypt from 'bcrypt';
+import { compare } from 'bcryptjs';
 
 import { User } from '@/user/entities/user.entity';
 import { TokenValidationResponseDto } from '@/auth/dto/response/token-validation-response.dto';
@@ -13,7 +13,7 @@ export class AuthService {
    constructor(private readonly jwtService: JwtService) {}
 
    checkPassword(user: User, password: string): Promise<boolean> {
-      return bcrypt.compare(password, user.password);
+      return compare(password, user.password);
    }
 
    async createToken(user: User): Promise<string> {

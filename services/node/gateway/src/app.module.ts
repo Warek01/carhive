@@ -12,6 +12,7 @@ import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
 import { GLOBAL_VALIDATION_PIPE_CONFIG } from '@/config/global-validation-pipe.config';
 import { ListingModule } from '@/listing/listing.module';
 import { RecommendationModule } from '@/recommendation/recommendation.module';
+import { ScrapingModule } from '@/scraping/scraping.module';
 
 @Module({
    imports: [
@@ -21,6 +22,7 @@ import { RecommendationModule } from '@/recommendation/recommendation.module';
       UserModule,
       ListingModule,
       RecommendationModule,
+      ScrapingModule,
    ],
    controllers: [],
    providers: [

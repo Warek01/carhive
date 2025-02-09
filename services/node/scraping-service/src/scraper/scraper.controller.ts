@@ -2,15 +2,15 @@ import { Controller, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ScraperService } from '@/scraper/scraper.service';
-import { FullScrapeRequestDto } from '@/scraper/dto/request/full-scrape-request.dto';
+import { ScrapePlatformRequestDto } from '@/scraper/dto/request/scrape-platform-request.dto';
 
 @Controller('scraper')
 @ApiTags()
 export class ScraperController {
    constructor(private readonly scraperService: ScraperService) {}
 
-   @Post('full-scrape')
-   fullScrape(@Query() dto: FullScrapeRequestDto) {
+   @Post('scrape-platform')
+   fullScrape(@Query() dto: ScrapePlatformRequestDto) {
       this.scraperService.scrapePlatform(dto);
    }
 }

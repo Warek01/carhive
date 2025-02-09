@@ -33,10 +33,10 @@ export abstract class BaseScrapingStrategy {
       } catch (err) {
          if (err instanceof TimeoutError) {
             this.logger.error(`Timeout error to url ${url}`);
-            return
+            return;
          }
 
-         throw err
+         throw err;
       }
 
       endPage ??= await this.getNrOfPages();
