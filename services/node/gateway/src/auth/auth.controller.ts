@@ -1,10 +1,13 @@
 import {
    Body,
    Controller,
+   Get,
    HttpCode,
    HttpStatus,
    Post,
+   Req,
    Res,
+   UnauthorizedException,
 } from '@nestjs/common';
 import {
    ApiBadRequestResponse,
@@ -23,6 +26,8 @@ import { RegisterDto } from '@/auth/dto/request/register.dto';
 import { Public } from '@/auth/decorators/auth.decorator';
 import { UserDto } from '@/user/dto/response/user.dto';
 import { AuthCookie } from '@/auth/enums/auth-cookie.enum';
+import { AppRequest } from '@/common/types/app-request.types';
+import { UserService } from '@/user/user.service';
 
 @Controller('auth')
 @Public()
@@ -30,7 +35,23 @@ import { AuthCookie } from '@/auth/enums/auth-cookie.enum';
 @ApiBadRequestResponse()
 @ApiUnauthorizedResponse()
 export class AuthController {
-   constructor(private readonly authService: AuthService) {}
+   constructor(
+      private readonly authService: AuthService,
+      private readonly userService: UserService,
+   ) {}
+
+   @ApiOperation({
+      summary: 'Get signed user data',
+      description: 'Required role: <b>User</b>',
+   })
+   @ApiOkResponse({ type: UserDto })
+   @Get()
+   async getSelf(@Req() request: AppRequest): Promise<UserDto> {
+      if (!request.user) {
+         throw new UnauthorizedException();
+      }
+      return this.userService.getOne(+request.user.sub);
+   }
 
    @Post('login')
    @ApiOperation({ summary: 'Sign In', description: 'Required role: none' })

@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { ElementHandle } from 'puppeteer';
 import removeAccents from 'remove-accents';
 
 import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
@@ -24,16 +25,21 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
    public override async extract(url: string): Promise<CreateListing> {
       await this.page.goto(url, { waitUntil: 'load' });
 
-      const [title, images, currency, metadata, description, price, features] =
-         await Promise.all([
-            this.extractTile(),
-            this.extractImages(),
-            this.extractCurrency(),
-            this.extractMetadata(url),
-            this.extractDescription(),
-            this.extractPrice(),
-            this.extractFeatures(),
-         ]);
+      const [
+         title,
+         images,
+         metadata,
+         description,
+         [price, currency],
+         features,
+      ] = await Promise.all([
+         this.extractTile(),
+         this.extractImages(),
+         this.extractMetadata(url),
+         this.extractDescription(),
+         this.extractPriceAndCurrency(),
+         this.extractFeatures(),
+      ]);
 
       const {
          fuelType,
@@ -46,9 +52,6 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
          transmission,
          color,
       } = this.getNormalizedDataFromFeatures(features);
-
-      console.log(features);
-      console.log(this.getNormalizedDataFromFeatures(features));
 
       return {
          brand,
@@ -209,13 +212,11 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
 
    private async extractFeatures(): Promise<Record<string, string>> {
       const kvMap = await this.page.$$eval(
-         '.js-feature-list-item.m-value',
+         'div[data-sentry-component="FeatureGroup"] ul li:has(> span[class ^= "styles_group__value"])',
          (els) =>
             els.map((el) => [
-               el.querySelector('.adPage__content__features__key')!
-                  .textContent!,
-               el.querySelector('.adPage__content__features__value')!
-                  .textContent!,
+               el.querySelector('span:nth-of-type(1)')!.textContent!,
+               el.querySelector('span:nth-of-type(2)')!.textContent!,
             ]),
       );
 
@@ -230,66 +231,58 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       return features;
    }
 
-   private async extractPrice(): Promise<number | null> {
-      const handle = await this.page.$(
-         '.adPage__content__price-feature__prices__price__value',
-      );
-      return !handle
+   private async extractPriceAndCurrency(): Promise<
+      [number | null, Currency | null]
+   > {
+      const handle = await this.page.$('[data-sentry-component="Price"]');
+      const price = !handle
          ? null
          : await handle.evaluate((el) =>
-              el.textContent ? parseInt(el.getAttribute('content')!) : null,
+              el.textContent
+                 ? (parseFloat(el.textContent.replace(' ', '')) ?? null)
+                 : null,
            );
+
+      return price ? [price, Currency.Eur] : [null, null];
    }
 
    private async extractDescription(): Promise<string | null> {
-      const handle = await this.page.$('.adPage__content__description');
+      const handle = await this.page.$(
+         'div[data-sentry-component="AdDescription"]',
+      );
       return !handle
          ? null
          : await handle.evaluate((el) => el.textContent?.trim() || null);
    }
 
    private async extractTile(): Promise<string> {
-      return this.page.$eval('header.adPage__header', (el) =>
-         el.textContent!.trim(),
-      );
+      return this.page.$eval('header', (el) => el.textContent!.trim());
    }
 
    private async extractImages(): Promise<string[]> {
-      return this.page.$$eval('#js-ad-photos img', (images) =>
+      const gallery = await this.page.$(
+         'div[data-sentry-component="Carousel"]',
+      );
+
+      if (!gallery) {
+         return [];
+      }
+
+      return gallery.$$eval('div > img', (images) =>
          images.map((i) => i.src.replace('320x240', '900x900')),
       );
    }
 
-   private async extractCurrency(): Promise<Currency | null> {
-      const currencyHandle = await this.page.$(
-         '.adPage__content__price-feature__prices__price__currency',
-      );
-
-      if (!currencyHandle) {
-         return null;
-      }
-
-      const currencyStr = await currencyHandle.evaluate((el) =>
-         el.textContent?.trim().toLowerCase(),
-      );
-      switch (currencyStr) {
-         case '€':
-            return Currency.Eur;
-         case '$':
-            return Currency.Usd;
-         case 'lei':
-            return Currency.Mdl;
-         default:
-            return null;
-      }
-   }
-
    private async extractMetadata(url: string): Promise<CreateListingMetadata> {
-      const originalId = url.match(/(\d+)(\?.*)?$/)![0];
+      const originalId = url.match(/(?<id>\d+)(\?.*)?$/)!.groups!.id;
+
+      const asideElement = await this.page.$(
+         'aside[data-sentry-component="Sidebar"]',
+      );
 
       const [createdAt, author] = await Promise.all([
-         this.extractUpdateDate(),
-         this.extractAuthor(),
+         this.extractCreateDate(asideElement!),
+         this.extractAuthor(asideElement!),
       ]);
 
       return {
@@ -301,37 +294,25 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       };
    }
 
-   private async extractAuthor(): Promise<ListingAuthor | null> {
-      const urlAndNamePromise = this.page.$eval(
-         '.adPage__aside__stats__owner__login',
+   private async extractAuthor(
+      asideElement: ElementHandle<HTMLElement>,
+   ): Promise<ListingAuthor | null> {
+      const [url, name] = await asideElement.$eval(
+         'div[data-sentry-component="Owner"] p[class ^= "styles_owner__info"] a',
          (el) => [el.getAttribute('href'), el.textContent!.trim()],
       );
-
-      const [[url, name], phoneNumber] = await Promise.all([
-         urlAndNamePromise,
-         this.extractPhoneNumber(),
-      ]);
 
       return {
          url,
          name,
-         phoneNumber,
       };
    }
 
-   private async extractPhoneNumber(): Promise<string | null> {
-      const handle = await this.page.$('.js-phone-number');
-
-      if (!handle) {
-         return null;
-      }
-
-      return handle.$eval('a', (el) => el.href);
-   }
-
-   private async extractUpdateDate(): Promise<Date> {
-      const dateStr = await this.page.$eval(
-         '.adPage__aside__stats__date',
+   private async extractCreateDate(
+      asideElement: ElementHandle<HTMLElement>,
+   ): Promise<Date> {
+      const dateStr = await asideElement.$eval(
+         'p[class ^= "styles_date"]',
          (el) => el.textContent!.trim(),
       );
 
@@ -351,15 +332,15 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       };
 
       const pattern =
-         /Data actualizării:\s*(\d+)\s*(\w+)\.\s*(\d{4}),\s*(\d{2}):(\d{2})/;
-      const match = dateStr.match(pattern)!;
+         /Data actualizării:\s*(?<day>\d+)\s*(?<month>\w+)\.\s*(?<year>\d{4}),\s*(?<hour>\d{2}):(?<minute>\d{2})/;
 
-      const [_, dayStr, monthStr, yearStr, hourStr, minuteStr] = match;
-      const day = parseInt(dayStr);
-      const month = monthsMap[monthStr];
-      const year = parseInt(yearStr);
-      const hour = parseInt(hourStr);
-      const minute = parseInt(minuteStr);
+      const g = dateStr.match(pattern)!.groups!;
+
+      const day = parseInt(g.day);
+      const month = monthsMap[g.month];
+      const year = parseInt(g.year);
+      const hour = parseInt(g.hour);
+      const minute = parseInt(g.minute);
 
       return new Date(year, month, day, hour, minute);
    }

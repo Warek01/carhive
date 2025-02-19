@@ -5,6 +5,7 @@ import {
    IsEnum,
    IsNotEmpty,
    IsOptional,
+   IsString,
    MaxLength,
    MinLength,
 } from 'class-validator';
@@ -30,9 +31,10 @@ export class UpdateUserDto {
    email?: string;
 
    @Expose()
-   @ApiProperty({ type: Object, nullable: true })
+   @ApiProperty({ type: String, nullable: true })
+   @IsString()
    @IsOptional()
-   preferences?: object | null;
+   preferences?: string | null;
 
    @Expose()
    @ApiProperty({ type: String, enum: UserRole })

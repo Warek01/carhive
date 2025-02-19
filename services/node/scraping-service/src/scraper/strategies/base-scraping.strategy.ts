@@ -14,8 +14,8 @@ export abstract class BaseScrapingStrategy {
    protected abstract logger: Logger;
 
    private readonly BATCH_SIZE = 10;
-   private readonly MIN_DELAY = 300;
-   private readonly MAX_DELAY = 3000;
+   private readonly MIN_DELAY = 250;
+   private readonly MAX_DELAY = 2000;
 
    constructor(
       protected readonly page: Page,
@@ -23,11 +23,10 @@ export abstract class BaseScrapingStrategy {
    ) {}
 
    // Extract the urls from the pages and
-   async scrape(startPage?: number, endPage?: number): Promise<void> {
-      startPage ??= 1;
+   async scrape(startPage: number, endPage: number): Promise<void> {
       const url = this.getPageUrl(startPage);
       try {
-         await this.page.goto(url, {
+         await this.page.goto(url.href, {
             waitUntil: 'load',
          });
       } catch (err) {
@@ -39,8 +38,6 @@ export abstract class BaseScrapingStrategy {
          throw err;
       }
 
-      endPage ??= await this.getNrOfPages();
-
       for (let currentPage = startPage; currentPage <= endPage; currentPage++) {
          const urls = await this.extract();
          this.logger.log(
@@ -48,16 +45,17 @@ export abstract class BaseScrapingStrategy {
          );
          const batches = batch(urls, this.BATCH_SIZE);
          this.publishUrls(batches);
+
+         // Wait and go to next page
          await this.randomDelay();
-         await this.page.goto(this.getPageUrl(currentPage + 1), {
+         const nextPageUrl = this.getPageUrl(currentPage + 1);
+         await this.page.goto(nextPageUrl.href, {
             waitUntil: 'load',
          });
       }
    }
 
-   protected abstract getPageUrl(pageIndex: number): string;
-
-   protected abstract getNrOfPages(): Promise<number>;
+   protected abstract getPageUrl(pageIndex?: number): URL;
 
    // Publish urls for scrapers
    protected publishUrls(batches: string[][]): void {

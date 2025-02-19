@@ -38,6 +38,6 @@ export class User {
    @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
    deletedAt: Date | null = null;
 
-   @Column({ name: 'preferences', type: 'jsonb', nullable: true })
-   preferences: object | null = null;
+   @Column({ name: 'preferences', type: 'varchar', nullable: true })
+   preferences: string | null = null;
 }

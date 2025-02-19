@@ -15,7 +15,7 @@ export abstract class ApiBase {
       });
    }
 
-   protected async get<T>(
+   protected async _get<T>(
       path: string,
       config?: AxiosRequestConfig<any>,
    ): Promise<T> {
@@ -23,7 +23,7 @@ export abstract class ApiBase {
       return res.data;
    }
 
-   protected async post<T>(
+   protected async _post<T>(
       path: string,
       data: any,
       config?: AxiosRequestConfig<any>,
@@ -36,7 +36,7 @@ export abstract class ApiBase {
       return res.data;
    }
 
-   protected async patch<T>(
+   protected async _patch<T>(
       path: string,
       data: any,
       config?: AxiosRequestConfig<any>,
@@ -49,7 +49,7 @@ export abstract class ApiBase {
       return res.data;
    }
 
-   protected async delete<T>(
+   protected async _delete<T>(
       path: string,
       config?: AxiosRequestConfig<any>,
    ): Promise<T> {

@@ -92,8 +92,6 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
    }
 
    async onModuleInit(): Promise<void> {
-      this.scheduleChecks();
-
       const launchOptions: LaunchOptions =
          this.config.get('NODE_ENV') === 'production'
             ? this.DOCKER_LAUNCH_OPTIONS
@@ -101,29 +99,23 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
       puppeteer
          .use(StealthPlugin())
-         .use(
-            AdBlockPlugin({
-               blockTrackers: true,
-               blockTrackersAndAnnoyances: true,
-               useCache: true,
-            }),
-         )
-         .use(
-            BlockResourcesPlugin({
-               blockedTypes: new Set(this.BLOCKED_RESOURCE_TYPES),
-            }),
-         )
+         // .use(
+         //    AdBlockPlugin({
+         //       blockTrackers: true,
+         //       blockTrackersAndAnnoyances: true,
+         //       useCache: true,
+         //    }),
+         // )
+         // .use(
+         //    BlockResourcesPlugin({
+         //       blockedTypes: new Set(this.BLOCKED_RESOURCE_TYPES),
+         //    }),
+         // )
          .use(AnonymizeUaPlugin());
 
       this.browser = await puppeteer.launch(launchOptions);
       this.logger.log('Browser launched');
    }
-
-   // TODO: implement
-   private scheduleChecks(): void {}
-
-   // TODO: implement
-   private checkNewListings(): void {}
 
    private async createPage(): Promise<Page> {
       const page = await this.browser.newPage();

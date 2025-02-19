@@ -30,8 +30,8 @@ export class UserDto {
    deletedAt: Date | null = null;
 
    @Expose()
-   @ApiProperty({ type: Object, nullable: true })
-   preferences: object | null = null;
+   @ApiProperty({ type: String, nullable: true })
+   preferences: string | null = null;
 
    @Expose()
    @ApiProperty({ type: String, enum: UserRole })

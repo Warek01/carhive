@@ -115,7 +115,6 @@ services:
    scraping-worker:
       build:
          context: services/node/scraping-worker
-      ports: [ "3004:3000" ]
       scale: 1
       depends_on:
          - message-queue

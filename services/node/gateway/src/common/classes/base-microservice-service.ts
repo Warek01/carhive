@@ -34,8 +34,8 @@ export abstract class BaseMicroserviceService {
          const response = await firstValueFrom(response$);
          return response.data;
       } catch (err) {
-         this.throwIfAxiosClientError(err);
          this.logger.error(err);
+         this.throwIfAxiosClientError(err);
          throw new InternalServerErrorException();
       }
    }

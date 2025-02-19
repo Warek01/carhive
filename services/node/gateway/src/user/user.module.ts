@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import qs from 'qs';
 
-import { AppEnv } from '@/common/types/app-env';
+import { AppEnv } from '@/common/types/app-env.types';
 import { AuthModule } from '@/auth/auth.module';
 import { UserController } from '@/user/user.controller';
 import { UserService } from '@/user/user.service';
@@ -12,16 +13,17 @@ import { UserService } from '@/user/user.service';
       HttpModule.registerAsync({
          inject: [ConfigService],
          useFactory: (config: ConfigService<AppEnv>) => ({
+            paramsSerializer: (obj) => qs.stringify(obj),
             baseURL: `${config.get('ACCOUNT_SERVICE_URL')}/api/v1/user/`,
             headers: {
                'X-API-KEY': config.get('ACCOUNT_SERVICE_API_KEY'),
             },
          }),
       }),
-      AuthModule,
+      forwardRef(() => AuthModule),
    ],
    providers: [UserService],
    controllers: [UserController],
-   exports: [],
+   exports: [UserService],
 })
 export class UserModule {}

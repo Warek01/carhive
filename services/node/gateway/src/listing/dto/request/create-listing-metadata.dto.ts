@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ListingAuthor } from '@/listing/types/listing-author.types';
 import { Platform } from '@/listing/enums';
+import { ListingAuthor } from '@/listing/types/listing';
 
 export class CreateListingMetadataDto {
    @ApiProperty({ type: String, example: '67903000' })

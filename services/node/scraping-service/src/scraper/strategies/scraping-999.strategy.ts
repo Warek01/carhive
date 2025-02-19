@@ -11,45 +11,28 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
    protected readonly logger = new Logger(Scraping999Strategy.name);
 
    protected async extract(): Promise<string[]> {
-      const table = await this.page.$('table.ads-list-table');
+      const list = await this.page.$('div[data-sentry-component="AdList"]');
 
-      if (!table) {
-         this.logger.error('Could not find table element');
+      if (!list) {
+         this.logger.error('Cars list is not defined');
          return [];
       }
 
-      return table.$$eval('tbody tr a.js-item-ad', (elements) => {
-         return elements.map((e) => e.href);
-      });
-   }
+      const itemSelector = 'div[data-sentry-component = "AdShort"]';
+      const skipBoosterModifier = ':not(:has([class ^= "AdShort_booster"]))';
+      const linkSelector = 'a[data-sentry-element = "MyLink"]';
 
-   protected getPageUrl(pageIndex: number): string {
-      return `${this.PAGE_BASE_URL}&page=${pageIndex + 1}`;
-   }
-
-   protected async getNrOfPages(): Promise<number> {
-      const paginator = await this.page.$('.paginator');
-
-      if (!paginator) {
-         return 0;
-      }
-
-      const lastPageLi = await paginator.$('li.is-last-page');
-
-      if (lastPageLi) {
-         const url = await lastPageLi.$eval('a', (element) => element.href);
-         const match = url.match(/page=(\d+)/);
-         const num = match?.[1];
-
-         return num ? parseInt(num) : 0;
-      }
-
-      const lastNumberedLi = await paginator.$(
-         'li:not(.is-next-page):not(.is-last-page):last-of-type',
+      return list.$$eval(
+         `${itemSelector}${skipBoosterModifier} ${linkSelector}`,
+         (links) => links.map((a) => a.href),
       );
+   }
 
-      return lastNumberedLi?.evaluate((element) =>
-         element.textContent ? parseInt(element.textContent) : 0,
-      )!;
+   protected getPageUrl(pageIndex?: number): URL {
+      const url = new URL(this.PAGE_BASE_URL);
+      if (pageIndex) {
+         url.searchParams.set('page', pageIndex.toString());
+      }
+      return url;
    }
 }

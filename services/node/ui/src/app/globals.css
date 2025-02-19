@@ -1,2 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+}
+
+.radix-themes {
+   --default-font-family: var(--font-inter);
+}

@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
          },
       ],
    },
+   basePath: '',
+   logging: {
+      fetches: {
+         fullUrl: true,
+         hmrRefreshes: false,
+      },
+   },
 };
 
 export default nextConfig;

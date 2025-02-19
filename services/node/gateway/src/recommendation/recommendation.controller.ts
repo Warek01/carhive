@@ -1,6 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import {
-   ApiCookieAuth,
    ApiOkResponse,
    ApiOperation,
    ApiQuery,
@@ -12,7 +11,6 @@ import { AiResponseDto } from '@/recommendation/dto/response/ai-response.dto';
 
 @ApiTags('Recommendation')
 @Controller('recommendation')
-@ApiCookieAuth()
 export class RecommendationController {
    constructor(private readonly recommendationService: RecommendationService) {}
 

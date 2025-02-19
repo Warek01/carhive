@@ -26,8 +26,8 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
    private readonly WINDOW_HEIGHT = 720;
    private readonly WINDOW_WIDTH = 1280;
-   private readonly MIN_DELAY = 300;
-   private readonly MAX_DELAY = 3000;
+   private readonly MIN_DELAY = 250;
+   private readonly MAX_DELAY = 2000;
 
    private readonly DOCKER_LAUNCH_OPTIONS: LaunchOptions = {
       headless: true,

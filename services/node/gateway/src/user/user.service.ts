@@ -25,7 +25,7 @@ export class UserService extends BaseMicroserviceService {
    update(id: number, updateDto: UpdateUserDto): Promise<UserDto> {
       return this.forwardRequest({
          url: userEndpoints.update({ id: id.toString() }),
-         method: 'POST',
+         method: 'PATCH',
          data: updateDto,
       });
    }

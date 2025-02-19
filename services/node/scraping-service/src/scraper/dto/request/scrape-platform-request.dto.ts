@@ -13,13 +13,12 @@ export class ScrapePlatformRequestDto {
 
    @ApiProperty({
       type: Number,
-      required: false,
       description: 'Inclusive, starts with 1',
    })
    @TransformInt()
-   startPage?: number;
+   startPage: number;
 
-   @ApiProperty({ type: Number, required: false, description: 'Inclusive' })
+   @ApiProperty({ type: Number, description: 'Inclusive' })
    @TransformInt()
-   endPage?: number;
+   endPage: number;
 }

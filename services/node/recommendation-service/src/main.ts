@@ -1,15 +1,15 @@
 import { NestFactory } from '@nestjs/core';
-import { INestApplication, Logger, VersioningType } from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Express } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from '@/app.module';
 import { AppEnv } from '@/common/types/app-env';
 
 async function bootstrap() {
    const logger = new Logger(bootstrap.name, { timestamp: true });
-   const app = await NestFactory.create<INestApplication<Express>>(AppModule, {
+   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
       logger,
    });
    const config = app.get(ConfigService<AppEnv>);
@@ -27,6 +27,7 @@ async function bootstrap() {
       prefix: 'v',
       defaultVersion: '1',
    });
+   app.set('query parser', 'extended');
 
    const swaggerConfig = new DocumentBuilder()
       .setTitle('CarHive Recommendation Service')

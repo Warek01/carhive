@@ -1,27 +1,18 @@
-import { Box, Link, Stack } from '@mui/material';
-import NextLink from 'next/link';
-
-import { appRoute } from '@/config/app-route';
-import { ListingApi } from '@/features/listing/api/listing-api';
+import { ListingApi } from '@/api/listing-api';
+import { ListingList } from '@/components';
+import { ListingOrderBy } from '@/enums/listing';
 
 export default async function Page() {
    const listings = await ListingApi.getSingleton().getListings({
       limit: 100,
       offset: 0,
+      includeMetadata: false,
+      orderBy: ListingOrderBy.CreatedAtAsc,
    });
 
    return (
-      <Stack>
-         {listings.items.map((l) => (
-            <Box key={l.id}>
-               <Link
-                  href={appRoute.listingDetails({ id: l.id.toString() })}
-                  component={NextLink}
-               >
-                  {l.title}
-               </Link>
-            </Box>
-         ))}
-      </Stack>
+      <main>
+         <ListingList listings={listings.items} />
+      </main>
    );
 }

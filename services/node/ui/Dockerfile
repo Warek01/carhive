@@ -1,26 +1,13 @@
-FROM node:22-slim AS builder
+FROM node:22-slim
 WORKDIR /app
 
-RUN npm upgrade -g
-RUN npm i -g -f pnpm
+RUN npm i -g corepack && corepack enable
 
-COPY package.json .
-COPY pnpm-lock.yaml .
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm i --frozen-lockfile
-COPY . .
-RUN pnpm build
 
-FROM node:22-slim AS production
-WORKDIR /app
+ENV HOSTNAME 0.0.0.0
+ENV PORT 3000
 
-RUN npm upgrade -g
-RUN npm i -g -f pnpm
-
-COPY package.json .
-COPY pnpm-lock.yaml .
-
-RUN pnpm i --prod --frozen-lockfile
-COPY --from=builder /app/.next/ .next/
-
-ENTRYPOINT ["pnpm", "start"]
+ENTRYPOINT ["pnpm", "build", "&&", "pnpm", "start"]
 

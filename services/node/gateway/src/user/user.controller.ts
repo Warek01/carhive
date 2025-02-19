@@ -4,6 +4,7 @@ import {
    Delete,
    Get,
    Param,
+   ParseIntPipe,
    Patch,
    Post,
    Query,
@@ -50,17 +51,19 @@ export class UserController {
    }
 
    @Patch(':id')
-   @Role(UserRole.Admin)
+   @Role(UserRole.User)
    @ApiOperation({
       summary: 'Update a user',
-      description: 'Required role: <b>Admin</b>',
+      description: 'Required role: <b>User</b>',
    })
    @ApiOkResponse({ type: UserDto })
-   update(
-      @Param('id') id: number,
+   async update(
+      @Param('id', ParseIntPipe) id: number,
       @Body() updateDto: UpdateUserDto,
    ): Promise<UserDto> {
-      return this.userService.update(id, updateDto);
+      const res = await this.userService.update(id, updateDto);
+      console.log(res);
+      return res;
    }
 
    @Delete(':id')
@@ -94,16 +97,5 @@ export class UserController {
    @ApiOkResponse({ type: UserDto })
    create(@Body() createDto: CreateUserDto): Promise<UserDto> {
       return this.userService.create(createDto);
-   }
-
-   @Patch(':id/restore')
-   @Role(UserRole.Admin)
-   @ApiOperation({
-      summary: 'Restore a soft deleted user',
-      description: 'Required role: <b>Admin</b>',
-   })
-   @ApiOkResponse({ type: UserDto })
-   restore(@Param('id') id: number): Promise<UserDto> {
-      return this.userService.restore(id);
    }
 }

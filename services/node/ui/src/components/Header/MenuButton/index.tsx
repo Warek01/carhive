@@ -1,31 +1,64 @@
 'use client';
 
-import { Person } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
-import { FC, useRef, useState } from 'react';
+import {
+   ArrowLeftEndOnRectangleIcon,
+   ArrowLeftStartOnRectangleIcon,
+   Bars3Icon,
+   UserCircleIcon,
+} from '@heroicons/react/24/solid';
+import { DropdownMenu, IconButton } from '@radix-ui/themes';
+import Link from 'next/link';
 
-import HeaderMenu from '@/components/Header/HeaderMenu';
+import { appRoute } from '@/config/app-route';
+import { useAuth } from '@/hooks/use-auth';
 
-const MenuButton: FC = () => {
-   const [isOpen, setIsOpen] = useState(false);
-   const anchorRef = useRef<HTMLDivElement>(null);
-
-   const handleClose = () => {
-      setIsOpen(false);
-   };
+export default function MenuButton() {
+   const { unsetUser, isAuthorized, user, isAdmin } = useAuth();
 
    return (
-      <div ref={anchorRef}>
-         <IconButton onClick={() => setIsOpen((o) => !o)}>
-            <Person />
-         </IconButton>
-         <HeaderMenu
-            onClose={handleClose}
-            open={isOpen}
-            anchorEl={anchorRef.current}
-         />
-      </div>
-   );
-};
+      <DropdownMenu.Root>
+         <DropdownMenu.Trigger>
+            <IconButton variant="ghost">
+               <Bars3Icon width={24} height={24} />
+            </IconButton>
+         </DropdownMenu.Trigger>
+         <DropdownMenu.Content>
+            <DropdownMenu.Item
+               disabled={!isAuthorized}
+               className="overflow-hidden text-nowrap text-ellipsis"
+               asChild
+            >
+               <Link href={appRoute.user()}>
+                  <UserCircleIcon width={24} height={24} />
+                  {user?.username}
+               </Link>
+            </DropdownMenu.Item>
 
-export default MenuButton;
+            {isAdmin && (
+               <DropdownMenu.Item asChild>
+                  <Link href={appRoute.dashboard()}>Dashboard</Link>
+               </DropdownMenu.Item>
+            )}
+
+            <DropdownMenu.Separator />
+
+            {isAuthorized ? (
+               <DropdownMenu.Item
+                  onClick={() => unsetUser()}
+                  className="text-nowrap"
+               >
+                  <ArrowLeftStartOnRectangleIcon width={24} height={24} />
+                  Log out
+               </DropdownMenu.Item>
+            ) : (
+               <DropdownMenu.Item asChild>
+                  <Link href={appRoute.login()} className="text-nowrap">
+                     <ArrowLeftEndOnRectangleIcon width={24} height={24} />
+                     Log in
+                  </Link>
+               </DropdownMenu.Item>
+            )}
+         </DropdownMenu.Content>
+      </DropdownMenu.Root>
+   );
+}

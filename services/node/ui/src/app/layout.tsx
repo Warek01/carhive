@@ -1,23 +1,19 @@
-import { ThemeProvider } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
+import '@radix-ui/themes/styles.css';
 import { Metadata, Viewport } from 'next';
-import { Roboto } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { Header } from '@/components';
-import { theme } from '@/config/theme';
-import { AuthContextProvider } from '@/features/auth/context/auth-context';
 
 import './globals.css';
+import Providers from './providers';
 
-const roboto = Roboto({
-   weight: ['300', '400', '500', '700'],
+const inter = Inter({
    subsets: ['latin'],
-   preload: true,
    display: 'swap',
-   variable: '--font-roboto',
+   variable: '--font-inter',
+   preload: true,
 });
 
 export const metadata: Metadata = {
@@ -33,19 +29,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: PropsWithChildren) {
    return (
       <html lang="en" suppressHydrationWarning>
-         <body className={`${roboto.variable} ${roboto.className}`}>
-            <AppRouterCacheProvider>
-               <ThemeProvider theme={theme}>
+         <body className={`${inter.variable} ${inter.className}`}>
+            <Providers>
+               <div className="flex min-h-screen flex-col">
                   <Toaster />
-                  <InitColorSchemeScript attribute="class" />
-                  <AuthContextProvider>
-                     <div className="flex min-h-screen flex-col">
-                        <Header />
-                        <div className="flex grow-1 flex-col">{children}</div>
-                     </div>
-                  </AuthContextProvider>
-               </ThemeProvider>
-            </AppRouterCacheProvider>
+                  <Header />
+                  <main className="flex flex-1 flex-col px-10">{children}</main>
+               </div>
+            </Providers>
          </body>
       </html>
    );

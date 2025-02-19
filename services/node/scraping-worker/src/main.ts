@@ -3,6 +3,7 @@ import { Logger, VersioningType } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import 'dotenv/config';
 
 import { AppModule } from '@/app.module';
@@ -10,7 +11,9 @@ import { AppEnv } from '@/common/types/app-env';
 
 async function bootstrap() {
    const logger = new Logger(bootstrap.name, { timestamp: true });
-   const app = await NestFactory.create(AppModule, { logger });
+   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+      logger,
+   });
 
    app.connectMicroservice<MicroserviceOptions>({
       transport: Transport.RMQ,
@@ -40,6 +43,7 @@ async function bootstrap() {
       prefix: 'v',
       defaultVersion: '1',
    });
+   app.set('query parser', 'extended');
 
    const swaggerConfig = new DocumentBuilder()
       .setTitle('CarHive Scraping Service')
