@@ -18,6 +18,10 @@ const navLinks = [
       href: appRoute.newListings(),
       text: 'New',
    },
+   {
+      href: appRoute.createListing(),
+      text: 'Create',
+   },
 ];
 
 export default async function Header() {

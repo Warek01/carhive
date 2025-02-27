@@ -8,6 +8,7 @@ import {
    ListingStatus,
    Transmission,
 } from '@/enums/listing';
+import { Platform } from '@/enums/scraping';
 import { PaginatedRequest } from '@/types/api';
 
 interface BaseListingGetRequest {
@@ -80,4 +81,31 @@ export interface ListingAuthor {
    id?: string;
    url?: string;
    name?: string;
+}
+
+export interface CreateListing {
+   images: string[];
+   title: string;
+   metadata: CreateListingMetadata;
+   description?: string;
+   productionYear?: number;
+   brand?: string;
+   model?: string;
+   price?: number;
+   color?: string;
+   carStatus?: CarStatus;
+   bodyStyle?: BodyStyle;
+   drivetrain?: Drivetrain;
+   fuelType?: FuelType;
+   transmission?: Transmission;
+   listingStatus?: ListingStatus;
+   currency?: Currency;
+}
+
+export interface CreateListingMetadata {
+   originalId: string;
+   url: string;
+   createdAt: Date;
+   platform: Platform;
+   author?: ListingAuthor;
 }

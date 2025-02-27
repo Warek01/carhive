@@ -1,6 +1,11 @@
 import { ApiBase } from '@/api/api-base';
 import { PaginatedResponse } from '@/types/api';
-import { Listing, ListingFindParams, ListingGetParams } from '@/types/listing';
+import {
+   CreateListing,
+   Listing,
+   ListingFindParams,
+   ListingGetParams,
+} from '@/types/listing';
 
 export class ListingApi extends ApiBase {
    private static singleton: ListingApi = null!;
@@ -27,5 +32,9 @@ export class ListingApi extends ApiBase {
       return this._get(id.toString(), {
          params,
       });
+   }
+
+   async create(dto: CreateListing): Promise<Listing> {
+      return this._post('', dto);
    }
 }

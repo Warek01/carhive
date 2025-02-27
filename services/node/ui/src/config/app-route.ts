@@ -7,6 +7,7 @@ export const appRoute = {
    listing: compile('/listing'),
    listingDetails: compile('/listing/:id'),
    newListings: compile('/new'),
+   createListing: compile('/create'),
 
    recommendation: compile('/recommendation'),
 

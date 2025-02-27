@@ -17,7 +17,10 @@ export default function RecommendationInput() {
    const prefMutation = useMutation({
       mutationFn: (preferences: string) =>
          userApi.update(user!.id, { preferences }),
-      onSuccess: () => queryClient.invalidateQueries(AppQueryKey.User),
+      onSuccess: () =>
+         queryClient.invalidateQueries({
+            queryKey: [AppQueryKey.User, AppQueryKey.Recommendation],
+         }),
    });
 
    const handleUpdatePreferences = async (

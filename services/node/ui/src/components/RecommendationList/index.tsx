@@ -25,7 +25,11 @@ export default function RecommendationList() {
    const recQuery = useQuery({
       queryFn: () => recommendationApi.generate(user!.preferences!),
       enabled: !!user?.preferences,
-      queryKey: [AppQueryKey.User, AppQueryKey.Recommendation],
+      queryKey: [
+         AppQueryKey.User,
+         AppQueryKey.Recommendation,
+         user?.preferences,
+      ],
       onSuccess: (data) => {
          setListingParams((p) => {
             p.brands = data.cars!.map((c) => c.brand);
@@ -34,14 +38,13 @@ export default function RecommendationList() {
       },
    });
 
-   console.log(recQuery.data?.cars?.[0])
-
    const listingQuery = useQuery({
       queryFn: () => listingApi.getListings(listingParams),
       queryKey: [
          AppQueryKey.User,
          AppQueryKey.Listing,
          AppQueryKey.RecommendationListing,
+         user?.preferences,
       ],
       enabled: recQuery.isSuccess,
    });
