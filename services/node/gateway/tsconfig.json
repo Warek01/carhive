@@ -2,9 +2,9 @@
 {
   "compilerOptions": {
     "noEmit": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "skipDefaultLibCheck": false,
-    "incremental": true,
+    "incremental": false,
     "module": "commonjs",
     "target": "ES2021",
     "experimentalDecorators": true,

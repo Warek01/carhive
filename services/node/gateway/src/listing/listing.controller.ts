@@ -1,9 +1,11 @@
 import {
+   Body,
    Controller,
    Get,
    Param,
    ParseBoolPipe,
    ParseIntPipe,
+   Post,
    Query,
 } from '@nestjs/common';
 import {
@@ -18,6 +20,7 @@ import { Public } from '@/auth/decorators/auth.decorator';
 import { GetListingsRequestDto } from '@/listing/dto/request/get-listings-request.dto';
 import { PaginatedResponseDto } from '@/common/dto/response/paginated-response.dto';
 import { Listing } from '@/listing/types/listing';
+import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 
 @Public()
 @ApiTags('Listing')
@@ -49,5 +52,14 @@ export class ListingController {
       @Query() dto: GetListingsRequestDto,
    ): Promise<PaginatedResponseDto<Listing>> {
       return this.listingService.get(dto);
+   }
+
+   @Post()
+   @ApiOperation({
+      summary: 'Create a listing',
+      description: 'Required role: <b>User</b>',
+   })
+   createListing(@Body() dto: CreateListingDto): Promise<Listing> {
+      return this.listingService.create(dto);
    }
 }

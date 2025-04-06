@@ -103,9 +103,9 @@ export interface CreateListing {
 }
 
 export interface CreateListingMetadata {
-   originalId: string;
-   url: string;
+   originalId?: string;
+   url?: string;
    createdAt: Date;
-   platform: Platform;
+   platform?: Platform;
    author?: ListingAuthor;
 }

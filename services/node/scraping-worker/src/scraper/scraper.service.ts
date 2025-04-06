@@ -24,43 +24,18 @@ import { ListingService } from '@/listing/listing.service';
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
    private readonly logger = new Logger(ScraperService.name);
 
-   private readonly WINDOW_HEIGHT = 720;
-   private readonly WINDOW_WIDTH = 1280;
+   private readonly WINDOW_HEIGHT = 1280;
+   private readonly WINDOW_WIDTH = 720;
    private readonly MIN_DELAY = 250;
    private readonly MAX_DELAY = 2000;
 
-   private readonly DOCKER_LAUNCH_OPTIONS: LaunchOptions = {
-      headless: true,
-      executablePath: '/usr/bin/google-chrome',
-      args: [
-         '--no-sandbox',
-         '--disable-setuid-sandbox',
-         '--disable-dev-shm-usage',
-         '--disable-accelerated-2d-canvas',
-         '--disable-gpu',
-      ],
-      downloadBehavior: {
-         policy: 'deny',
-      },
-   };
-
-   private readonly LOCAL_LAUNCH_OPTIONS: LaunchOptions = {
-      headless: false,
-      args: [`--window-size=${this.WINDOW_WIDTH},${this.WINDOW_HEIGHT}`],
-      downloadBehavior: {
-         policy: 'deny',
-      },
-   };
-
-   private readonly BLOCKED_RESOURCE_TYPES: ResourceType[] = [
-      'image',
-      'font',
-      'stylesheet',
-   ];
+   private readonly BLOCKED_RESOURCE_TYPES: ResourceType[] = ['image', 'font'];
 
    private readonly SCRAPING_STRATEGIES: Record<
       Platform,
-      new (page: Page) => BaseScrapingStrategy
+      new (
+         ...args: ConstructorParameters<typeof BaseScrapingStrategy>
+      ) => BaseScrapingStrategy
    > = {
       [Platform.TripleNineMd]: Scraping999Strategy,
    };
@@ -111,26 +86,30 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
    }
 
    async onModuleInit(): Promise<void> {
-      const launchOptions: LaunchOptions =
-         this.config.get('NODE_ENV') === 'production'
-            ? this.DOCKER_LAUNCH_OPTIONS
-            : this.LOCAL_LAUNCH_OPTIONS;
-
       puppeteer
          .use(StealthPlugin())
-         .use(
-            AdBlockPlugin({
-               blockTrackers: true,
-               blockTrackersAndAnnoyances: true,
-               useCache: true,
-            }),
-         )
+         // .use(
+         //    AdBlockPlugin({
+         //       blockTrackers: true,
+         //       blockTrackersAndAnnoyances: true,
+         //       useCache: true,
+         //    }),
+         // )
          .use(
             BlockResourcesPlugin({
                blockedTypes: new Set(this.BLOCKED_RESOURCE_TYPES),
             }),
          )
          .use(AnonymizeUaPlugin());
+
+      const launchOptions: LaunchOptions = {
+         executablePath: '/usr/bin/google-chrome',
+         headless: true,
+         args: ['--no-sandbox'],
+         downloadBehavior: {
+            policy: 'deny',
+         },
+      };
 
       this.browserPromise = puppeteer.launch(launchOptions);
       this.browser = await this.browserPromise;

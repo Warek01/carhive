@@ -13,7 +13,7 @@ import { AppEnv } from '@/common/types/app-env.types';
          inject: [ConfigService],
          useFactory: (config: ConfigService<AppEnv>) => ({
             paramsSerializer: (obj) => qs.stringify(obj),
-            baseURL: `${config.get('SCRAPING_SERVICE_URL')}/api/v1/scraping/`,
+            baseURL: `${config.get('SCRAPING_SERVICE_URL')}/api/v1/scraper/`,
             headers: {
                'X-API-KEY': config.get('SCRAPING_SERVICE_API_KEY'),
             },

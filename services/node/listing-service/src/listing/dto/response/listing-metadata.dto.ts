@@ -9,13 +9,13 @@ export class ListingMetadataDto {
    @Expose()
    listingId: number;
 
-   @ApiProperty({ type: String })
+   @ApiProperty({ type: String, nullable: true })
    @Expose()
-   originalId: string;
+   originalId?: string;
 
-   @ApiProperty({ type: String })
+   @ApiProperty({ type: String, nullable: true })
    @Expose()
-   url: string;
+   url?: string;
 
    @ApiProperty({ type: Date })
    @Expose()

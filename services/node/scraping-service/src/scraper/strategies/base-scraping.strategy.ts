@@ -1,12 +1,12 @@
 import { Page } from 'puppeteer';
 import { Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { TimeoutError } from 'puppeteer';
 
 import { sleep } from '@/common/functions/sleep';
 import { batch } from '@/common/functions/batch';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
 import { ScrapingBatch } from '@/scraper/types/scraping-batch.types';
+import { ScraperService } from '@/scraper/scraper.service';
 
 export abstract class BaseScrapingStrategy {
    protected abstract PAGE_BASE_URL: string;
@@ -20,42 +20,61 @@ export abstract class BaseScrapingStrategy {
    constructor(
       protected readonly page: Page,
       private readonly scrapingQueueClient: ClientProxy,
+      protected readonly scraperService: ScraperService,
    ) {}
 
    // Extract the urls from the pages and
    async scrape(startPage: number, endPage: number): Promise<void> {
-      const url = this.getPageUrl(startPage);
+      let err: any;
+
       try {
-         await this.page.goto(url.href, {
-            waitUntil: 'load',
+         const url = this.getPageUrl(startPage);
+         await this.page.goto(url.href);
+         await this.waitFn();
+
+         await this.page.screenshot({
+            path: `/browser-screenshots/${Date.now()}.webp`,
+            type: 'webp',
+            optimizeForSpeed: true,
          });
-      } catch (err) {
-         if (err instanceof TimeoutError) {
-            this.logger.error(`Timeout error to url ${url}`);
-            return;
+
+         let currentPage = startPage;
+         while (currentPage <= endPage) {
+            const urls = await this.extract();
+            const batches = batch(urls, this.BATCH_SIZE);
+            this.publishUrls(batches);
+
+            this.logger.log(
+               `${this.PLATFORM} extracted ${currentPage}/${endPage} (${batches.length} batches of ${this.BATCH_SIZE} links)`,
+            );
+
+            if (currentPage === endPage) {
+               break;
+            }
+
+            // Wait and go to next page
+            await this.randomDelay();
+            const nextPageUrl = this.getPageUrl(currentPage + 1);
+            await this.page.goto(nextPageUrl.href, {
+               waitUntil: 'load',
+            });
          }
-
-         throw err;
+      } catch (e) {
+         err = e;
+         this.logger.error(e);
       }
 
-      for (let currentPage = startPage; currentPage <= endPage; currentPage++) {
-         const urls = await this.extract();
-         this.logger.log(
-            `${this.PLATFORM} extracted ${currentPage}/${endPage}`,
-         );
-         const batches = batch(urls, this.BATCH_SIZE);
-         this.publishUrls(batches);
-
-         // Wait and go to next page
-         await this.randomDelay();
-         const nextPageUrl = this.getPageUrl(currentPage + 1);
-         await this.page.goto(nextPageUrl.href, {
-            waitUntil: 'load',
-         });
-      }
+      await this.scraperService.createRecord(
+         this.PLATFORM,
+         startPage,
+         endPage,
+         err,
+      );
    }
 
    protected abstract getPageUrl(pageIndex?: number): URL;
+
+   protected abstract waitFn(): Promise<void>;
 
    // Publish urls for scrapers
    protected publishUrls(batches: string[][]): void {

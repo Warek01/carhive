@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ScraperController } from '@/scraper/scraper.controller';
 import { ScraperService } from '@/scraper/scraper.service';
 import { AppEnv } from '@/common/types/app-env';
 import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.constants';
+import { ListScrape } from '@/scraper/entities/list-scrape.entity';
 
 @Module({
    imports: [
@@ -25,6 +27,7 @@ import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.consta
             }),
          },
       ]),
+      TypeOrmModule.forFeature([ListScrape]),
    ],
    controllers: [ScraperController],
    providers: [ScraperService],

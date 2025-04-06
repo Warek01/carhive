@@ -12,6 +12,8 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import AdBlockPlugin from 'puppeteer-extra-plugin-adblocker';
 import BlockResourcesPlugin from 'puppeteer-extra-plugin-block-resources';
 import AnonymizeUaPlugin from 'puppeteer-extra-plugin-anonymize-ua';
+import { ClientProxy } from '@nestjs/microservices';
+import fs from 'fs/promises';
 
 import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
 import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy';
@@ -19,7 +21,9 @@ import { AppEnv } from '@/common/types/app-env';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
 import { ScrapePlatformRequestDto } from '@/scraper/dto/request/scrape-platform-request.dto';
 import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.constants';
-import { ClientProxy } from '@nestjs/microservices';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ListScrape } from '@/scraper/entities/list-scrape.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
@@ -28,38 +32,13 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
    private readonly WINDOW_HEIGHT = 720;
    private readonly WINDOW_WIDTH = 1280;
 
-   private readonly DOCKER_LAUNCH_OPTIONS: LaunchOptions = {
-      headless: true,
-      executablePath: '/usr/bin/google-chrome',
-      args: [
-         '--no-sandbox',
-         '--disable-setuid-sandbox',
-         '--disable-dev-shm-usage',
-         '--disable-accelerated-2d-canvas',
-         '--disable-gpu',
-      ],
-      downloadBehavior: {
-         policy: 'deny',
-      },
-   };
-
-   private readonly LOCAL_LAUNCH_OPTIONS: LaunchOptions = {
-      headless: false,
-      args: [`--window-size=${this.WINDOW_WIDTH},${this.WINDOW_HEIGHT}`],
-      downloadBehavior: {
-         policy: 'deny',
-      },
-   };
-
-   private readonly BLOCKED_RESOURCE_TYPES: ResourceType[] = [
-      'image',
-      'font',
-      'stylesheet',
-   ];
+   private readonly BLOCKED_RESOURCE_TYPES: ResourceType[] = ['image', 'font'];
 
    private readonly SCRAPING_STRATEGIES: Record<
       SupportedPlatform,
-      new (page: Page, client: ClientProxy) => BaseScrapingStrategy
+      new (
+         ...args: ConstructorParameters<typeof BaseScrapingStrategy>
+      ) => BaseScrapingStrategy
    > = {
       [SupportedPlatform.TripleNineMd]: Scraping999Strategy,
    };
@@ -70,6 +49,8 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       private readonly config: ConfigService<AppEnv>,
       @Inject(SCRAPER_QUEUE_TOKEN)
       private readonly scrapingQueueClient: ClientProxy,
+      @InjectRepository(ListScrape)
+      private readonly listScrapeRepo: Repository<ListScrape>,
    ) {}
 
    async scrapePlatform({
@@ -82,9 +63,28 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       );
       const ScrapingStrategy = this.SCRAPING_STRATEGIES[platform];
       const page = await this.createPage();
-      const strategy = new ScrapingStrategy(page, this.scrapingQueueClient);
+      const strategy = new ScrapingStrategy(
+         page,
+         this.scrapingQueueClient,
+         this,
+      );
       await strategy.scrape(startPage, endPage);
       await page.close();
+   }
+
+   async createRecord(
+      platform: SupportedPlatform,
+      startPage: number,
+      endPage: number,
+      err?: object,
+   ) {
+      const record = this.listScrapeRepo.create();
+      record.platform = platform;
+      record.startPage = startPage;
+      record.endPage = endPage;
+      record.success = !err;
+      record.error = err;
+      await this.listScrapeRepo.save(record);
    }
 
    async onModuleDestroy(): Promise<void> {
@@ -92,10 +92,11 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
    }
 
    async onModuleInit(): Promise<void> {
-      const launchOptions: LaunchOptions =
-         this.config.get('NODE_ENV') === 'production'
-            ? this.DOCKER_LAUNCH_OPTIONS
-            : this.LOCAL_LAUNCH_OPTIONS;
+      try {
+         await fs.access('/browser-screenshots/');
+      } catch {
+         await fs.mkdir('/browser-screenshots/');
+      }
 
       puppeteer
          .use(StealthPlugin())
@@ -106,12 +107,21 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
          //       useCache: true,
          //    }),
          // )
-         // .use(
-         //    BlockResourcesPlugin({
-         //       blockedTypes: new Set(this.BLOCKED_RESOURCE_TYPES),
-         //    }),
-         // )
+         .use(
+            BlockResourcesPlugin({
+               blockedTypes: new Set(this.BLOCKED_RESOURCE_TYPES),
+            }),
+         )
          .use(AnonymizeUaPlugin());
+
+      const launchOptions: LaunchOptions = {
+         executablePath: '/usr/bin/google-chrome',
+         headless: true,
+         args: ['--no-sandbox'],
+         downloadBehavior: {
+            policy: 'deny',
+         },
+      };
 
       this.browser = await puppeteer.launch(launchOptions);
       this.logger.log('Browser launched');

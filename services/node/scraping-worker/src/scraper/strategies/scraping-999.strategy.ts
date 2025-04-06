@@ -24,6 +24,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
 
    public override async extract(url: string): Promise<CreateListing> {
       await this.page.goto(url, { waitUntil: 'load' });
+      await this.page.waitForSelector('h1');
 
       const [
          title,
@@ -298,8 +299,8 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       asideElement: ElementHandle<HTMLElement>,
    ): Promise<ListingAuthor | null> {
       const [url, name] = await asideElement.$eval(
-         'div[data-sentry-component="Owner"] p[class ^= "styles_owner__info"] a',
-         (el) => [el.getAttribute('href'), el.textContent!.trim()],
+         'div[data-sentry-component="Owner"] a[data-sentry-element="MyLink"]',
+         (a) => [a.getAttribute('href'), a.textContent!.trim()],
       );
 
       return {

@@ -12,6 +12,7 @@ import {
    Currency,
    Drivetrain,
    FuelType,
+   ListingStatus,
    Transmission,
 } from '@/enums/listing';
 import { CreateListing } from '@/types/listing';
@@ -40,15 +41,34 @@ export default function NewListingForm() {
    });
 
    const createListing = async (values: typeof initialValues) => {
-      console.log(values);
+      await createListingMutation.mutateAsync({
+         title: values.title,
+         brand: values.brand,
+         model: values.model,
+         description: values.description || undefined,
+         images: [],
+         listingStatus: ListingStatus.Available,
+         productionYear: +values.productionYear || undefined,
+         price: +values.price || undefined,
+         transmission: (values.transmission as Transmission) || undefined,
+         color: values.color || undefined,
+         bodyStyle: (values.bodyStyle as BodyStyle) || undefined,
+         currency: (values.currency as Currency) || undefined,
+         fuelType: (values.fuelType as FuelType) || undefined,
+         drivetrain: (values.drivetrain as Drivetrain) || undefined,
+         carStatus: (values.carStatus as CarStatus) || undefined,
+         metadata: {
+            createdAt: new Date(),
+         },
+      } satisfies CreateListing);
    };
 
    return (
       <Formik initialValues={initialValues} onSubmit={createListing}>
          {({ isSubmitting, values, setFieldValue }) => (
             <Form>
-               <AppTextField name="brand" placeholder="Brand" />
-               <AppTextField name="model" placeholder="Model" />
+               <AppTextField name="brand" required placeholder="Brand" />
+               <AppTextField name="model" required placeholder="Model" />
                <AppTextField name="color" placeholder="Color" />
                <AppTextField name="title" placeholder="Title" />
                <AppTextField
@@ -56,6 +76,12 @@ export default function NewListingForm() {
                   type="number"
                   min="0"
                   placeholder="Price"
+               />
+               <AppTextField
+                  name="productionYear"
+                  type="number"
+                  min="0"
+                  placeholder="Production year"
                />
                <Field
                   as={TextArea}

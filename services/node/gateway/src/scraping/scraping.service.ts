@@ -13,6 +13,7 @@ export class ScrapingService extends BaseMicroserviceService {
    scrapePage(dto: ScrapePlatformRequestDto): Promise<void> {
       return this.forwardRequest({
          url: 'scrape-platform',
+         method: 'POST',
          params: dto,
       });
    }

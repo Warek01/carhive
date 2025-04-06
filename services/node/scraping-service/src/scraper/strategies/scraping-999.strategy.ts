@@ -35,4 +35,10 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       }
       return url;
    }
+
+   protected async waitFn(): Promise<void> {
+      await this.page.waitForSelector(
+         'div[data-sentry-component = "AdShort"] a[data-sentry-element="MyLink"]',
+      );
+   }
 }
