@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -11,6 +11,8 @@ import { LISTING_ORDER_BY_VALUES } from '@/listing/constants/listing-order-by-va
 
 @Injectable()
 export class ListingService {
+   private readonly logger = new Logger(ListingService.name);
+
    constructor(
       @InjectRepository(Listing)
       private readonly listingRepo: Repository<Listing>,
@@ -28,143 +30,146 @@ export class ListingService {
    }
 
    get(dto: GetListingsRequestDto): Promise<[Listing[], number]> {
-      let query = this.listingRepo.createQueryBuilder('listing');
+      const {
+         currencies,
+         listingStatuses,
+         carStatuses,
+         bodyStyles,
+         brands,
+         colors,
+         createdAtMax,
+         createdAtMin,
+         mileageMax,
+         mileageMin,
+         yearMax,
+         yearMin,
+         priceMax,
+         priceMin,
+         includeMetadata,
+         drivetrains,
+         fuelTypes,
+         models,
+         orderBy,
+         transmissions,
+         offset,
+         limit,
+      } = dto;
 
-      if (dto.priceMin) {
-         query = query.andWhere('listing.price >= :priceMin', {
-            priceMin: dto.priceMin,
+      let query = this.listingRepo.createQueryBuilder('l');
+
+      if (priceMin) {
+         query = query.andWhere('l.price >= :priceMin', { priceMin });
+      }
+      if (priceMax) {
+         query = query.andWhere('l.price <= :priceMax', { priceMax });
+      }
+      if (brands) {
+         query = query.andWhere('l.brand IN (:...brands)', { brands });
+      }
+      if (models) {
+         query = query.andWhere('l.model IN (:...models)', { models });
+      }
+      if (listingStatuses) {
+         query = query.andWhere('l.listing_status IN (:...listingStatuses)', {
+            listingStatuses,
          });
       }
-      if (dto.priceMax) {
-         query = query.andWhere('listing.price <= :priceMax', {
-            priceMax: dto.priceMax,
+      if (carStatuses) {
+         query = query.andWhere('l.car_status IN (:...carStatuses)', {
+            carStatuses,
          });
       }
-      if (dto.brands) {
-         query = query.andWhere('listing.brand IN (:...brands)', {
-            brands: dto.brands,
+      if (createdAtMax) {
+         query = query.andWhere('l.created_at <= :createdAtMax', {
+            createdAtMax,
          });
       }
-      if (dto.models) {
-         query = query.andWhere('listing.model IN (:...models)', {
-            models: dto.models,
+      if (createdAtMin) {
+         query = query.andWhere('l.created_at >= :createdAtMin', {
+            createdAtMin,
          });
       }
-      if (dto.listingStatuses) {
-         query = query.andWhere(
-            'listing.listing_status IN (:...listingStatuses)',
-            {
-               listingStatuses: dto.listingStatuses,
-            },
-         );
+      if (colors) {
+         query = query.andWhere('l.color IN (:...colors)', { colors });
       }
-      if (dto.carStatuses) {
-         query = query.andWhere('listing.car_status IN (:...carStatuses)', {
-            carStatuses: dto.carStatuses,
+      if (mileageMax) {
+         query = query.andWhere('l.mileage <= :mileageMax', {
+            mileageMax,
          });
       }
-      if (dto.createdAtMax) {
-         query = query.andWhere('listing.created_at <= :createdAtMax', {
-            createdAtMax: dto.createdAtMax,
+      if (mileageMin) {
+         query = query.andWhere('l.mileage >= :mileageMin', {
+            mileageMin,
          });
       }
-      if (dto.createdAtMin) {
-         query = query.andWhere('listing.created_at >= :createdAtMin', {
-            createdAtMin: dto.createdAtMin,
+      if (yearMax) {
+         query = query.andWhere('l.year <= :yearMax', { yearMax });
+      }
+      if (yearMin) {
+         query = query.andWhere('l.year >= :yearMin', { yearMin });
+      }
+      if (transmissions) {
+         query = query.andWhere('l.transmission IN (:...transmissions)', {
+            transmissions,
          });
       }
-      if (dto.colors) {
-         query = query.andWhere('listing.color IN (:...colors)', {
-            colors: dto.colors,
+      if (drivetrains) {
+         query = query.andWhere('l.drivetrain IN (:...drivetrains)', {
+            drivetrains,
          });
       }
-      if (dto.mileageMax) {
-         query = query.andWhere('listing.mileage <= :mileageMax', {
-            mileageMax: dto.mileageMax,
+      if (bodyStyles) {
+         query = query.andWhere('l.body_style IN (:...bodyStyles)', {
+            bodyStyles,
          });
       }
-      if (dto.mileageMin) {
-         query = query.andWhere('listing.mileage >= :mileageMin', {
-            mileageMin: dto.mileageMin,
+      if (fuelTypes) {
+         query = query.andWhere('l.fuel_types IN (:...fuelTypes)', {
+            fuelTypes,
          });
       }
-      if (dto.yearMax) {
-         query = query.andWhere('listing.year <= :yearMax', {
-            yearMax: dto.yearMax,
+      if (currencies) {
+         query = query.andWhere('l.currency IN (:...currencies)', {
+            currencies,
          });
       }
-      if (dto.yearMin) {
-         query = query.andWhere('listing.year >= :yearMin', {
-            yearMin: dto.yearMin,
-         });
+      if (includeMetadata) {
+         query = query.leftJoinAndSelect('l.metadata', 'm');
       }
-      if (dto.transmissions) {
-         query = query.andWhere('listing.transmission IN (:...transmissions)', {
-            transmissions: dto.transmissions,
-         });
-      }
-      if (dto.drivetrains) {
-         query = query.andWhere('listing.drivetrain IN (:...drivetrains)', {
-            drivetrains: dto.drivetrains,
-         });
-      }
-      if (dto.bodyStyles) {
-         query = query.andWhere('listing.body_style IN (:...bodyStyles)', {
-            bodyStyles: dto.bodyStyles,
-         });
-      }
-      if (dto.fuelTypes) {
-         query = query.andWhere('listing.fuel_types IN (:...fuelTypes)', {
-            fuelTypes: dto.fuelTypes,
-         });
-      }
-      if (dto.currencies) {
-         query = query.andWhere('listing.currency IN (:...currencies)', {
-            currencies: dto.currencies,
-         });
-      }
-      if (dto.includeMetadata) {
-         query = query.leftJoinAndSelect('listing.metadata', 'metadata');
-      }
-      if (dto.orderBy) {
-         const [sort, order] = LISTING_ORDER_BY_VALUES[dto.orderBy];
-         query = query.orderBy(`listing.${sort}`, order);
+      if (orderBy) {
+         const [sort, order] = LISTING_ORDER_BY_VALUES[orderBy];
+         query = query.orderBy(`l.${sort}`, order);
       }
 
-      query = query.skip(dto.offset).take(dto.limit);
+      query = query.skip(offset).take(limit);
 
       return query.getManyAndCount();
    }
 
-   async create(dto: CreateListingDto): Promise<Listing> {
-      const listing = new Listing();
-      listing.listingStatus = dto.listingStatus ?? ListingStatus.Available;
-      listing.images = dto.images ?? [];
-      listing.price = dto.price;
-      listing.description = dto.description;
-      listing.model = dto.model;
-      listing.brand = dto.brand;
-      listing.bodyStyle = dto.bodyStyle;
-      listing.transmission = dto.transmission;
-      listing.fuelType = dto.fuelType;
-      listing.drivetrain = dto.drivetrain;
-      listing.color = dto.color;
-      listing.carStatus = dto.carStatus;
-      listing.currency = dto.currency;
-      listing.title = dto.title;
-      listing.productionYear = dto.productionYear;
+   async create(dto: CreateListingDto): Promise<Listing | null> {
+      const metaExists = await this.metadataRepo.existsBy({
+         originalId: dto.metadata.originalId,
+      });
 
-      await this.listingRepo.save(listing);
+      if (metaExists) {
+         this.logger.log(
+            `Skipping creation of fetched listing ${dto.metadata.originalId}`,
+         );
 
-      const metadata = new ListingMetadata();
-      listing.metadata = metadata;
-      metadata.listing = listing;
-      metadata.listingId = listing.id;
-      metadata.author = dto.metadata.author;
-      metadata.url = dto.metadata.url;
-      metadata.originalId = dto.metadata.originalId;
-      metadata.createdAt = dto.metadata.createdAt;
-      metadata.platform = dto.metadata.platform;
+         return null;
+      }
+
+      const listing = this.listingRepo.create({
+         ...dto,
+         listingStatus: dto.listingStatus ?? ListingStatus.Available,
+         images: dto.images ?? [],
+      });
+
+      const metadata = this.metadataRepo.create({
+         ...dto.metadata,
+         listing: listing,
+         listingId: listing.id,
+      });
 
       await this.metadataRepo.save(metadata);
 

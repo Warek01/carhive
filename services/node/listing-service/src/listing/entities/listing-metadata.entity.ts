@@ -16,7 +16,7 @@ export class ListingMetadata {
    @PrimaryColumn({ name: 'listing_id', type: 'int' })
    listingId: number;
 
-   @Column({ name: 'original_id', length: 255, nullable: true })
+   @Column({ name: 'original_id', length: 255, nullable: true, unique: true })
    originalId?: string;
 
    @Column({ name: 'url', length: 255, nullable: true })
@@ -36,6 +36,7 @@ export class ListingMetadata {
 
    @OneToOne(() => Listing, (listing) => listing.metadata, {
       onDelete: 'CASCADE',
+      cascade: true,
    })
    @JoinColumn({
       name: 'listing_id',

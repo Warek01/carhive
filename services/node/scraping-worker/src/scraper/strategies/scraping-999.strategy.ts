@@ -75,16 +75,25 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
 
    private getNormalizedDataFromFeatures(features: Record<string, string>) {
       const brand = features['marca'] || null;
-      const model = features['modelul'] || null;
+      const model = features['modelul'] || features['model'] || null;
       const carStatus = this.normalizeCarStatus(features['stare']);
       const fuelType = this.normalizeFuelType(features['tip combustibil']);
-      const productionYear = parseInt(features['anul fabricatiei']) ?? null;
+      const productionYear =
+         parseInt(
+            features['anul fabricatiei'] || features['an de fabricatie'],
+         ) ?? null;
       const drivetrain = this.normalizeDrivetrain(features['tip tractiune']);
       const bodyStyle = this.normalizeBodyStyle(features['tip caroserie']);
       const transmission = this.normalizeTransmission(
-         features['cutia de viteze'],
+         features['cutia de viteze'] ||
+            features['cutie de viteze'] ||
+            features['cutie de viteza'] ||
+            features['cutia de viteza'] ||
+            features['transmisie'],
       );
-      const color = this.normalizeColor(features['culoarea']);
+      const color = this.normalizeColor(
+         features['culoarea'] || features['culoare'],
+      );
 
       return {
          brand,
@@ -257,7 +266,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
    }
 
    private async extractTile(): Promise<string> {
-      return this.page.$eval('header', (el) => el.textContent!.trim());
+      return this.page.$eval('h1', (el) => el.textContent!.trim());
    }
 
    private async extractImages(): Promise<string[]> {
@@ -299,7 +308,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       asideElement: ElementHandle<HTMLElement>,
    ): Promise<ListingAuthor | null> {
       const [url, name] = await asideElement.$eval(
-         'div[data-sentry-component="Owner"] a[data-sentry-element="MyLink"]',
+         'div[data-sentry-component="Owner"] a[class ^= "styles_owner__login__"]',
          (a) => [a.getAttribute('href'), a.textContent!.trim()],
       );
 
@@ -333,7 +342,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       };
 
       const pattern =
-         /Data actualizării:\s*(?<day>\d+)\s*(?<month>\w+)\.\s*(?<year>\d{4}),\s*(?<hour>\d{2}):(?<minute>\d{2})/;
+         /Data (actualizării|publicǎrii):\s*(?<day>\d+)\s*(?<month>\w+)\.\s*(?<year>\d{4}),\s*(?<hour>\d{2}):(?<minute>\d{2})/;
 
       const g = dateStr.match(pattern)!.groups!;
 
