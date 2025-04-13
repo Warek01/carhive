@@ -52,6 +52,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
          drivetrain,
          transmission,
          color,
+         mileage,
       } = this.getNormalizedDataFromFeatures(features);
 
       return {
@@ -70,6 +71,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
          metadata,
          description,
          price,
+         mileage,
       };
    }
 
@@ -94,6 +96,8 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       const color = this.normalizeColor(
          features['culoarea'] || features['culoare'],
       );
+      const mileage =
+         parseInt(features['rulaj'] || features['rulajul']) ?? null;
 
       return {
          brand,
@@ -105,6 +109,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
          bodyStyle,
          transmission,
          color,
+         mileage,
       };
    }
 
@@ -320,7 +325,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
 
    private async extractCreateDate(
       asideElement: ElementHandle<HTMLElement>,
-   ): Promise<Date> {
+   ): Promise<string> {
       const dateStr = await asideElement.$eval(
          'p[class ^= "styles_date"]',
          (el) => el.textContent!.trim(),
@@ -352,6 +357,6 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
       const hour = parseInt(g.hour);
       const minute = parseInt(g.minute);
 
-      return new Date(year, month, day, hour, minute);
+      return new Date(year, month, day, hour, minute).toISOString();
    }
 }

@@ -20,7 +20,7 @@ export class ListingMetadata {
    originalId?: string;
 
    @Column({ name: 'url', length: 255, nullable: true })
-   url?: string;
+   url: string;
 
    @Column({ name: 'created_at' })
    createdAt: Date;
@@ -32,9 +32,9 @@ export class ListingMetadata {
       enumName: 'platform',
       nullable: true,
    })
-   platform?: Platform;
+   platform: Platform;
 
-   @OneToOne(() => Listing, (listing) => listing.metadata, {
+   @OneToOne(() => Listing, (l) => l.metadata, {
       onDelete: 'CASCADE',
       cascade: true,
    })

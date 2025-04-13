@@ -31,11 +31,13 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
    private readonly BLOCKED_RESOURCE_TYPES: ResourceType[] = ['image', 'font'];
 
-   private readonly SCRAPING_STRATEGIES: Record<
-      Platform,
-      new (
-         ...args: ConstructorParameters<typeof BaseScrapingStrategy>
-      ) => BaseScrapingStrategy
+   private readonly SCRAPING_STRATEGIES: Partial<
+      Record<
+         Platform,
+         new (
+            ...args: ConstructorParameters<typeof BaseScrapingStrategy>
+         ) => BaseScrapingStrategy
+      >
    > = {
       [Platform.TripleNineMd]: Scraping999Strategy,
    };
@@ -58,7 +60,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       );
       const page = await this.createPage();
       try {
-         const Strategy = this.SCRAPING_STRATEGIES[batch.platform];
+         const Strategy = this.SCRAPING_STRATEGIES[batch.platform]!;
          const strategy = new Strategy(page);
 
          for (let i = 0; i < batch.data.length; i++) {

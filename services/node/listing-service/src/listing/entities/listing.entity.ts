@@ -38,7 +38,7 @@ export class Listing {
    @Column({ name: 'production_year', nullable: true, type: 'int' })
    productionYear?: number;
 
-   @OneToOne(() => ListingMetadata, (metadata) => metadata.listing)
+   @OneToOne(() => ListingMetadata, (m) => m.listing)
    metadata?: Relation<ListingMetadata>;
 
    @Column({ name: 'description', type: 'text', nullable: true })
@@ -92,6 +92,9 @@ export class Listing {
       nullable: true,
    })
    bodyStyle?: BodyStyle;
+
+   @Column({ name: 'mileage', type: 'int', nullable: true })
+   mileage?: number;
 
    @Column({
       name: 'drivetrain',

@@ -24,6 +24,10 @@ export class ListingDto {
    @Expose()
    createdAt: Date;
 
+   @ApiProperty({ type: Number, nullable: true })
+   @Expose()
+   mileage?: number;
+
    @ApiProperty({ type: [String] })
    @Expose()
    images: string[];
@@ -33,6 +37,7 @@ export class ListingDto {
    title: string;
 
    @ApiProperty({ type: Number })
+   @Expose()
    productionYear?: number;
 
    @ApiProperty({ type: String, nullable: true })

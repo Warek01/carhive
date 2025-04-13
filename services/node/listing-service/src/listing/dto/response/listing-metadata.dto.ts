@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
 import { ListingAuthor } from '@/listing/types/listing-author.types';
+import { Platform } from '@/listing/enums';
 
 @Exclude()
 export class ListingMetadataDto {
@@ -13,9 +14,13 @@ export class ListingMetadataDto {
    @Expose()
    originalId?: string;
 
-   @ApiProperty({ type: String, nullable: true })
+   @ApiProperty({ type: String })
    @Expose()
-   url?: string;
+   url: string;
+
+   @ApiProperty({ type: String, enum: Platform, enumName: 'Platform' })
+   @Expose()
+   platform: Platform;
 
    @ApiProperty({ type: Date })
    @Expose()
