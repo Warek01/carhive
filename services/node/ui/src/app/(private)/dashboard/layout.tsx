@@ -10,19 +10,19 @@ import { LayoutProps } from '@/types/next';
 const paths = [
    {
       href: appRoute.dashboardListing(),
-      text: 'Listing',
+      label: 'Listing',
    },
    {
       href: appRoute.dashboardRecommendation(),
-      text: 'Recommendation',
+      label: 'Recommendation',
    },
    {
       href: appRoute.dashboardScraping(),
-      text: 'Scraping',
+      label: 'Scraping',
    },
    {
       href: appRoute.dashboardUser(),
-      text: 'User',
+      label: 'User',
    },
 ];
 

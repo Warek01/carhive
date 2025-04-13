@@ -1,11 +1,10 @@
 'use client';
 
-import { Button, Spinner } from '@radix-ui/themes';
+import { Button, Spinner, TextField } from '@radix-ui/themes';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { UserApi } from '@/api';
-import { AppTextField } from '@/components';
 import { AppQueryKey } from '@/enums/app-query-key';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -48,7 +47,7 @@ export default function RecommendationInput() {
                   </div>
                ) : (
                   <Form>
-                     <AppTextField
+                     <TextField.Root
                         name="preferences"
                         placeholder="Your preferences"
                      />

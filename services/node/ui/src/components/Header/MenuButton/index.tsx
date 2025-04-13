@@ -13,7 +13,7 @@ import { appRoute } from '@/config/app-route';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function MenuButton() {
-   const { unsetUser, isAuthorized, user, isAdmin } = useAuth();
+   const { logOut, isAuthorized, user, isAdmin } = useAuth();
 
    return (
       <DropdownMenu.Root>
@@ -44,7 +44,7 @@ export default function MenuButton() {
 
             {isAuthorized ? (
                <DropdownMenu.Item
-                  onClick={() => unsetUser()}
+                  onClick={() => logOut()}
                   className="text-nowrap"
                >
                   <ArrowLeftStartOnRectangleIcon width={24} height={24} />

@@ -8,7 +8,8 @@ import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { appQueryClient } from '@/config/app-query-client';
-import { AuthContextProvider } from '@/context/auth-context';
+import { AuthContextProvider } from '@/context/auth.context';
+import { ComparisonContextProvider } from '@/context/comparison.context';
 
 export default function Providers({ children }: PropsWithChildren) {
    return (
@@ -20,7 +21,11 @@ export default function Providers({ children }: PropsWithChildren) {
                   initialIsOpen={false}
                   position="bottom-right"
                />
-               <AuthContextProvider>{children}</AuthContextProvider>
+               <AuthContextProvider>
+                  <ComparisonContextProvider>
+                     {children}
+                  </ComparisonContextProvider>
+               </AuthContextProvider>
             </QueryClientProvider>
          </Theme>
       </ThemeProvider>

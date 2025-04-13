@@ -1,7 +1,11 @@
 import { appRoute } from '@/config/app-route';
 
 export const protectedRoutes: string[] = [
-   appRoute.user(),
-   appRoute.recommendation(),
+   appRoute.compare(),
+   appRoute.createListing(),
    appRoute.dashboard(),
+   appRoute.listing(),
+   appRoute.user(),
+   appRoute.newListings(),
+   appRoute.recommendation(),
 ];

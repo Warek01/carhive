@@ -11,6 +11,8 @@ export const appRoute = {
 
    recommendation: compile('/recommendation'),
 
+   compare: compile('/compare'),
+
    // User
    user: compile('/me'),
 

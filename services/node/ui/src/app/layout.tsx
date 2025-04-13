@@ -1,10 +1,10 @@
 import '@radix-ui/themes/styles.css';
 import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import { PropsWithChildren } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { Header } from '@/components';
+import { LayoutProps } from '@/types/next';
 
 import './globals.css';
 import Providers from './providers';
@@ -26,7 +26,7 @@ export const viewport: Viewport = {
    initialScale: 1,
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default function RootLayout({ children }: LayoutProps) {
    return (
       <html lang="en" suppressHydrationWarning>
          <body className={`${inter.variable} ${inter.className}`}>

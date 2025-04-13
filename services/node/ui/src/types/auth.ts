@@ -1,7 +1,7 @@
 import { UserRole } from '@/enums/auth';
 
 export interface DecodedJwt {
-   sub: string;
+   sub: number;
    email: string;
    role: UserRole;
    iat: number;

@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
          const response = NextResponse.redirect(redirectUrl);
          response.cookies.delete(AppCookie.AccessToken);
-         response.cookies.delete(AppCookie.Authenticated);
+         response.cookies.delete(AppCookie.IsAuthenticated);
          return response;
       }
    }

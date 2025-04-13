@@ -1,11 +1,10 @@
 'use client';
 
-import { Button, Select, TextArea } from '@radix-ui/themes';
+import { Button, Select, TextArea, TextField } from '@radix-ui/themes';
 import { Field, Form, Formik } from 'formik';
 import { useMutation } from 'react-query';
 
 import { ListingApi } from '@/api';
-import { AppTextField } from '@/components';
 import {
    BodyStyle,
    CarStatus,
@@ -67,17 +66,17 @@ export default function NewListingForm() {
       <Formik initialValues={initialValues} onSubmit={createListing}>
          {({ isSubmitting, values, setFieldValue }) => (
             <Form>
-               <AppTextField name="brand" required placeholder="Brand" />
-               <AppTextField name="model" required placeholder="Model" />
-               <AppTextField name="color" placeholder="Color" />
-               <AppTextField name="title" placeholder="Title" />
-               <AppTextField
+               <TextField.Root name="brand" required placeholder="Brand" />
+               <TextField.Root name="model" required placeholder="Model" />
+               <TextField.Root name="color" placeholder="Color" />
+               <TextField.Root name="title" placeholder="Title" />
+               <TextField.Root
                   name="price"
                   type="number"
                   min="0"
                   placeholder="Price"
                />
-               <AppTextField
+               <TextField.Root
                   name="productionYear"
                   type="number"
                   min="0"
