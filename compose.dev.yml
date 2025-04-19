@@ -32,7 +32,7 @@ services:
 
    gateway:
       build:
-         context: ./services/node/gateway
+         context: ./app/services/gateway
          dockerfile: Dockerfile.development
       depends_on:
          - account-service
@@ -41,17 +41,19 @@ services:
       networks: [ carhive-network ]
       ports: [ "3005:3000" ]
       init: true
+      volumes:
+         - ./storage/:/storage/
       develop:
          watch:
             -  action: sync+restart
-               path: ./services/node/scraping-service/
+               path: ./app/services/gateway/
                target: /app/
             -  action: rebuild
-               path: ./services/node/scraping-service/package.json
+               path: ./app/services/gateway/package.json
             -  action: sync+restart
-               path: ./services/node/scraping-service/nest-cli.json
+               path: ./app/services/gateway/nest-cli.json
                target: /app/nest-cli.json
-      env_file: [ ./services/node/gateway/.env.development ]
+      env_file: [ ./app/services/gateway/.env.development ]
       healthcheck:
         &nodejs-healthcheck
          test: [
@@ -95,7 +97,7 @@ services:
 
    account-service:
       build:
-         context: services/node/account-service
+         context: ./app/services/account-service
          dockerfile: Dockerfile.development
       depends_on:
          - account-db
@@ -104,39 +106,39 @@ services:
       develop:
          watch:
             -  action: sync+restart
-               path: ./services/node/account-service/
+               path: ./app/services/account-service/
                target: /app/
             -  action: rebuild
-               path: ./services/node/account-service/package.json
+               path: ./app/services/account-service/package.json
             -  action: sync+restart
-               path: ./services/node/account-service/nest-cli.json
+               path: ./app/services/account-service/nest-cli.json
                target: /app/nest-cli.json
       init: true
-      env_file: [ services/node/account-service/.env.development ]
+      env_file: [ ./app/services/account-service/.env.development ]
       healthcheck: *nodejs-healthcheck
 
    recommendation-service:
       build:
-         context: services/node/recommendation-service
+         context: app/services/recommendation-service
       networks: [ carhive-network ]
       init: true
       ports: [ "3006:3000" ]
       develop:
          watch:
             -  action: sync+restart
-               path: ./services/node/listing-service/
+               path: ./app/services/listing-service/
                target: /app/
             -  action: rebuild
-               path: ./services/node/listing-service/package.json
+               path: ./app/services/listing-service/package.json
             -  action: sync+restart
-               path: ./services/node/listing-service/nest-cli.json
+               path: ./app/services/listing-service/nest-cli.json
                target: /app/nest-cli.json
-      env_file: [ services/node/recommendation-service/.env.production ]
+      env_file: [ app/services/recommendation-service/.env.production ]
       healthcheck: *nodejs-healthcheck
 
    listing-service:
       build:
-         context: services/node/listing-service
+         context: app/services/listing-service
          dockerfile: Dockerfile.development
       depends_on:
          - listing-db
@@ -145,68 +147,68 @@ services:
       develop:
          watch:
             -  action: sync+restart
-               path: ./services/node/listing-service/
+               path: ./app/services/listing-service/
                target: /app/
             -  action: rebuild
-               path: ./services/node/listing-service/package.json
+               path: ./app/services/listing-service/package.json
             -  action: sync+restart
-               path: ./services/node/listing-service/nest-cli.json
+               path: ./app/services/listing-service/nest-cli.json
                target: /app/nest-cli.json
       networks: [ carhive-network ]
-      env_file: [ services/node/listing-service/.env.development ]
+      env_file: [ app/services/listing-service/.env.development ]
       healthcheck: *nodejs-healthcheck
 
    scraping-service:
       build:
-         context: ./services/node/scraping-service/
+         context: ./app/services/scraping-service/
          dockerfile: Dockerfile.development
       develop:
          watch:
             -  action: sync+restart
-               path: ./services/node/scraping-service/
+               path: ./app/services/scraping-service/
                target: /app/
             -  action: rebuild
-               path: ./services/node/scraping-service/package.json
+               path: ./app/services/scraping-service/package.json
             -  action: sync+restart
-               path: ./services/node/scraping-service/nest-cli.json
+               path: ./app/services/scraping-service/nest-cli.json
                target: /app/nest-cli.json
       ports: [ "3003:3000" ]
       init: true
       depends_on:
          - message-queue
       networks: [ carhive-network ]
-      env_file: [ services/node/scraping-service/.env.development ]
+      env_file: [ app/services/scraping-service/.env.development ]
       healthcheck: *nodejs-healthcheck
 
    scraping-worker:
       build:
-         context: ./services/node/scraping-worker
+         context: ./app/services/scraping-worker
          dockerfile: Dockerfile.development
       scale: 1
       init: true
       develop:
          watch:
             -  action: sync+restart
-               path: ./services/node/scraping-worker/
+               path: ./app/services/scraping-worker/
                target: /app/
             -  action: rebuild
-               path: ./services/node/scraping-worker/package.json
+               path: ./app/services/scraping-worker/package.json
             -  action: sync+restart
-               path: ./services/node/scraping-worker/nest-cli.json
+               path: ./app/services/scraping-worker/nest-cli.json
                target: /app/nest-cli.json
       depends_on:
          - message-queue
       networks: [ carhive-network ]
-      env_file: [ ./services/node/scraping-worker/.env.development ]
+      env_file: [ ./app/services/scraping-worker/.env.development ]
       healthcheck: *nodejs-healthcheck
 
    ui:
       build:
          context:
-            services/node/ui
+            app/services/ui
       ports: [ "3000:3000" ]
       networks: [ carhive-network ]
-      env_file: [ services/node/ui/.env.production ]
+      env_file: [ app/services/ui/.env.production ]
       profiles: [ ui ]
 
 volumes:
@@ -215,6 +217,7 @@ volumes:
    listing-db-data: { }
    scraper-db-data: { }
    message-queue-data: { }
+   storage-data: { }
 
 networks:
    carhive-network: { }

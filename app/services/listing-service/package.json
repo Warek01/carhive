@@ -1,0 +1,44 @@
+{
+  "name": "listing-service",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "nest build",
+    "format": "prettier --cache --write \"src/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "typecheck": "tsc -p tsconfig.json && echo Success"
+  },
+  "dependencies": {
+    "@nestjs/cli": "^11.0.6",
+    "@nestjs/common": "^11.0.20",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.20",
+    "@nestjs/platform-express": "^11.0.20",
+    "@nestjs/swagger": "^11.1.4",
+    "@nestjs/terminus": "^11.0.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.5.0",
+    "pg": "^8.14.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.22"
+  },
+  "devDependencies": {
+    "@nestjs/schematics": "^11.0.5",
+    "@swc/cli": "^0.7.3",
+    "@swc/core": "^1.11.21",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.14.1",
+    "prettier": "^3.5.3",
+    "source-map-support": "^0.5.21",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@10.8.1"
+}
