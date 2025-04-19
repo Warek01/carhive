@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
             hostname: 'i.simpalsmedia.com',
             protocol: 'https',
          },
+         {
+            hostname: 'localhost',
+         },
       ],
    },
    basePath: '',

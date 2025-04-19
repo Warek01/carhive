@@ -3,7 +3,7 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { ScrollArea } from '@radix-ui/themes';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { cn } from '@/utils/cn';
 
@@ -15,6 +15,16 @@ interface Props {
 export default function Gallery(props: Props) {
    const { images, className } = props;
    const [idx, setIdx] = useState(0);
+
+   const imageUrls = useMemo(
+      () =>
+         images.map((i) =>
+            i.startsWith('/')
+               ? `${process.env.NEXT_PUBLIC_MEDIA_BASE_URL}${i}`
+               : i,
+         ),
+      [images],
+   );
 
    const inc = () => {
       setIdx((i) => (i === images.length - 1 ? 0 : i + 1));
@@ -34,8 +44,8 @@ export default function Gallery(props: Props) {
                <ArrowLeftIcon />
             </div>
             <Image
-               src={images[idx]}
-               alt={images[idx]}
+               src={imageUrls[idx]}
+               alt={imageUrls[idx]}
                fetchPriority="high"
                priority={true}
                loading="eager"
@@ -53,7 +63,7 @@ export default function Gallery(props: Props) {
 
          <ScrollArea className="w-full max-w-full">
             <div className="flex h-fit gap-3">
-               {images.map((src, i) => (
+               {imageUrls.map((src, i) => (
                   <div
                      key={src}
                      className="relative aspect-video w-52 cursor-pointer"

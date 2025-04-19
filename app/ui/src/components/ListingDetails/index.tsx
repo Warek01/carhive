@@ -28,9 +28,11 @@ export default function ListingDetails(props: Props) {
                   : 'Add to comparison'}
             </Button>
          )}
-         <Link href={listing.metadata!.url} target="_blank">
-            Original link
-         </Link>
+         {listing.metadata?.platform !== 'carhive' && (
+            <Link href={listing.metadata?.url ?? ''} target="_blank">
+               Original link
+            </Link>
+         )}
       </div>
    );
 }
