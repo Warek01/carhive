@@ -78,6 +78,9 @@ export class CreateListingDto {
    })
    fuelType?: FuelType;
 
+   @ApiProperty({ type: Number, nullable: true })
+   mileage?: number;
+
    @ApiProperty({
       type: String,
       enum: Transmission,

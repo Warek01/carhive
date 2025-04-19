@@ -58,6 +58,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       startPage,
       endPage,
    }: ScrapePlatformRequestDto): Promise<void> {
+      console.log(platform, this.SCRAPING_STRATEGIES[platform])
       this.logger.log(
          `Starting scraping ${platform} on pages: ${startPage ?? 'start'}-${endPage ?? 'end'}`,
       );

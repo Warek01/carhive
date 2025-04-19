@@ -24,6 +24,8 @@ import { PaginatedResponseDto } from '@/common/dto/response/paginated-response.d
 import { Listing } from '@/listing/types/listing';
 import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { GetListingsResponseDto } from '@/listing/dto/response/get-listings-response.dto';
+import { ListingDto } from '@/listing/dto/response/listing.dto';
 
 @Public()
 @ApiTags('Listing')
@@ -41,7 +43,7 @@ export class ListingController {
    findListing(
       @Param('id', ParseIntPipe) id: number,
       @Query('includeMetadata', ParseBoolPipe) includeMetadata: boolean = true,
-   ): Promise<Listing> {
+   ): Promise<ListingDto> {
       return this.listingService.getOne(id, includeMetadata);
    }
 
@@ -50,10 +52,10 @@ export class ListingController {
       summary: 'Get multiple listings',
       description: 'Required role: <b>None</b>',
    })
-   @ApiOkResponse({ type: PaginatedResponseDto<Listing> })
+   @ApiOkResponse({ type: GetListingsResponseDto })
    getListings(
       @Query() dto: GetListingsRequestDto,
-   ): Promise<PaginatedResponseDto<Listing>> {
+   ): Promise<GetListingsResponseDto> {
       return this.listingService.get(dto);
    }
 
@@ -62,11 +64,12 @@ export class ListingController {
       summary: 'Create a listing',
       description: 'Required role: <b>User</b>',
    })
+   @ApiOkResponse({ type: ListingDto })
    @UseInterceptors(FilesInterceptor('images'))
    createListing(
       @Body() dto: CreateListingDto,
       @UploadedFiles() images: Express.Multer.File[] = [],
-   ): Promise<Listing> {
+   ): Promise<ListingDto> {
       return this.listingService.create(dto, images);
    }
 }

@@ -23,7 +23,7 @@ import { GetListingsResponseDto } from '@/listing/dto/response/get-listings-resp
 export class ListingController {
    constructor(private readonly listingService: ListingService) {}
 
-   @Get('')
+   @Get()
    async get(
       @Query() queryDto: GetListingsRequestDto,
    ): Promise<GetListingsResponseDto> {

@@ -68,10 +68,15 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
          title,
          images,
          currency,
-         metadata,
          description,
          price,
          mileage,
+         listingStatus: null,
+         metadataAuthor: metadata.author,
+         metadataCreatedAt: metadata.createdAt,
+         metadataPlatform: metadata.platform,
+         metadataOriginalId: metadata.originalId,
+         metadataUrl: metadata.url,
       };
    }
 

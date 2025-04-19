@@ -6,7 +6,8 @@ import {
    Currency,
    Drivetrain,
    FuelType,
-   ListingStatus, Platform,
+   ListingStatus,
+   Platform,
    Transmission,
 } from '@/listing/enums';
 import { ListingAuthor } from '@/listing/types/listing';
@@ -76,6 +77,9 @@ export class CreateListingDto {
       example: FuelType.Petrol,
    })
    fuelType?: FuelType;
+
+   @ApiProperty({ type: Number, nullable: true })
+   mileage?: number;
 
    @ApiProperty({
       type: String,

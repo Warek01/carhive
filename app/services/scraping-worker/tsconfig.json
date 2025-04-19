@@ -1,26 +1,13 @@
-// For IDE type inference and checks, build config is handled by swc
 {
+   "extends": [
+      "../tsconfig.shared.json"
+   ],
    "compilerOptions": {
-      "noEmit": true,
-      "skipLibCheck": true,
-      "skipDefaultLibCheck": false,
-      "incremental": false,
-      "module": "commonjs",
-      "target": "ES2021",
-      "experimentalDecorators": true,
-      "esModuleInterop": true,
       "baseUrl": "./",
-      "strict": true,
-      "strictNullChecks": true,
-      "strictPropertyInitialization": false,
-      "isolatedModules": true,
-      "noImplicitAny": true,
       "paths": {
          "@/*": [
             "./src/*"
          ]
-      },
-      "forceConsistentCasingInFileNames": true,
-      "noFallthroughCasesInSwitch": true
+      }
    }
 }
