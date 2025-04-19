@@ -32,9 +32,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
    return (
       <main className="flex flex-col gap-3">
          <TabNav.Root>
-            {paths.map(({ text, href }) => (
+            {paths.map(({ label, href }) => (
                <TabNav.Link key={href} active={pathname === href} asChild>
-                  <Link href={href}>{text}</Link>
+                  <Link href={href}>{label}</Link>
                </TabNav.Link>
             ))}
          </TabNav.Root>
