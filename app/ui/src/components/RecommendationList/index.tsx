@@ -40,12 +40,7 @@ export default function RecommendationList() {
 
    const listingQuery = useQuery({
       queryFn: () => listingApi.getListings(listingParams),
-      queryKey: [
-         AppQueryKey.User,
-         AppQueryKey.Listing,
-         AppQueryKey.RecommendationListing,
-         user?.preferences,
-      ],
+      queryKey: [listingParams],
       enabled: recQuery.isSuccess,
    });
 

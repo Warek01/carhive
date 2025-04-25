@@ -204,11 +204,11 @@ services:
 
    ui:
       build:
-         context:
-            app/services/ui
+         context: app/ui
+         dockerfile: Dockerfile
       ports: [ "3000:3000" ]
       networks: [ carhive-network ]
-      env_file: [ app/services/ui/.env.production ]
+      env_file: [ app/ui/.env.development ]
       profiles: [ ui ]
 
 volumes:
