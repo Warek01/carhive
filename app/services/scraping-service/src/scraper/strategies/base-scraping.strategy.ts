@@ -56,9 +56,8 @@ export abstract class BaseScrapingStrategy {
             await this.randomDelay();
             currentPage++;
             const nextPageUrl = this.getPageUrl(currentPage);
-            await this.page.goto(nextPageUrl.href, {
-               waitUntil: 'load',
-            });
+            await this.page.goto(nextPageUrl.href);
+            await this.waitFn();
          }
       } catch (e) {
          err = e;

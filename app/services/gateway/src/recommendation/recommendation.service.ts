@@ -18,7 +18,7 @@ export class RecommendationService extends BaseMicroserviceService {
       });
    }
 
-   clearCache() {
+   clearCache(): Promise<void> {
       return this.forwardRequest({
          url: 'cache',
          method: 'POST',

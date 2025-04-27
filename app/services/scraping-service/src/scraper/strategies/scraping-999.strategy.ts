@@ -11,6 +11,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
    protected readonly logger = new Logger(Scraping999Strategy.name);
 
    protected async extract(): Promise<string[]> {
+      await this.page.waitForSelector('div[data-sentry-component="AdList"]');
       const list = await this.page.$('div[data-sentry-component="AdList"]');
 
       if (!list) {
