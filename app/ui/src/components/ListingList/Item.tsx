@@ -3,10 +3,10 @@ import { Card } from '@radix-ui/themes';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { currencyMap } from '@/components/ListingDataList/contants';
 import { appRoute } from '@/config/app-route';
 import { Listing } from '@/types/listing';
 import { mediaUrl } from '@/utils/media-url';
+import { currencyStrMap } from '@/config/listing-mappings';
 
 interface Props {
    listing: Listing;
@@ -37,7 +37,7 @@ export default function Item(props: Props) {
             <p>
                {listing.productionYear && `${listing.productionYear} - `}
                {listing.price}{' '}
-               {listing.currency && currencyMap[listing.currency]}
+               {listing.currency && currencyStrMap[listing.currency]}
             </p>
          </Link>
       </Card>

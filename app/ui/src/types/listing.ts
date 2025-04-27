@@ -1,15 +1,10 @@
-import {
-   BodyStyle,
-   CarStatus,
-   Currency,
-   Drivetrain,
-   FuelType,
-   ListingOrderBy,
-   ListingStatus,
-   Transmission,
-} from '@/enums/listing';
+import { BodyStyle, CarStatus, Currency, Drivetrain, FuelType, ListingOrderBy, ListingStatus, Transmission } from '@/enums/listing';
 import { Platform } from '@/enums/scraping';
 import { PaginatedRequest } from '@/types/api';
+
+
+
+
 
 interface BaseListingGetRequest {
    includeMetadata: boolean;
@@ -34,14 +29,13 @@ export interface ListingFilter {
    transmissions?: Transmission[];
    yearMax?: number;
    yearMin?: number;
+   orderBy: ListingOrderBy;
 }
 
 export interface ListingGetParams
    extends BaseListingGetRequest,
       ListingFilter,
-      PaginatedRequest {
-   orderBy: ListingOrderBy;
-}
+      PaginatedRequest {}
 
 export interface ListingFindParams extends BaseListingGetRequest {}
 

@@ -2,11 +2,13 @@ import { Select, TextField } from '@radix-ui/themes';
 import { ChangeEvent } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
+import { orderByStrMap } from '@/config/listing-mappings';
 import {
    BodyStyle,
    CarStatus,
    Drivetrain,
    FuelType,
+   ListingOrderBy,
    Transmission,
 } from '@/enums/listing';
 import { ListingFilter } from '@/types/listing';
@@ -178,6 +180,22 @@ export default function ListingFilters(props: Props) {
             placeholder="Year max"
             onChange={onYearMaxChange}
          />
+
+         <Select.Root
+            value={filters.orderBy}
+            onValueChange={(v) =>
+               onFilterChange({ ...filters, orderBy: v as ListingOrderBy })
+            }
+         >
+            <Select.Trigger />
+            <Select.Content>
+               {Object.entries(orderByStrMap).map(([key, value]) => (
+                  <Select.Item key={key} value={key}>
+                     {value}
+                  </Select.Item>
+               ))}
+            </Select.Content>
+         </Select.Root>
       </div>
    );
 }

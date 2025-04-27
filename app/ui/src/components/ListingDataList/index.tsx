@@ -1,18 +1,17 @@
 import { Badge, Card, DataList } from '@radix-ui/themes';
 import { ReactNode } from 'react';
 
-import { Listing } from '@/types/listing';
-import { cn } from '@/utils/cn';
-
 import {
    bodyStyleBadgeColors,
    carStatusBadgeColors,
-   currencyMap,
+   currencyStrMap,
    drivetrainBadgeColors,
    fuelTypeBadgeColors,
    platformBadgeColors,
    transmissionBadgeColors,
-} from './contants';
+} from '@/config/listing-mappings';
+import { Listing } from '@/types/listing';
+import { cn } from '@/utils/cn';
 
 interface Props {
    listing: Listing;
@@ -35,7 +34,7 @@ export default function ListingDataList(props: Props) {
          label: 'Price',
          value:
             listing.price !== null
-               ? `${listing.price}${listing.currency ? ' ' + currencyMap[listing.currency] : ''}`
+               ? `${listing.price}${listing.currency ? ' ' + currencyStrMap[listing.currency] : ''}`
                : null,
       },
       { label: 'Year', value: listing.productionYear },

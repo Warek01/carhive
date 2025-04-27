@@ -20,7 +20,9 @@ export default function Page() {
    const router = useRouter();
 
    const [firstRender, setFirstRender] = useState(true);
-   const [filters, setFilters] = useState<ListingFilter>({});
+   const [filters, setFilters] = useState<ListingFilter>({
+      orderBy: ListingOrderBy.CreatedAtDesc,
+   });
    const [pagination, setPagination] = useState<PaginationControl>({
       page: Number(params.get('page') ?? 0),
       itemsPerPage: Number(params.get('itemsPerPage') ?? 12),
@@ -36,7 +38,6 @@ export default function Page() {
             limit: itemsPerPage,
             offset: page * itemsPerPage,
             includeMetadata: false,
-            orderBy: ListingOrderBy.CreatedAtAsc,
          }),
       queryKey: [AppQueryKey.Listing, filters, page, itemsPerPage],
       onSuccess: (data) => {
