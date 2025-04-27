@@ -9,7 +9,7 @@ import {
    Post,
    Query,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 
 import { ListingDto } from '@/listing/dto/response/listing.dto';
@@ -39,6 +39,12 @@ export class ListingController {
    async create(@Body() dto: CreateListingDto): Promise<ListingDto> {
       const listing = await this.listingService.create(dto);
       return plainToInstance(ListingDto, listing);
+   }
+
+   @Get('count')
+   @ApiOkResponse({ type: Number })
+   async getCount(): Promise<number> {
+      return this.listingService.getCount();
    }
 
    @Get(':id')

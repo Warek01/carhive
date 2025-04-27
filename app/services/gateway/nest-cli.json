@@ -5,6 +5,11 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "typeCheck": false,
-    "builder": "swc"
+    "builder": {
+       "type": "swc",
+       "options": {
+          "swcrcPath": "./.swcrc"
+       }
+    }
   }
 }

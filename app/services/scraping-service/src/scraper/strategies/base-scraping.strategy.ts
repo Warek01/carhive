@@ -54,7 +54,8 @@ export abstract class BaseScrapingStrategy {
 
             // Wait and go to next page
             await this.randomDelay();
-            const nextPageUrl = this.getPageUrl(currentPage + 1);
+            currentPage++;
+            const nextPageUrl = this.getPageUrl(currentPage);
             await this.page.goto(nextPageUrl.href, {
                waitUntil: 'load',
             });

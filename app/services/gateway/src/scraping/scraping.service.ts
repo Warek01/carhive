@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 
 import { BaseMicroserviceService } from '@/common/classes/base-microservice-service';
 import { ScrapePlatformRequestDto } from '@/scraping/dto/request/scrape-platform-request.dto';
+import { GetHistoryResponseDto } from '@/scraping/dto/response/get-history-response.dto';
 
 @Injectable()
 export class ScrapingService extends BaseMicroserviceService {
@@ -15,6 +16,13 @@ export class ScrapingService extends BaseMicroserviceService {
          url: 'scrape-platform',
          method: 'POST',
          params: dto,
+      });
+   }
+
+   getHistory(): Promise<GetHistoryResponseDto> {
+      return this.forwardRequest({
+         url: '',
+         method: 'GET',
       });
    }
 }

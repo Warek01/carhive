@@ -16,7 +16,7 @@ import {
    UnauthorizedException,
    UnsupportedMediaTypeException,
 } from '@nestjs/common';
-import { AxiosRequestConfig, isAxiosError } from 'axios';
+import { AxiosError, AxiosRequestConfig, isAxiosError } from 'axios';
 
 /** Handles requests that should be forwarded to a microservice */
 export abstract class BaseMicroserviceService {
@@ -34,7 +34,20 @@ export abstract class BaseMicroserviceService {
          const response = await firstValueFrom(response$);
          return response.data;
       } catch (err) {
-         this.logger.error(err);
+         if (isAxiosError(err)) {
+            const axiosErr = err as AxiosError;
+            const status = axiosErr.response?.status;
+            const url = axiosErr.config?.url;
+            const method = axiosErr.config?.method?.toUpperCase();
+            const message = axiosErr.message;
+
+            this.logger.error(
+               `AxiosError ${status} on ${method} ${url}: ${message}`
+            );
+         } else {
+            this.logger.error(`Unexpected error: ${(err as Error).message}`);
+         }
+
          this.throwIfAxiosClientError(err);
          throw new InternalServerErrorException();
       }
@@ -52,12 +65,13 @@ export abstract class BaseMicroserviceService {
    private throwIfAxiosClientError(err: unknown): void {
       if (
          isAxiosError(err) &&
-         err.response!.status >= 400 &&
-         err.response!.status < 500
+         err.response &&
+         err.response.status >= 400 &&
+         err.response.status < 500
       ) {
-         const message = err.response?.data.message;
+         const message = err.response?.data?.message;
 
-         switch (err.response!.status) {
+         switch (err.response.status) {
             case 400:
                throw new BadRequestException(message);
             case 401:

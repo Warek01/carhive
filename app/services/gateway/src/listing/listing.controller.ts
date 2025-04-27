@@ -20,8 +20,6 @@ import {
 import { ListingService } from '@/listing/listing.service';
 import { Public } from '@/auth/decorators/auth.decorator';
 import { GetListingsRequestDto } from '@/listing/dto/request/get-listings-request.dto';
-import { PaginatedResponseDto } from '@/common/dto/response/paginated-response.dto';
-import { Listing } from '@/listing/types/listing';
 import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { GetListingsResponseDto } from '@/listing/dto/response/get-listings-response.dto';
@@ -32,6 +30,13 @@ import { ListingDto } from '@/listing/dto/response/listing.dto';
 @Controller('listing')
 export class ListingController {
    constructor(private readonly listingService: ListingService) {}
+
+   @ApiOperation({ description: 'Get listings count' })
+   @Get('count')
+   @ApiOkResponse({ type: Number })
+   async getCount(): Promise<number> {
+      return this.listingService.getCount();
+   }
 
    @Get(':id')
    @ApiOperation({

@@ -62,7 +62,6 @@ export class UserController {
       @Body() updateDto: UpdateUserDto,
    ): Promise<UserDto> {
       const res = await this.userService.update(id, updateDto);
-      console.log(res);
       return res;
    }
 

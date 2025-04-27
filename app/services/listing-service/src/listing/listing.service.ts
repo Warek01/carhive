@@ -103,10 +103,10 @@ export class ListingService {
          });
       }
       if (yearMax) {
-         query = query.andWhere('l.year <= :yearMax', { yearMax });
+         query = query.andWhere('l.production_year <= :yearMax', { yearMax });
       }
       if (yearMin) {
-         query = query.andWhere('l.year >= :yearMin', { yearMin });
+         query = query.andWhere('l.production_year >= :yearMin', { yearMin });
       }
       if (transmissions) {
          query = query.andWhere('l.transmission IN (:...transmissions)', {
@@ -167,7 +167,6 @@ export class ListingService {
          images: dto.images ?? [],
       });
 
-
       const metadata = this.metadataRepo.create({
          originalId: dto.metadataOriginalId,
          createdAt: dto.metadataCreatedAt,
@@ -181,5 +180,9 @@ export class ListingService {
       await this.metadataRepo.save(metadata);
 
       return listing;
+   }
+
+   getCount(): Promise<number> {
+      return this.listingRepo.count();
    }
 }

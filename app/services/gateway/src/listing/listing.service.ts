@@ -57,4 +57,11 @@ export class ListingService extends BaseMicroserviceService {
          method: 'GET',
       });
    }
+
+   getCount(): Promise<number> {
+      return this.forwardRequest({
+         url: 'count',
+         method: 'GET',
+      });
+   }
 }

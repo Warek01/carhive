@@ -58,7 +58,6 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       startPage,
       endPage,
    }: ScrapePlatformRequestDto): Promise<void> {
-      console.log(platform, this.SCRAPING_STRATEGIES[platform])
       this.logger.log(
          `Starting scraping ${platform} on pages: ${startPage ?? 'start'}-${endPage ?? 'end'}`,
       );
@@ -135,5 +134,13 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
          height: this.WINDOW_HEIGHT,
       });
       return page;
+   }
+
+   getHistory(): Promise<[ListScrape[], number]> {
+      return this.listScrapeRepo.findAndCount({
+         where: {},
+         take: 100,
+         skip: 0,
+      });
    }
 }
