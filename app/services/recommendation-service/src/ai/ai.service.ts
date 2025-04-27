@@ -39,8 +39,7 @@ export class AiService {
                content: [
                   {
                      type: 'text',
-                     text: `As a car recommendation service, provide 10 car models based on the input parameters or the prompt. 
-                     Respond with JSON schema: {cars: {brand: string; model: string}[]". Lowercase letters, no diacritics.`,
+                     text: 'As a car recommendation service, provide 15 car models based on the given prompt. Use lowercase letters, no diacritics.',
                   },
                ],
             },
@@ -55,11 +54,40 @@ export class AiService {
             },
          ],
          response_format: {
-            'type': 'json_object',
+            type: 'json_schema',
+            json_schema: {
+               name: 'cars',
+               strict: true,
+               schema: {
+                  type: 'object',
+                  properties: {
+                     cars: {
+                        type: 'array',
+                        description: 'A list of car objects.',
+                        items: {
+                           type: 'object',
+                           properties: {
+                              brand: {
+                                 type: 'string',
+                                 description: 'The brand of the car.',
+                              },
+                              model: {
+                                 type: 'string',
+                                 description: 'The model of the car.',
+                              },
+                           },
+                           required: ['brand', 'model'],
+                           additionalProperties: false,
+                        },
+                     },
+                  },
+                  required: ['cars'],
+                  additionalProperties: false,
+               },
+            },
          },
-         temperature: 0.5,
-         max_completion_tokens: 512,
-         top_p: 1,
+         temperature: 0.8,
+         max_completion_tokens: 2048,
          frequency_penalty: 0,
          presence_penalty: 0,
          store: false,
