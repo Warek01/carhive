@@ -1,5 +1,6 @@
 import { ApiBase } from '@/api/api-base';
-import { ScrapingParams } from '@/types/scraping';
+import { PaginatedResponse } from '@/types/api';
+import { ScrapeRecord, ScrapingParams } from '@/types/scraping';
 
 export class ScrapeApi extends ApiBase {
    private static singleton: ScrapeApi = null!;
@@ -13,5 +14,9 @@ export class ScrapeApi extends ApiBase {
 
    scrape(params: ScrapingParams): Promise<void> {
       return this._post('scrape-page', {}, { params });
+   }
+
+   getHistory(): Promise<PaginatedResponse<ScrapeRecord>> {
+      return this._get('');
    }
 }

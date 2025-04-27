@@ -108,7 +108,7 @@ export default function ListingDataList(props: Props) {
          {dl.map(({ value, label }, index) => (
             <DataList.Item key={index}>
                <DataList.Label>{label}</DataList.Label>
-               <DataList.Value className="capitalize">
+               <DataList.Value className="whitespace-nowrap capitalize">
                   {value || '-'}
                </DataList.Value>
             </DataList.Item>

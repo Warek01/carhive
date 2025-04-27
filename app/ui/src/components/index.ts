@@ -4,6 +4,7 @@ import Gallery from './Gallery';
 import Header from './Header';
 import ListingDataList from './ListingDataList';
 import ListingDetails from './ListingDetails';
+import ListingFilters from './ListingFilters';
 import ListingList from './ListingList';
 import RecommendationInput from './RecommendationInput';
 import RecommendationList from './RecommendationList';
@@ -20,4 +21,5 @@ export {
    ListingDataList,
    ListingDetails,
    ClearComparisonButton,
+   ListingFilters,
 };

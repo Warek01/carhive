@@ -37,14 +37,14 @@ export default function RecommendationInput() {
                   <Spinner size="3" />
                </div>
             ) : (
-            <>
-               <TextField.Root
-                  value={preferences}
-                  onChange={(e) => setPreferences(e.target.value)}
-                  placeholder="Your preferences"
-               />
-               <Button onClick={handleUpdatePreferences}>Submit</Button>
-            </>
+               <>
+                  <TextField.Root
+                     value={preferences}
+                     onChange={(e) => setPreferences(e.target.value)}
+                     placeholder="Your preferences"
+                  />
+                  <Button onClick={handleUpdatePreferences}>Submit</Button>
+               </>
             )}
          </div>
       </div>

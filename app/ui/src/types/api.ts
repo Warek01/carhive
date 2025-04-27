@@ -9,3 +9,9 @@ export interface PaginatedRequest {
    offset: number;
    limit: number;
 }
+
+export interface PaginationControl {
+   page: number;
+   itemsPerPage: number;
+   totalItems?: number;
+}

@@ -37,4 +37,8 @@ export class ListingApi extends ApiBase {
    async create(dto: CreateListing | FormData): Promise<Listing> {
       return this._post('', dto);
    }
+
+   async getCount(): Promise<number> {
+      return this._get('count');
+   }
 }

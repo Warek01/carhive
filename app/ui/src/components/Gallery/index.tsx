@@ -75,7 +75,7 @@ export default function Gallery(props: Props) {
                         fetchPriority="low"
                         loading="lazy"
                         sizes="all"
-                        className="flex-1 object-center"
+                        className="flex-1 object-cover object-center"
                         fill={true}
                      />
                   </div>

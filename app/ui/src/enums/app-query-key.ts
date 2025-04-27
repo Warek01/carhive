@@ -3,4 +3,5 @@ export const enum AppQueryKey {
    Listing = 'listing',
    Recommendation = 'recommendation',
    RecommendationListing = 'recommendation-listing',
+   Scraping = 'scraping',
 }

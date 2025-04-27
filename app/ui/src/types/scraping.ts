@@ -5,3 +5,13 @@ export interface ScrapingParams {
    startPage: number;
    endPage: number;
 }
+
+export interface ScrapeRecord {
+   id: number;
+   platform: Platform;
+   startPage?: number;
+   endPage?: number;
+   success: boolean;
+   error?: any;
+   createdAt: string;
+}

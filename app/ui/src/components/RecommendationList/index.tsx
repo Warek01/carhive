@@ -51,7 +51,11 @@ export default function RecommendationList() {
             <Spinner size="3" />
          )}
          {listingQuery.data && (
-            <ListingList listings={listingQuery.data.items} />
+            <ListingList
+               isLoading={recQuery.isLoading || listingQuery.isLoading}
+               skeletonCount={24}
+               listings={listingQuery.data.items}
+            />
          )}
       </div>
    );

@@ -15,7 +15,7 @@ interface BaseListingGetRequest {
    includeMetadata: boolean;
 }
 
-interface ListingFilter {
+export interface ListingFilter {
    bodyStyles?: BodyStyle[];
    brands?: string[];
    carStatuses?: CarStatus[];

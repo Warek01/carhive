@@ -78,8 +78,6 @@ export default function CreateListingForm() {
       'images',
    ]);
 
-   console.log(images);
-
    const onSubmit = handleSubmit(async (values) => {
       const dto: CreateListing = {
          title: values.title,
@@ -141,7 +139,11 @@ export default function CreateListingForm() {
                   placeholder="Model"
                />
                <TextField.Root {...register('color')} placeholder="Color" />
-               <TextField.Root {...register('title')} required placeholder="Title" />
+               <TextField.Root
+                  {...register('title')}
+                  required
+                  placeholder="Title"
+               />
                <TextField.Root
                   {...register('mileage')}
                   type="number"

@@ -32,10 +32,6 @@ export default function Page() {
       }
    };
 
-   if (Object.keys(errors).length) {
-      console.log(errors);
-   }
-
    return (
       <form
          onSubmit={handleSubmit(onSubmit)}
