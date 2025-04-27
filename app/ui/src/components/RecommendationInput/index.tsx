@@ -1,18 +1,31 @@
 'use client';
 
-import { Button, Spinner, TextField } from '@radix-ui/themes';
-import { useState } from 'react';
+import { Button, TextField } from '@radix-ui/themes';
+import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { UserApi } from '@/api';
 import { AppQueryKey } from '@/enums/app-query-key';
 import { useAuth } from '@/hooks/use-auth';
 
+interface FormFields {
+   preferences: string;
+}
+
 export default function RecommendationInput() {
    const { user } = useAuth();
    const userApi = UserApi.getSingleton();
    const queryClient = useQueryClient();
-   const [preferences, setPreferences] = useState('');
+
+   const {
+      register,
+      handleSubmit,
+      formState: { isLoading },
+   } = useForm<FormFields>({
+      defaultValues: {
+         preferences: user?.preferences ?? '',
+      },
+   });
 
    const prefMutation = useMutation({
       mutationFn: (preferences: string) =>
@@ -20,33 +33,27 @@ export default function RecommendationInput() {
       onSuccess: async () => {
          await queryClient.invalidateQueries({
             queryKey: AppQueryKey.User,
-            exact: false,
          });
       },
    });
 
-   const handleUpdatePreferences = async () => {
+   const onSubmit = handleSubmit(async ({ preferences }) => {
       await prefMutation.mutateAsync(preferences);
-   };
+   });
 
    return (
-      <div>
-         <div className="flex max-w-96 gap-3">
-            {prefMutation.isLoading ? (
-               <div>
-                  <Spinner size="3" />
-               </div>
-            ) : (
-               <>
-                  <TextField.Root
-                     value={preferences}
-                     onChange={(e) => setPreferences(e.target.value)}
-                     placeholder="Your preferences"
-                  />
-                  <Button onClick={handleUpdatePreferences}>Submit</Button>
-               </>
-            )}
-         </div>
-      </div>
+      <form onSubmit={onSubmit} className="flex items-center gap-3 py-6">
+         <label htmlFor="preferences">Your query:</label>
+         <TextField.Root
+            {...register('preferences')}
+            disabled={isLoading}
+            id="preferences"
+            placeholder="Type here"
+            className="w-full max-w-[400px]"
+         />
+         <Button type="submit" disabled={isLoading}>
+            Submit
+         </Button>
+      </form>
    );
 }

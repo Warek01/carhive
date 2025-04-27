@@ -1,6 +1,6 @@
 'use client';
 
-import { Spinner } from '@radix-ui/themes';
+import { Blockquote, Spinner } from '@radix-ui/themes';
 import { useQuery } from 'react-query';
 import { useImmer } from 'use-immer';
 
@@ -46,16 +46,15 @@ export default function RecommendationList() {
 
    return (
       <div>
-         <h1>Your recommendations for "{user?.preferences}"</h1>
-         {(recQuery.isLoading || listingQuery.isLoading) && (
-            <Spinner size="3" />
-         )}
+         <Blockquote>{user?.preferences}</Blockquote>
          {listingQuery.data && (
-            <ListingList
-               isLoading={recQuery.isLoading || listingQuery.isLoading}
-               skeletonCount={24}
-               listings={listingQuery.data.items}
-            />
+            <div className="my-6">
+               <ListingList
+                  isLoading={recQuery.isLoading || listingQuery.isLoading}
+                  skeletonCount={24}
+                  listings={listingQuery.data.items}
+               />
+            </div>
          )}
       </div>
    );

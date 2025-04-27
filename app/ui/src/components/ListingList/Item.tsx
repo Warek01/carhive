@@ -25,9 +25,9 @@ export default function Item(props: Props) {
                      loading="lazy"
                      fetchPriority="auto"
                      alt="preview"
-                     fill
-                     objectPosition="center"
-                     objectFit="cover"
+                     sizes="all"
+                     fill={true}
+                     className="object-cover object-center"
                   />
                ) : (
                   <ExclamationTriangleIcon />

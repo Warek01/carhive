@@ -13,7 +13,7 @@ import { AppEnv } from '@/common/types/app-env.types';
          inject: [ConfigService],
          useFactory: (config: ConfigService<AppEnv>) => ({
             paramsSerializer: (obj) => qs.stringify(obj),
-            baseURL: `${config.get('RECOMMENDATION_SERVICE_URL')}/api/v1/ai/`,
+            baseURL: `${config.get('RECOMMENDATION_SERVICE_URL')}/api/v1/`,
             headers: {
                'X-API-KEY': config.get('RECOMMENDATION_SERVICE_API_KEY'),
             },

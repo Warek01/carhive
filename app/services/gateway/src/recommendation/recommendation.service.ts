@@ -12,9 +12,16 @@ export class RecommendationService extends BaseMicroserviceService {
 
    generate(params: string | string[]): Promise<AiResponseDto> {
       return this.forwardRequest({
-         url: 'generate',
+         url: 'ai/generate',
          method: 'GET',
          params: { params },
+      });
+   }
+
+   clearCache() {
+      return this.forwardRequest({
+         url: 'cache',
+         method: 'POST',
       });
    }
 }

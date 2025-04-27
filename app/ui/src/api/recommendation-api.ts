@@ -22,4 +22,8 @@ export class RecommendationApi extends ApiBase {
          ...config,
       });
    }
+
+   async clearCache(): Promise<void> {
+      return this._post('clear-cache', {});
+   }
 }

@@ -26,11 +26,6 @@ export default function Header() {
          active: true,
       },
       {
-         href: appRoute.newListings(),
-         label: 'New',
-         active: true,
-      },
-      {
          href: appRoute.createListing(),
          label: 'Create',
          active: true,
@@ -55,7 +50,7 @@ export default function Header() {
                Carhive
             </Link>
 
-            <div className="flex gap-3 text-sm">
+            <div className="flex gap-5 text-sm">
                {navLinks.map(({ label, href, active }) => (
                   <Link
                      key={href}

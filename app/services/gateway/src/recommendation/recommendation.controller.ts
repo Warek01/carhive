@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import {
    ApiOkResponse,
    ApiOperation,
@@ -25,5 +25,15 @@ export class RecommendationController {
       @Query('params') params: string | string[],
    ): Promise<AiResponseDto> {
       return this.recommendationService.generate(params);
+   }
+
+   @Post('clear-cache')
+   @ApiOperation({
+      summary: 'Clear recommendation cache',
+      description: 'Roles: <b>User</b>',
+   })
+   @ApiOkResponse()
+   async clearCache(): Promise<void> {
+      return this.recommendationService.clearCache();
    }
 }

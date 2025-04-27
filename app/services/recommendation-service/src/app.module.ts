@@ -10,6 +10,7 @@ import { ApiKeyGuard } from '@/common/guards/api-key.guard';
 import { HealthModule } from '@/health/health.module';
 import { AiModule } from '@/ai/ai.module';
 import { AppEnv } from '@/common/types/app-env';
+import { CacheModule as AppCacheModule } from './cache/cache.module';
 
 @Module({
    imports: [
@@ -23,6 +24,7 @@ import { AppEnv } from '@/common/types/app-env';
       }),
       HealthModule,
       AiModule,
+      AppCacheModule,
    ],
    controllers: [],
    providers: [

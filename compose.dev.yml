@@ -126,12 +126,12 @@ services:
       develop:
          watch:
             -  action: sync+restart
-               path: ./app/services/listing-service/
+               path: ./app/services/recommendation-service/
                target: /app/
             -  action: rebuild
-               path: ./app/services/listing-service/package.json
+               path: ./app/services/recommendation-service/package.json
             -  action: sync+restart
-               path: ./app/services/listing-service/nest-cli.json
+               path: ./app/services/recommendation-service/nest-cli.json
                target: /app/nest-cli.json
       env_file: [ app/services/recommendation-service/.env.development ]
       healthcheck: *nodejs-healthcheck
