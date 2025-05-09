@@ -1,5 +1,5 @@
 export interface AppEnv {
-   SCRAPING_QUEUE_URL: string;
+   MESSAGE_QUEUE_URL: string;
 
    LISTING_SERVICE_URL: string;
    LISTING_SERVICE_API_KEY: string;

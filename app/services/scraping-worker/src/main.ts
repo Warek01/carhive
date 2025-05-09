@@ -14,11 +14,14 @@ async function bootstrap() {
    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
       logger,
    });
+   const config = app.get(ConfigService<AppEnv>);
+   const httpPort = config.get('HTTP_PORT');
+   const httpHost = config.get('HTTP_HOST');
 
    app.connectMicroservice<MicroserviceOptions>({
       transport: Transport.RMQ,
       options: {
-         urls: [process.env.SCRAPING_QUEUE_URL!],
+         urls: [config.get<string>('MESSAGE_QUEUE_URL')!],
          queue: 'scraping',
          queueOptions: {
             durable: true,
@@ -27,10 +30,6 @@ async function bootstrap() {
          prefetchCount: 1,
       },
    });
-
-   const config = app.get(ConfigService<AppEnv>);
-   const httpPort = config.get('HTTP_PORT');
-   const httpHost = config.get('HTTP_HOST');
 
    app.enableCors({
       origin: '*',

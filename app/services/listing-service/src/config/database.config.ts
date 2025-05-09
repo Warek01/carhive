@@ -17,6 +17,6 @@ export const DB_CONFIG: TypeOrmModuleAsyncOptions = {
       password: conf.get('DB_PASSWORD'),
       entities: ['**/*.entity.js'],
       synchronize: conf.get('NODE_ENV') === 'development',
-      logging: conf.get('NODE_ENV') === 'development',
+      logging: false,
    }),
 };

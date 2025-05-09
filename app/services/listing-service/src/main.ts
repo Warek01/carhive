@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from '@/app.module';
 import { AppEnv } from '@/common/types/app-env';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
    const logger = new Logger(bootstrap.name, { timestamp: true });
@@ -29,6 +30,19 @@ async function bootstrap() {
    });
    app.set('query parser', 'extended');
 
+   app.connectMicroservice<MicroserviceOptions>({
+      transport: Transport.RMQ,
+      options: {
+         urls: [config.get<string>('QUEUE_URL')!],
+         queue: 'listing',
+         queueOptions: {
+            durable: true,
+         },
+         noAck: false,
+         prefetchCount: 1,
+      },
+   });
+
    const swaggerConfig = new DocumentBuilder()
       .setTitle('CarHive Listing Service')
       .setVersion('1.0.0')
@@ -51,6 +65,7 @@ async function bootstrap() {
       useGlobalPrefix: true,
    });
 
+   await app.startAllMicroservices();
    await app.listen(httpPort, httpHost, () =>
       logger.log(`HTTP listening to ${httpHost}:${httpPort}`),
    );

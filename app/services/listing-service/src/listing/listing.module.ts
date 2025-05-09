@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Listing } from '@/listing/entities/listing.entity';
@@ -12,4 +12,6 @@ import { ListingMetadata } from '@/listing/entities/listing-metadata.entity';
    providers: [ListingService],
    exports: [],
 })
-export class ListingModule {}
+export class ListingModule implements OnModuleInit {
+   async onModuleInit() {}
+}

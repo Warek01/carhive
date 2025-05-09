@@ -71,7 +71,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
                `Extracting ${url} (${i + 1}/${batch.data.length})`,
             );
             const createDto = await strategy.extract(url);
-            const createRes = await this.listingService.create(createDto);
+            const createRes = await this.listingService.createByQueue(createDto);
             this.logger.log(
                `Successfully extracted ${url} (${i + 1}/${batch.data.length})`,
             );

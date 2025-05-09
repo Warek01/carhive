@@ -2,6 +2,7 @@ import {
    Body,
    Controller,
    Get,
+   Logger,
    NotFoundException,
    Param,
    ParseBoolPipe,
@@ -11,16 +12,25 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
+import {
+   Ctx,
+   MessagePattern,
+   Payload,
+   RmqContext,
+} from '@nestjs/microservices';
 
 import { ListingDto } from '@/listing/dto/response/listing.dto';
 import { ListingService } from '@/listing/listing.service';
 import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 import { GetListingsRequestDto } from '@/listing/dto/request/get-listings-request.dto';
 import { GetListingsResponseDto } from '@/listing/dto/response/get-listings-response.dto';
+import { ack } from '@/common/functions/ack';
 
 @Controller('listing')
 @ApiTags('Listing')
 export class ListingController {
+   private readonly logger = new Logger(ListingController.name);
+
    constructor(private readonly listingService: ListingService) {}
 
    @Get()
@@ -65,5 +75,17 @@ export class ListingController {
       }
 
       return plainToInstance(ListingDto, listing);
+   }
+
+   @MessagePattern('listing')
+   async createFromQueue(
+      @Payload() dto: CreateListingDto,
+      @Ctx() ctx: RmqContext,
+   ): Promise<void> {
+      const listing = await this.listingService.create(dto);
+      if (listing) {
+         this.logger.log(`Created listing ${listing?.id}`);
+      }
+      ack(ctx);
    }
 }

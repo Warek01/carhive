@@ -1,0 +1,1 @@
+export const LISTING_QUEUE_TOKEN = 'LISTING_QUEUE';

@@ -9,6 +9,7 @@ export interface AppEnv {
    HTTP_PORT: string;
 
    API_KEY: string;
+   QUEUE_URL: string;
 
    NODE_ENV: 'development' | 'production';
 }
