@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
             protocol: 'https',
          },
          {
+            hostname: 'daac-hermes.md',
+            protocol: 'https',
+         },
+         {
             hostname: 'localhost',
          },
       ],

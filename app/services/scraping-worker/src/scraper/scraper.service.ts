@@ -17,8 +17,9 @@ import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy'
 import { AppEnv } from '@/common/types/app-env';
 import { ScrapingBatch } from '@/scraper/types/scraping-batch.types';
 import { sleep } from '@/common/functions/sleep';
-import { Platform } from '@/listing/enums';
 import { ListingService } from '@/listing/listing.service';
+import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
+import { ScrapingDaacHermesStrategy } from '@/scraper/strategies/scraping-daac-hermes.strategy';
 
 @Injectable()
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
@@ -33,13 +34,14 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
 
    private readonly SCRAPING_STRATEGIES: Partial<
       Record<
-         Platform,
+         SupportedPlatform,
          new (
             ...args: ConstructorParameters<typeof BaseScrapingStrategy>
          ) => BaseScrapingStrategy
       >
    > = {
-      [Platform.TripleNineMd]: Scraping999Strategy,
+      [SupportedPlatform.TripleNineMd]: Scraping999Strategy,
+      [SupportedPlatform.DaacHermes]: ScrapingDaacHermesStrategy,
    };
 
    // Resolves to the browser instance

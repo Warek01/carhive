@@ -31,7 +31,7 @@ export abstract class BaseScrapingStrategy {
          const url = this.getPageUrl(startPage);
          await this.page.goto(url.href);
          await this.waitFn();
-
+``
          await this.page.screenshot({
             path: `/browser-screenshots/${Date.now()}.webp`,
             type: 'webp',

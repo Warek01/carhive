@@ -14,12 +14,12 @@ import {
    Currency,
    Drivetrain,
    FuelType,
-   Platform,
    Transmission,
 } from '@/listing/enums';
+import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
 
 export class Scraping999Strategy extends BaseScrapingStrategy {
-   protected readonly PLATFORM = Platform.TripleNineMd;
+   protected readonly PLATFORM = SupportedPlatform.TripleNineMd;
    protected readonly logger = new Logger(Scraping999Strategy.name);
 
    public override async extract(url: string): Promise<CreateListing> {
@@ -310,7 +310,7 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
          createdAt,
          author,
          url,
-         platform: this.PLATFORM,
+         platform: this.PLATFORM as any,
       };
    }
 

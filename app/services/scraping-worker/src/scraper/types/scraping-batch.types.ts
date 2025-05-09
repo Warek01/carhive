@@ -1,6 +1,6 @@
-import { Platform } from '@/listing/enums';
+import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
 
 export interface ScrapingBatch {
-   platform: Platform;
+   platform: SupportedPlatform;
    data: string[];
 }

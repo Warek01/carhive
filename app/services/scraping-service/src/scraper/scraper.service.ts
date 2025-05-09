@@ -14,6 +14,8 @@ import BlockResourcesPlugin from 'puppeteer-extra-plugin-block-resources';
 import AnonymizeUaPlugin from 'puppeteer-extra-plugin-anonymize-ua';
 import { ClientProxy } from '@nestjs/microservices';
 import fs from 'fs/promises';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { BaseScrapingStrategy } from '@/scraper/strategies/base-scraping.strategy';
 import { Scraping999Strategy } from '@/scraper/strategies/scraping-999.strategy';
@@ -21,9 +23,8 @@ import { AppEnv } from '@/common/types/app-env';
 import { SupportedPlatform } from '@/scraper/enums/supported-platform.enum';
 import { ScrapePlatformRequestDto } from '@/scraper/dto/request/scrape-platform-request.dto';
 import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.constants';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ListScrape } from '@/scraper/entities/list-scrape.entity';
-import { Repository } from 'typeorm';
+import { ScrapingDaacHermesStrategy } from '@/scraper/strategies/scraping-daac-hermes.strategy';
 
 @Injectable()
 export class ScraperService implements OnModuleInit, OnModuleDestroy {
@@ -41,6 +42,7 @@ export class ScraperService implements OnModuleInit, OnModuleDestroy {
       ) => BaseScrapingStrategy
    > = {
       [SupportedPlatform.TripleNineMd]: Scraping999Strategy,
+      [SupportedPlatform.DaacHermes]: ScrapingDaacHermesStrategy,
    };
 
    private browser: Browser;

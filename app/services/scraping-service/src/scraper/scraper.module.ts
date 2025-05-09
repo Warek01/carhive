@@ -8,6 +8,7 @@ import { ScraperService } from '@/scraper/scraper.service';
 import { AppEnv } from '@/common/types/app-env';
 import { SCRAPER_QUEUE_TOKEN } from '@/scraper/constants/injection-tokens.constants';
 import { ListScrape } from '@/scraper/entities/list-scrape.entity';
+import { ScrapingDaacHermesStrategy } from '@/scraper/strategies/scraping-daac-hermes.strategy';
 
 @Module({
    imports: [
@@ -33,4 +34,5 @@ import { ListScrape } from '@/scraper/entities/list-scrape.entity';
    providers: [ScraperService],
    exports: [],
 })
-export class ScraperModule {}
+export class ScraperModule {
+}

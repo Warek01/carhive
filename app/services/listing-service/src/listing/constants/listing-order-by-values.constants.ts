@@ -7,8 +7,8 @@ export const LISTING_ORDER_BY_VALUES: Record<
 > = {
    createdAtAsc: ['createdAt', 'ASC'],
    createdAtDesc: ['createdAt', 'DESC'],
-   yearAsc: ['year', 'ASC'],
-   yearDesc: ['year', 'DESC'],
+   yearAsc: ['production_year', 'ASC'],
+   yearDesc: ['production_year', 'DESC'],
    priceAsc: ['price', 'ASC'],
    priceDesc: ['price', 'DESC'],
 };

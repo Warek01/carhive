@@ -9,7 +9,7 @@ import { ScrapeApi } from '@/api/scrape-api';
 import { AppQueryKey } from '@/enums/app-query-key';
 import { Platform } from '@/enums/scraping';
 
-const platforms = [Platform.TripleNineMd];
+const platforms = [Platform.TripleNineMd, Platform.DaacHermes];
 
 export default function DashboardScrapingPage() {
    const [platform, setPlatform] = useState(platforms[0]);
@@ -44,8 +44,8 @@ export default function DashboardScrapingPage() {
                <Select.Trigger value={platform} />
                <Select.Content>
                   {platforms.map((p) => (
-                     <Select.Item value={p} key={p}>
-                        {p}
+                     <Select.Item value={p} key={p} className="capitalize">
+                        {p.replace('-', ' ')}
                      </Select.Item>
                   ))}
                </Select.Content>
