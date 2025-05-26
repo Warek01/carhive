@@ -80,7 +80,11 @@ export class UserService {
       });
    }
 
-   async exists(username: string): Promise<boolean> {
+   async existsByUsername(username: string): Promise<boolean> {
       return this.userRepo.existsBy({ username });
+   }
+
+   async existsByEmail(email: string): Promise<boolean> {
+      return this.userRepo.existsBy({ email });
    }
 }

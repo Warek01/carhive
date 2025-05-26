@@ -140,4 +140,9 @@ export class CreateListingDto {
       } as ListingAuthor,
    })
    metadataAuthor?: ListingAuthor;
+
+   @ApiProperty({
+      type: String,
+   })
+   summary?: string;
 }

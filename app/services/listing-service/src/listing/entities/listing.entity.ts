@@ -122,4 +122,14 @@ export class Listing {
       nullable: true,
    })
    transmission?: Transmission;
+
+   @Column({
+      name: 'summary',
+      type: 'varchar',
+      nullable: true,
+   })
+   summary?: string;
+
+   @Column({ name: 'embedding', nullable: true })
+   embedding?: string;
 }

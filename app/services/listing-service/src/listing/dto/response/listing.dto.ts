@@ -129,4 +129,11 @@ export class ListingDto {
    @Expose()
    @Type(() => ListingMetadataDto)
    metadata?: ListingMetadataDto;
+
+   @ApiProperty({
+      type: String,
+      nullable: true,
+   })
+   @Expose()
+   summary?: string;
 }

@@ -232,11 +232,12 @@ export class Scraping999Strategy extends BaseScrapingStrategy {
 
    private async extractFeatures(): Promise<Record<string, string>> {
       const kvMap = await this.page.$$eval(
-         'div[data-sentry-component="FeatureGroup"] ul li:has(> span[class ^= "styles_group__value"])',
+         // 'div[data-sentry-component="FeatureGroup"] ul li',
+         'div[data-sentry-component="FeatureGroup"] ul li:has(> :where(span, p, div, a)[class ^= "styles_group__value"])',
          (els) =>
             els.map((el) => [
-               el.querySelector('span:nth-of-type(1)')!.textContent!,
-               el.querySelector('span:nth-of-type(2)')!.textContent!,
+               el.querySelector(':where(span, p, div, a):nth-child(1)')!.textContent!,
+               el.querySelector(':where(span, p, div, a):nth-child(2)')!.textContent!,
             ]),
       );
 

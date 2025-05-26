@@ -1,4 +1,4 @@
-import { Select, TextField } from '@radix-ui/themes';
+import { Button, Select, TextField } from '@radix-ui/themes';
 import { ChangeEvent } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -16,10 +16,11 @@ import { ListingFilter } from '@/types/listing';
 export interface Props {
    filters: ListingFilter;
    onFilterChange: (value: ListingFilter) => void;
+   onReset: () => void;
 }
 
 export default function ListingFilters(props: Props) {
-   const { filters, onFilterChange } = props;
+   const { filters, onFilterChange, onReset } = props;
 
    const onPriceMinChange = useDebouncedCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +65,10 @@ export default function ListingFilters(props: Props) {
    );
 
    return (
-      <div className="flex flex-row flex-wrap justify-start gap-3">
+      <div
+         className="flex flex-row flex-wrap justify-start gap-3"
+         key={JSON.stringify(filters)}
+      >
          <Select.Root
             value={filters.bodyStyles?.[0]}
             onValueChange={(v) =>
@@ -196,6 +200,10 @@ export default function ListingFilters(props: Props) {
                ))}
             </Select.Content>
          </Select.Root>
+
+         <Button type="button" onClick={onReset}>
+            Reset
+         </Button>
       </div>
    );
 }

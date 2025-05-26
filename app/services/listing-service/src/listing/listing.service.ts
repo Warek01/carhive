@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import pgvector from 'pgvector';
 
 import { Listing } from '@/listing/entities/listing.entity';
 import { ListingStatus } from '@/listing/enums';
@@ -8,6 +9,8 @@ import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 import { ListingMetadata } from '@/listing/entities/listing-metadata.entity';
 import { GetListingsRequestDto } from '@/listing/dto/request/get-listings-request.dto';
 import { LISTING_ORDER_BY_VALUES } from '@/listing/constants/listing-order-by-values.constants';
+import { AiService } from '@/ai/ai.service';
+import { SimilaritySearchDto } from '@/listing/dto/request/similarity-search.dto';
 
 @Injectable()
 export class ListingService {
@@ -18,6 +21,7 @@ export class ListingService {
       private readonly listingRepo: Repository<Listing>,
       @InjectRepository(ListingMetadata)
       private readonly metadataRepo: Repository<ListingMetadata>,
+      private readonly aiService: AiService,
    ) {}
 
    getOne(id: number, includeMetadata = false): Promise<Listing | null> {
@@ -57,6 +61,11 @@ export class ListingService {
 
       let query = this.listingRepo.createQueryBuilder('l');
 
+      // Include only available listings
+      query = query.andWhere('l.listing_status = :listingStatus', {
+         listingStatus: ListingStatus.Available,
+      });
+
       if (priceMin) {
          query = query.andWhere('l.price >= :priceMin', { priceMin });
       }
@@ -64,9 +73,21 @@ export class ListingService {
          query = query.andWhere('l.price <= :priceMax', { priceMax });
       }
       if (brands) {
+         if (brands.includes('mercedes-benz')) {
+            brands.push('mercedes');
+         }
+
          query = query.andWhere('l.brand IN (:...brands)', { brands });
       }
       if (models) {
+         const resultArray = models
+            .filter((str) => /^[a-z] class$/.test(str))
+            .map((str) => str.replace(' ', '-'));
+
+         resultArray.forEach((str) => models.push(str));
+
+         console.log(models);
+
          query = query.andWhere('l.model IN (:...models)', { models });
       }
       if (listingStatuses) {
@@ -124,7 +145,7 @@ export class ListingService {
          });
       }
       if (fuelTypes) {
-         query = query.andWhere('l.fuel_types IN (:...fuelTypes)', {
+         query = query.andWhere('l.fuel_type IN (:...fuelTypes)', {
             fuelTypes,
          });
       }
@@ -167,6 +188,10 @@ export class ListingService {
          images: dto.images ?? [],
       });
 
+      const { embedding, summary } = await this.aiService.getEmbedding(listing);
+      listing.embedding = pgvector.toSql(embedding);
+      listing.summary = summary;
+
       const metadata = this.metadataRepo.create({
          originalId: dto.metadataOriginalId,
          createdAt: dto.metadataCreatedAt,
@@ -184,5 +209,24 @@ export class ListingService {
 
    getCount(): Promise<number> {
       return this.listingRepo.count();
+   }
+
+   softDelete(listing: Listing): Promise<Listing> {
+      listing.listingStatus = ListingStatus.Deleted;
+      return this.listingRepo.save(listing);
+   }
+
+   hardDelete(listing: Listing): Promise<Listing> {
+      return this.listingRepo.remove(listing);
+   }
+
+   similaritySearch(dto: SimilaritySearchDto): Promise<Listing[]> {
+      return this.listingRepo
+         .createQueryBuilder('l')
+         .orderBy('cast(embedding as vector) <-> :embedding')
+         .setParameters({ embedding: pgvector.toSql(dto.embedding) })
+         .limit(10)
+         .skip(0)
+         .getMany();
    }
 }

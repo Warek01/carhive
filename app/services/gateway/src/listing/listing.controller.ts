@@ -1,6 +1,7 @@
 import {
    Body,
    Controller,
+   Delete,
    Get,
    Param,
    ParseBoolPipe,
@@ -24,6 +25,8 @@ import { CreateListingDto } from '@/listing/dto/request/create-listing.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { GetListingsResponseDto } from '@/listing/dto/response/get-listings-response.dto';
 import { ListingDto } from '@/listing/dto/response/listing.dto';
+import { Role } from '@/auth/decorators/roles.decroator';
+import { UserRole } from '@/user/enums/user-role.enum';
 
 @Public()
 @ApiTags('Listing')
@@ -62,6 +65,22 @@ export class ListingController {
       @Query() dto: GetListingsRequestDto,
    ): Promise<GetListingsResponseDto> {
       return this.listingService.get(dto);
+   }
+
+   @Delete(':id')
+   @ApiOperation({})
+   @ApiOkResponse({ type: ListingDto })
+   @Role(UserRole.Admin)
+   softDelete(@Param('id', ParseIntPipe) id: number) {
+      return this.listingService.softDelete(id);
+   }
+
+   @Delete(':id/hard')
+   @ApiOperation({})
+   @ApiOkResponse({ type: ListingDto })
+   @Role(UserRole.Admin)
+   hardDelete(@Param('id', ParseIntPipe) id: number) {
+      return this.listingService.hardDelete(id);
    }
 
    @Post()

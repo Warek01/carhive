@@ -11,6 +11,7 @@ import { HealthModule } from '@/health/health.module';
 import { AiModule } from '@/ai/ai.module';
 import { AppEnv } from '@/common/types/app-env';
 import { CacheModule as AppCacheModule } from './cache/cache.module';
+import { ListingModule } from './listing/listing.module';
 
 @Module({
    imports: [
@@ -22,9 +23,10 @@ import { CacheModule as AppCacheModule } from './cache/cache.module';
             stores: [createKeyv({ url: config.get('CACHE_URL') })],
          }),
       }),
+      AppCacheModule,
       HealthModule,
       AiModule,
-      AppCacheModule,
+      ListingModule,
    ],
    controllers: [],
    providers: [

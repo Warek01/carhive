@@ -64,4 +64,18 @@ export class ListingService extends BaseMicroserviceService {
          method: 'GET',
       });
    }
+
+   softDelete(id: number): Promise<ListingDto> {
+      return this.forwardRequest({
+         url: listingEndpoints.softDelete({ id: id.toString() }),
+         method: 'DELETE',
+      });
+   }
+
+   hardDelete(id: number): Promise<ListingDto> {
+      return this.forwardRequest({
+         url: listingEndpoints.hardDelete({ id: id.toString() }),
+         method: 'DELETE',
+      });
+   }
 }

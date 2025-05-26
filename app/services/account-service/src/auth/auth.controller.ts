@@ -51,10 +51,18 @@ export class AuthController {
 
    @Post('register')
    async register(@Body() registerDto: RegisterDto): Promise<AuthDto> {
-      const exists = await this.userService.exists(registerDto.username);
+      const existsByEmail = await this.userService.existsByEmail(
+         registerDto.email,
+      );
+      if (existsByEmail) {
+         throw new ConflictException("email taken");
+      }
 
-      if (exists) {
-         throw new ConflictException();
+      const existsByUsername = await this.userService.existsByUsername(
+         registerDto.username,
+      );
+      if (existsByUsername) {
+         throw new ConflictException("username taken");
       }
 
       const user = await this.userService.create({

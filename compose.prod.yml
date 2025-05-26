@@ -103,7 +103,7 @@ services:
          dockerfile: Dockerfile
       networks: [ carhive-network ]
       init: true
-      ports: [ "3006:3000" ]
+      ports: [ "3004:3000" ]
       env_file: [ app/services/recommendation-service/.env.production ]
       healthcheck: *nodejs-healthcheck
 
