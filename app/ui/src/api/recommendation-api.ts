@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 
 import { ApiBase } from '@/api/api-base';
+import { Listing } from '@/types/listing';
 import { Recommendation } from '@/types/recommendation';
 
 export class RecommendationApi extends ApiBase {
@@ -19,6 +20,16 @@ export class RecommendationApi extends ApiBase {
    ): Promise<Recommendation> {
       return this._get('', {
          params: { params },
+         ...config,
+      });
+   }
+
+   async generateRag(
+      input: string,
+      config?: Partial<AxiosRequestConfig<any>>,
+   ): Promise<Listing[]> {
+      return this._get('rag', {
+         params: { input },
          ...config,
       });
    }

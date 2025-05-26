@@ -23,7 +23,7 @@ export default function RecommendationInput() {
       formState: { isLoading },
    } = useForm<FormFields>({
       defaultValues: {
-         preferences: user?.preferences ?? '',
+         preferences: '',
       },
    });
 

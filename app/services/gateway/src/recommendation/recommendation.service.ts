@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 
 import { BaseMicroserviceService } from '@/common/classes/base-microservice-service';
 import { AiResponseDto } from '@/recommendation/dto/response/ai-response.dto';
+import { ListingDto } from '@/listing/dto/response/listing.dto';
 
 @Injectable()
 export class RecommendationService extends BaseMicroserviceService {
@@ -22,6 +23,14 @@ export class RecommendationService extends BaseMicroserviceService {
       return this.forwardRequest({
          url: 'cache',
          method: 'POST',
+      });
+   }
+
+   generateRag(input: string): Promise<ListingDto[]> {
+      return this.forwardRequest({
+         url: 'ai/generate/rag',
+         method: 'GET',
+         params: { query: input },
       });
    }
 }
