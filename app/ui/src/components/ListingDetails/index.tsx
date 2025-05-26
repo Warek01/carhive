@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@radix-ui/themes';
+import { Blockquote, Button } from '@radix-ui/themes';
 import Link from 'next/link';
 
 import { Gallery, ListingDataList } from '@/components';
@@ -27,6 +27,12 @@ export default function ListingDetails(props: Props) {
             />
             <ListingDataList className="flex-1" listing={listing} />
          </div>
+
+         {listing.summary && (
+            <div>
+               <Blockquote>{listing.summary}</Blockquote>
+            </div>
+         )}
 
          <div className="flex items-center gap-3">
             {showAddToComparison && (

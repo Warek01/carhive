@@ -57,6 +57,7 @@ export interface Listing {
    model?: string;
    price?: number;
    productionYear?: number;
+   summary?: string;
    title: string;
    transmission?: Transmission;
    updatedAt: string;
