@@ -1,7 +1,9 @@
 'use client';
 
+import qs from 'qs';
 import { PropsWithChildren, createContext, useEffect, useState } from 'react';
 
+import { appRoute } from '@/config/app-route';
 import { useAuth } from '@/hooks/use-auth';
 
 export interface ComparisonContextProps {
@@ -10,8 +12,9 @@ export interface ComparisonContextProps {
    ids: number[];
    has: (id: number) => boolean;
    add: (id: number) => void;
-   remove: (id: number) => void;
+   remove: (id: number) => number[];
    toggle: (id: number) => void;
+   getUrl: (overrideIds?: number[]) => string;
    clear: () => void;
 }
 
@@ -25,18 +28,24 @@ export function ComparisonContextProvider({ children }: PropsWithChildren) {
    const max = 3;
    const isMax = ids.length === max;
 
-   const has = (id: number) => {
-      return ids.includes(id);
-   };
+   const has = (id: number) => ids.includes(id);
 
    const add = (id: number) => {
-      if (!isMax) {
-         setIds((ids) => ids.concat(id));
+      if (!isMax && !has(id)) {
+         setIds((prev) => [...prev, id]);
       }
    };
 
+   const getUrl = (overrideIds?: number[]) => {
+      return (
+         appRoute.compare() + `?${qs.stringify({ ids: overrideIds ?? ids })}`
+      );
+   };
+
    const remove = (id: number) => {
-      setIds((ids) => ids.filter((i) => i !== id));
+      const filtered = ids.filter((i) => i !== id);
+      setIds(filtered);
+      return filtered;
    };
 
    const toggle = (id: number) => {
@@ -48,15 +57,18 @@ export function ComparisonContextProvider({ children }: PropsWithChildren) {
    };
 
    useEffect(() => {
-      const idsStr = localStorage.getItem('comparison-ids');
-      if (idsStr) {
-         setIds(JSON.parse(idsStr));
-      }
-   }, []);
+      const parsed = qs.parse(window.location.search, {
+         ignoreQueryPrefix: true,
+      });
 
-   useEffect(() => {
-      localStorage.setItem('comparison-ids', JSON.stringify(ids));
-   }, [ids]);
+      const parsedIds = Array.isArray(parsed.ids)
+         ? parsed.ids.map(Number)
+         : typeof parsed.ids === 'string'
+           ? parsed.ids.split(',').map(Number)
+           : [];
+
+      setIds(parsedIds.filter((n) => !isNaN(n)));
+   }, []);
 
    useEffect(() => {
       if (!isAuthorized) {
@@ -66,7 +78,7 @@ export function ComparisonContextProvider({ children }: PropsWithChildren) {
 
    return (
       <ComparisonContext.Provider
-         value={{ ids, max, add, remove, clear, has, toggle, isMax }}
+         value={{ ids, max, add, remove, clear, has, toggle, isMax, getUrl }}
       >
          {children}
       </ComparisonContext.Provider>

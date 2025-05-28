@@ -1,10 +1,15 @@
-import { BodyStyle, CarStatus, Currency, Drivetrain, FuelType, ListingOrderBy, ListingStatus, Transmission } from '@/enums/listing';
+import {
+   BodyStyle,
+   CarStatus,
+   Currency,
+   Drivetrain,
+   FuelType,
+   ListingOrderBy,
+   ListingStatus,
+   Transmission,
+} from '@/enums/listing';
 import { Platform } from '@/enums/scraping';
 import { PaginatedRequest } from '@/types/api';
-
-
-
-
 
 interface BaseListingGetRequest {
    includeMetadata: boolean;
@@ -24,12 +29,12 @@ export interface ListingFilter {
    mileageMax?: number;
    mileageMin?: number;
    models?: string[];
+   orderBy: ListingOrderBy;
    priceMax?: number;
    priceMin?: number;
    transmissions?: Transmission[];
    yearMax?: number;
    yearMin?: number;
-   orderBy: ListingOrderBy;
 }
 
 export interface ListingGetParams
@@ -61,6 +66,19 @@ export interface Listing {
    title: string;
    transmission?: Transmission;
    updatedAt: string;
+   ratings?: ListingRating;
+}
+
+export interface ListingRating {
+   family: number;
+   fuelEfficiency: number;
+   luxury: number;
+   mileage: number;
+   offroad: number;
+   overall: number;
+   price: number;
+   reliability: number;
+   sport: number;
 }
 
 export interface ListingMetadata {
@@ -91,16 +109,15 @@ export interface CreateListing {
    fuelType?: FuelType;
    images: File[];
    listingStatus?: ListingStatus;
-   model?: string;
-   price?: number;
-   productionYear?: number;
-   title: string;
-   transmission?: Transmission;
-   mileage?: number;
-
    metadataAuthor?: ListingAuthor;
    metadataCreatedAt: string;
    metadataOriginalId?: string;
    metadataPlatform?: Platform;
    metadataUrl?: string;
+   mileage?: number;
+   model?: string;
+   price?: number;
+   productionYear?: number;
+   title: string;
+   transmission?: Transmission;
 }

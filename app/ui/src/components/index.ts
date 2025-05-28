@@ -9,6 +9,7 @@ import ListingList from './ListingList';
 import RecommendationInput from './RecommendationInput';
 import RecommendationList from './RecommendationList';
 import ThemeSwitcher from './ThemeSwitch';
+import RemoveFromComparisonButton from './RemoveFromComparisonButton';
 
 export {
    Header,
@@ -22,4 +23,5 @@ export {
    ListingDetails,
    ClearComparisonButton,
    ListingFilters,
+   RemoveFromComparisonButton,
 };

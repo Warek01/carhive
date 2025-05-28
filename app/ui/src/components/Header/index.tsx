@@ -31,7 +31,7 @@ export default function Header() {
          active: true,
       },
       {
-         href: appRoute.compare() + `?${qs.stringify({ ids: cmp.ids })}`,
+         href: cmp.getUrl(),
          label: cmp.ids.length ? (
             <span>
                Compare <Badge>{cmp.ids.length}</Badge>

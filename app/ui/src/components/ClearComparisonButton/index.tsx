@@ -18,7 +18,7 @@ export default function ClearComparisonButton() {
 
    return (
       <Button className="!my-3" color="red" onClick={handleClick}>
-         Clear
+         Clear Selection
          <TrashIcon />
       </Button>
    );
