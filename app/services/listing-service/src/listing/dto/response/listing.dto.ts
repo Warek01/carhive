@@ -9,6 +9,7 @@ import { FuelType } from '@/listing/enums/fuel-type.enum';
 import { Transmission } from '@/listing/enums/transmission.enum';
 import { Currency } from '@/listing/enums/currency.enum';
 import { ListingMetadataDto } from '@/listing/dto/response/listing-metadata.dto';
+import { ListingRating } from '@/listing/types/listing-rating.types';
 
 @Exclude()
 export class ListingDto {
@@ -136,4 +137,11 @@ export class ListingDto {
    })
    @Expose()
    summary?: string;
+
+   @ApiProperty({
+      type: Object,
+      nullable: true,
+   })
+   @Expose()
+   ratings?: ListingRating;
 }

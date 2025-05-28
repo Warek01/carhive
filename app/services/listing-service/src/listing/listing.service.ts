@@ -188,9 +188,10 @@ export class ListingService {
          images: dto.images ?? [],
       });
 
-      const { embedding, summary } = await this.aiService.getEmbedding(listing);
+      const { embedding, summary, rating } = await this.aiService.getEmbedding(listing);
       listing.embedding = pgvector.toSql(embedding);
       listing.summary = summary;
+      listing.ratings = rating;
 
       const metadata = this.metadataRepo.create({
          originalId: dto.metadataOriginalId,

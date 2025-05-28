@@ -11,6 +11,7 @@ import {
    Transmission,
 } from '@/listing/enums';
 import { ListingAuthor } from '@/listing/types/listing-author.types';
+import { ListingRating } from '@/listing/types/listing-rating.types';
 
 export class CreateListingDto {
    @ApiProperty({
@@ -143,6 +144,13 @@ export class CreateListingDto {
 
    @ApiProperty({
       type: String,
+      nullable: true,
    })
    summary?: string;
+
+   @ApiProperty({
+      type: Object,
+      nullable: true,
+   })
+   rating?: ListingRating;
 }

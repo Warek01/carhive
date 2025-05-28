@@ -42,6 +42,6 @@ export class AppModule implements OnModuleInit {
    constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
    async onModuleInit() {
-      // await this.dataSource.query('CREATE EXTENSION IF NOT EXISTS vector');
+      await this.dataSource.query('CREATE EXTENSION IF NOT EXISTS vector');
    }
 }

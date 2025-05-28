@@ -28,11 +28,15 @@ export class AiService {
    }
 
    async summarizeAndEmbedListing(input: string): Promise<ListingEmbeddingDto> {
-      const summary = await this.getListingSummary(input);
+      const [summary, rating] = await Promise.all([
+         this.getListingSummary(input),
+         this.getListingRating(input),
+      ]);
       const embedding = await this.embedText(summary);
 
       return {
          summary,
+         rating,
          embedding,
       };
    }
@@ -178,5 +182,104 @@ Be descriptive and compact, with rich semantic meaning.
          await this.listingService.similaritySearch(embeddedQuery);
 
       return listings.items;
+   }
+
+   async getListingRating(listing: string) {
+      const response = await this.openAi.responses.create({
+         model: this.config.get('CHAT_MODEL')!,
+         input: [
+            {
+               'role': 'system',
+               'content': [
+                  {
+                     'type': 'input_text',
+                     'text':
+                        'You are a car reviewer. Given the car sale description, rate at a scale from 1 to 10 (0.1 step size) how good this listing is',
+                  },
+               ],
+            },
+            {
+               role: 'user',
+               content: listing,
+            },
+         ],
+         text: {
+            'format': {
+               'type': 'json_schema',
+               'name': 'rating_scale',
+               'strict': true,
+               'schema': {
+                  'type': 'object',
+                  'properties': {
+                     'overall': {
+                        'type': 'number',
+                        'description':
+                           'Overall rating of the item on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'mileage': {
+                        'type': 'number',
+                        'description':
+                           'Mileage rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'price': {
+                        'type': 'number',
+                        'description':
+                           'Price rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'reliability': {
+                        'type': 'number',
+                        'description':
+                           'Reliability rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'sport': {
+                        'type': 'number',
+                        'description':
+                           'Sportiness rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'offroad': {
+                        'type': 'number',
+                        'description':
+                           'Off-road capability rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'family': {
+                        'type': 'number',
+                        'description':
+                           'Family suitability rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'luxury': {
+                        'type': 'number',
+                        'description':
+                           'Luxury rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                     'fuelEfficiency': {
+                        'type': 'number',
+                        'description':
+                           'Fuel efficiency rating on a scale from 1 to 10 with a step size of 0.1.',
+                     },
+                  },
+                  'required': [
+                     'overall',
+                     'mileage',
+                     'price',
+                     'reliability',
+                     'sport',
+                     'offroad',
+                     'family',
+                     'luxury',
+                     'fuelEfficiency',
+                  ],
+                  'additionalProperties': false,
+               },
+            },
+         },
+         reasoning: {},
+         tools: [],
+         temperature: 0.5,
+         max_output_tokens: 2048,
+         top_p: 1,
+         store: true,
+      });
+
+      return JSON.parse(response.output_text);
    }
 }

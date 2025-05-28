@@ -17,6 +17,7 @@ import { FuelType } from '@/listing/enums/fuel-type.enum';
 import { Transmission } from '@/listing/enums/transmission.enum';
 import { ListingMetadata } from '@/listing/entities/listing-metadata.entity';
 import { Currency } from '@/listing/enums/currency.enum';
+import { ListingRating } from '@/listing/types/listing-rating.types';
 
 @Entity('listings')
 export class Listing {
@@ -132,4 +133,7 @@ export class Listing {
 
    @Column({ name: 'embedding', nullable: true })
    embedding?: string;
+
+   @Column({ name: 'ratings', type: 'jsonb', nullable: true })
+   ratings?: ListingRating;
 }
