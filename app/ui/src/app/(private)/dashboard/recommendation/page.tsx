@@ -1,11 +1,12 @@
 'use client';
 
+import { Button } from '@radix-ui/themes';
+import { DatabaseZapIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { RecommendationApi } from '@/api';
 import { AppQueryKey } from '@/enums/app-query-key';
-import { Button } from '@radix-ui/themes';
 
 export default function DashboardRecommendationPage() {
    const recApi = RecommendationApi.getSingleton();
@@ -23,9 +24,12 @@ export default function DashboardRecommendationPage() {
       },
    });
 
-   return <main>
-      <Button onClick={() => clearCacheMutation.mutateAsync()}>
-         Clear cache
-      </Button>
-   </main>;
+   return (
+      <main>
+         <Button onClick={() => clearCacheMutation.mutateAsync()}>
+            <DatabaseZapIcon size={16} />
+            Clear cache
+         </Button>
+      </main>
+   );
 }

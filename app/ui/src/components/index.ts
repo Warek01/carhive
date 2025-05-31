@@ -8,8 +8,8 @@ import ListingFilters from './ListingFilters';
 import ListingList from './ListingList';
 import RecommendationInput from './RecommendationInput';
 import RecommendationList from './RecommendationList';
-import ThemeSwitcher from './ThemeSwitch';
 import RemoveFromComparisonButton from './RemoveFromComparisonButton';
+import ThemeSwitcher from './ThemeSwitch';
 
 export {
    Header,

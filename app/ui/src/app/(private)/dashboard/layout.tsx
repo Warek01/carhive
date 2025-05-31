@@ -30,14 +30,17 @@ export default function DashboardLayout({ children }: LayoutProps) {
    const pathname = usePathname();
 
    return (
-      <main className="flex flex-col gap-3">
-         <TabNav.Root>
-            {paths.map(({ label, href }) => (
-               <TabNav.Link key={href} active={pathname === href} asChild>
-                  <Link href={href}>{label}</Link>
-               </TabNav.Link>
-            ))}
-         </TabNav.Root>
+      <main>
+         <nav className="flex items-center gap-6 pt-3 pb-6">
+            <p className="text-lg">Admin dashboard</p>
+            <TabNav.Root>
+               {paths.map(({ label, href }) => (
+                  <TabNav.Link key={href} active={pathname === href} asChild>
+                     <Link href={href}>{label}</Link>
+                  </TabNav.Link>
+               ))}
+            </TabNav.Root>
+         </nav>
          {children}
       </main>
    );

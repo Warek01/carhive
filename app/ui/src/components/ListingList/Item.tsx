@@ -4,9 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { appRoute } from '@/config/app-route';
+import { currencyStrMap } from '@/config/listing-mappings';
 import { Listing } from '@/types/listing';
 import { mediaUrl } from '@/utils/media-url';
-import { currencyStrMap } from '@/config/listing-mappings';
 
 interface Props {
    listing: Listing;

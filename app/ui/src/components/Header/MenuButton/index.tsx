@@ -1,12 +1,13 @@
 'use client';
 
-import {
-   ArrowLeftEndOnRectangleIcon,
-   ArrowLeftStartOnRectangleIcon,
-   Bars3Icon,
-   UserCircleIcon,
-} from '@heroicons/react/24/solid';
 import { DropdownMenu, IconButton } from '@radix-ui/themes';
+import {
+   LayoutDashboardIcon,
+   LogInIcon,
+   LogOutIcon,
+   MenuIcon,
+   UserRoundCogIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { appRoute } from '@/config/app-route';
@@ -19,7 +20,7 @@ export default function MenuButton() {
       <DropdownMenu.Root>
          <DropdownMenu.Trigger>
             <IconButton variant="ghost">
-               <Bars3Icon width={24} height={24} />
+               <MenuIcon width={24} height={24} />
             </IconButton>
          </DropdownMenu.Trigger>
          <DropdownMenu.Content>
@@ -29,14 +30,19 @@ export default function MenuButton() {
                asChild
             >
                <Link href={appRoute.user()}>
-                  <UserCircleIcon width={24} height={24} />
+                  <UserRoundCogIcon size={16} />
                   {user?.username}
                </Link>
             </DropdownMenu.Item>
 
             {isAdmin && (
                <DropdownMenu.Item asChild>
-                  <Link href={appRoute.dashboard()}>Dashboard</Link>
+                  <Link
+                     href={appRoute.dashboard()}
+                     className="flex items-center gap-1"
+                  >
+                     <LayoutDashboardIcon size={16} /> Dashboard
+                  </Link>
                </DropdownMenu.Item>
             )}
 
@@ -47,13 +53,13 @@ export default function MenuButton() {
                   onClick={() => logOut()}
                   className="text-nowrap"
                >
-                  <ArrowLeftStartOnRectangleIcon width={24} height={24} />
+                  <LogOutIcon size={16} />
                   Log out
                </DropdownMenu.Item>
             ) : (
                <DropdownMenu.Item asChild>
                   <Link href={appRoute.login()} className="text-nowrap">
-                     <ArrowLeftEndOnRectangleIcon width={24} height={24} />
+                     <LogInIcon size={16} />
                      Log in
                   </Link>
                </DropdownMenu.Item>

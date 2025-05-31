@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, Spinner, TextField } from '@radix-ui/themes';
+import { Button, Flex, Spinner, Text, TextField } from '@radix-ui/themes';
+import { UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -36,15 +37,22 @@ export default function Page() {
       <form
          onSubmit={handleSubmit(onSubmit)}
          className={cn(
-            'flex flex-col items-center gap-3',
+            'relative flex w-[268px] flex-col gap-4 p-4 pt-6',
             isSubmitting && 'pointer-events-none',
          )}
       >
          {isSubmitting && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-black/30">
                <Spinner />
             </div>
          )}
+
+         <Flex align="center" justify="center" direction="column" gap="1">
+            <UserIcon width="24" height="24" />
+            <Text size="4" weight="bold">
+               Login
+            </Text>
+         </Flex>
 
          <TextField.Root
             {...register('email')}
@@ -60,17 +68,22 @@ export default function Page() {
             type="password"
             autoComplete="current-password"
          />
-         <Button type="submit">Login</Button>
+         <Button type="submit" className="w-full">
+            Login
+         </Button>
 
-         <Link
-            href={
-               appRoute.register() +
-               (searchParams.size ? '?' + searchParams : '')
-            }
-            className="text-sm"
-         >
-            Don't have an account?
-         </Link>
+         <Text as="p" size="1" color="gray" align="center">
+            Don't have an account?{' '}
+            <Link
+               href={
+                  appRoute.register() +
+                  (searchParams.size ? '?' + searchParams : '')
+               }
+               className="underline"
+            >
+               Register
+            </Link>
+         </Text>
       </form>
    );
 }

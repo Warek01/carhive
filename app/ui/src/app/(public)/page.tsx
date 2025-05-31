@@ -24,8 +24,8 @@ export default function Home() {
 
    return (
       <main>
-         <h1 className="text-4xl font-bold my-6">Welcome to Carhive</h1>
-         <h2 className="text-xl mb-2">Newest listings available:</h2>
+         <h1 className="my-6 text-4xl font-bold">Welcome to Carhive</h1>
+         <h2 className="mb-2 text-xl">Newest listings available:</h2>
          <ListingList
             isLoading={listingQuery.isLoading}
             listings={listingQuery.data?.items ?? []}

@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, TextField } from '@radix-ui/themes';
+import { Button, Flex, Spinner, Text, TextField } from '@radix-ui/themes';
+import { UserPlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -25,7 +26,7 @@ export default function Page() {
       handleSubmit,
       register,
       formState: { errors, isSubmitting },
-   } = useForm<FormValues>({});
+   } = useForm<FormValues>();
 
    const onSubmit = handleSubmit(async (values) => {
       try {
@@ -37,39 +38,65 @@ export default function Page() {
    });
 
    return (
-      <div className="flex flex-col gap-2">
-         <form
-            onSubmit={onSubmit}
-            className={cn(
-               'flex flex-col items-center gap-3',
-               isSubmitting && 'pointer-events-none',
-            )}
-         >
-            <TextField.Root
-               {...register('email')}
-               placeholder="Email"
-               type="email"
-            />
-            <TextField.Root
-               {...register('username')}
-               placeholder="Usename"
-               type="text"
-            />
-            <TextField.Root
-               {...register('password')}
-               placeholder="Password"
-               type="password"
-            />
-            <TextField.Root
-               {...register('passwordRepeat')}
-               placeholder="Repeat password"
-               type="password"
-            />
-            <Button type="submit">Register</Button>
-         </form>
-         <Link href={appRoute.login()} className="text-sm">
-            Already have an account?
-         </Link>
-      </div>
+      <form
+         onSubmit={onSubmit}
+         className={cn(
+            'relative flex w-[268px] flex-col gap-4 p-4 pt-6',
+            isSubmitting && 'pointer-events-none',
+         )}
+      >
+         {isSubmitting && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-black/30">
+               <Spinner />
+            </div>
+         )}
+
+         <Flex align="center" justify="center" direction="column" gap="1">
+            <UserPlusIcon width="24" height="24" />
+            <Text size="4" weight="bold">
+               Register
+            </Text>
+         </Flex>
+
+         <TextField.Root
+            {...register('email')}
+            required
+            placeholder="Email"
+            type="email"
+            autoComplete="email"
+         />
+         <TextField.Root
+            {...register('username')}
+            required
+            placeholder="Username"
+            type="text"
+            autoComplete="username"
+         />
+         <TextField.Root
+            {...register('password')}
+            required
+            placeholder="Password"
+            type="password"
+            autoComplete="new-password"
+         />
+         <TextField.Root
+            {...register('passwordRepeat')}
+            required
+            placeholder="Repeat password"
+            type="password"
+            autoComplete="new-password"
+         />
+
+         <Button type="submit" className="w-full">
+            Register
+         </Button>
+
+         <Text as="p" size="1" color="gray" align="center">
+            Already have an account?{' '}
+            <Link href={appRoute.login()} className="underline">
+               Login
+            </Link>
+         </Text>
+      </form>
    );
 }

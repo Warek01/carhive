@@ -65,8 +65,18 @@ services:
       networks: [ carhive-network ]
       volumes: [ account-db-data:/var/lib/postgresql/data ]
 
+   #   listing-db:
+   #      image: postgres:17-alpine
+   #      environment:
+   #         POSTGRES_DB: listing_db
+   #         POSTGRES_USER: ${LISTING_DB_USER}
+   #         POSTGRES_PASSWORD: ${LISTING_DB_PASSWORD}
+   #      ports: [ "5434:5432" ]
+   #      networks: [ carhive-network ]
+   #      volumes: [ listing-db-data:/var/lib/postgresql/data ]
+
    listing-db:
-      image: postgres:17-alpine
+      image: pgvector/pgvector:pg17
       environment:
          POSTGRES_DB: listing_db
          POSTGRES_USER: ${LISTING_DB_USER}

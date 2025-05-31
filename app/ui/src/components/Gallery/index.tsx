@@ -2,8 +2,9 @@
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { ScrollArea } from '@radix-ui/themes';
+import { ImageOffIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { cn } from '@/utils/cn';
 
@@ -15,6 +16,7 @@ interface Props {
 export default function Gallery(props: Props) {
    const { images, className } = props;
    const [idx, setIdx] = useState(0);
+   const selectedImageRef = useRef<HTMLDivElement>(null);
 
    const imageUrls = useMemo(
       () =>
@@ -26,6 +28,13 @@ export default function Gallery(props: Props) {
       [images],
    );
 
+   useEffect(() => {
+      selectedImageRef.current?.scrollIntoView({
+         behavior: 'smooth',
+         inline: 'nearest',
+      });
+   }, [idx]);
+
    const inc = () => {
       setIdx((i) => (i === images.length - 1 ? 0 : i + 1));
    };
@@ -33,6 +42,21 @@ export default function Gallery(props: Props) {
    const dec = () => {
       setIdx((i) => (i === 0 ? images.length - 1 : i - 1));
    };
+
+   if (!images?.length) {
+      return (
+         <div
+            className={cn(
+               'flex w-full flex-col items-center justify-center gap-2',
+               className,
+               'h-96',
+            )}
+         >
+            <ImageOffIcon width={48} height={48} />
+            No images available
+         </div>
+      );
+   }
 
    return (
       <div className={cn('flex flex-col gap-3 select-none', className)}>
@@ -65,6 +89,7 @@ export default function Gallery(props: Props) {
             <div className="flex h-fit gap-3">
                {imageUrls.map((src, i) => (
                   <div
+                     ref={idx === i ? selectedImageRef : undefined}
                      key={src}
                      className="relative aspect-video w-52 cursor-pointer"
                      onClick={() => setIdx(i)}
