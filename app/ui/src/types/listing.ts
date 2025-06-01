@@ -9,7 +9,7 @@ import {
    Transmission,
 } from '@/enums/listing';
 import { Platform } from '@/enums/scraping';
-import { PaginatedRequest } from '@/types/api';
+import { Pagination } from '@/types/api';
 
 interface BaseListingGetRequest {
    includeMetadata: boolean;
@@ -40,7 +40,7 @@ export interface ListingFilter {
 export interface ListingGetParams
    extends BaseListingGetRequest,
       ListingFilter,
-      PaginatedRequest {}
+      Pagination {}
 
 export interface ListingFindParams extends BaseListingGetRequest {}
 

@@ -5,7 +5,7 @@ export interface PaginatedResponse<T> {
    page: number;
 }
 
-export interface PaginatedRequest {
+export interface Pagination {
    offset: number;
    limit: number;
 }

@@ -1,5 +1,5 @@
 import { ApiBase } from '@/api/api-base';
-import { PaginatedRequest, PaginatedResponse } from '@/types/api';
+import { Pagination, PaginatedResponse } from '@/types/api';
 import { CreateUserDto, UpdateUserDto, User } from '@/types/user';
 
 export class UserApi extends ApiBase {
@@ -16,7 +16,7 @@ export class UserApi extends ApiBase {
       return this._get(id.toString());
    }
 
-   get(params: PaginatedRequest): Promise<PaginatedResponse<User>> {
+   get(params: Pagination): Promise<PaginatedResponse<User>> {
       return this._get('', { params });
    }
 
