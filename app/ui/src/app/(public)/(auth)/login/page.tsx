@@ -5,6 +5,7 @@ import { UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 import { appRoute } from '@/config/app-route';
 import { useAuth } from '@/hooks/use-auth';
@@ -27,6 +28,7 @@ export default function Page() {
    const onSubmit: SubmitHandler<LoginDto> = async (data) => {
       try {
          await auth.logIn(data);
+         toast('Logged in');
          router.push(authGetRedirectHref(searchParams));
       } catch (err) {
          toastAuthError(err);

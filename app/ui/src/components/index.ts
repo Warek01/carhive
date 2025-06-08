@@ -10,6 +10,7 @@ import RecommendationInput from './RecommendationInput';
 import RecommendationList from './RecommendationList';
 import RemoveFromComparisonButton from './RemoveFromComparisonButton';
 import ThemeSwitcher from './ThemeSwitch';
+import GoBackButton from './GoBackButton';
 
 export {
    Header,
@@ -24,4 +25,5 @@ export {
    ClearComparisonButton,
    ListingFilters,
    RemoveFromComparisonButton,
+   GoBackButton,
 };

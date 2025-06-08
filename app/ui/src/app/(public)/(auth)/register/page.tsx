@@ -5,6 +5,7 @@ import { UserPlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 import { appRoute } from '@/config/app-route';
 import { useAuth } from '@/hooks/use-auth';
@@ -25,12 +26,13 @@ export default function Page() {
    const {
       handleSubmit,
       register,
-      formState: { errors, isSubmitting },
+      formState: { isSubmitting },
    } = useForm<FormValues>();
 
    const onSubmit = handleSubmit(async (values) => {
       try {
          await auth.register(values);
+         toast('You are now registered');
          router.push(authGetRedirectHref(searchParams));
       } catch (err) {
          toastAuthError(err);

@@ -4,7 +4,7 @@ import { Blockquote, Button } from '@radix-ui/themes';
 import { ExternalLinkIcon, ListChecksIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 
-import { Gallery, ListingDataList } from '@/components';
+import { Gallery, GoBackButton, ListingDataList } from '@/components';
 import { useComparison } from '@/hooks/use-comparison';
 import { Listing } from '@/types/listing';
 
@@ -19,7 +19,10 @@ export default function ListingDetails(props: Props) {
 
    return (
       <article className="flex flex-col gap-6 py-6">
-         <h1 className="text-5xl font-semibold">{listing.title}</h1>
+         <h1 className="flex items-center justify-start gap-6 text-5xl font-semibold">
+            <GoBackButton className="!text-xl" />
+            {listing.title}
+         </h1>
 
          <div className="flex flex-wrap gap-6">
             <Gallery

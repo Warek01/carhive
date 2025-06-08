@@ -98,7 +98,7 @@ export default function Page() {
             isLoading={isLoading}
          />
 
-         <div className="flex items-center justify-start gap-6 pt-6">
+         <div className="flex items-center justify-start gap-6 py-6">
             <Select.Root
                value={itemsPerPage.toString()}
                onValueChange={(v) =>

@@ -77,9 +77,9 @@ export default function ListingFilters(props: Props) {
          >
             <Select.Trigger placeholder="Body style" />
             <Select.Content>
-               {Object.values(BodyStyle).map((value) => (
-                  <Select.Item key={value} value={value}>
-                     {value}
+               {Object.values(BodyStyle).map((v) => (
+                  <Select.Item key={v} value={v}>
+                     {v[0].toUpperCase() + v.slice(1)}
                   </Select.Item>
                ))}
             </Select.Content>
@@ -93,9 +93,9 @@ export default function ListingFilters(props: Props) {
          >
             <Select.Trigger placeholder="Car status" />
             <Select.Content>
-               {Object.values(CarStatus).map((value) => (
-                  <Select.Item key={value} value={value}>
-                     {value}
+               {Object.values(CarStatus).map((v) => (
+                  <Select.Item key={v} value={v}>
+                     {v[0].toUpperCase() + v.slice(1)}
                   </Select.Item>
                ))}
             </Select.Content>
@@ -109,9 +109,9 @@ export default function ListingFilters(props: Props) {
          >
             <Select.Trigger placeholder="Drivetrain" />
             <Select.Content>
-               {Object.values(Drivetrain).map((value) => (
-                  <Select.Item key={value} value={value}>
-                     {value}
+               {Object.values(Drivetrain).map((v) => (
+                  <Select.Item key={v} value={v}>
+                     {v[0].toUpperCase() + v.slice(1)}
                   </Select.Item>
                ))}
             </Select.Content>
@@ -125,9 +125,9 @@ export default function ListingFilters(props: Props) {
          >
             <Select.Trigger placeholder="Fuel type" />
             <Select.Content>
-               {Object.values(FuelType).map((value) => (
-                  <Select.Item key={value} value={value}>
-                     {value}
+               {Object.values(FuelType).map((v) => (
+                  <Select.Item key={v} value={v}>
+                     {v[0].toUpperCase() + v.slice(1).replace('_', ' ')}
                   </Select.Item>
                ))}
             </Select.Content>
@@ -144,9 +144,9 @@ export default function ListingFilters(props: Props) {
          >
             <Select.Trigger placeholder="Transmission" />
             <Select.Content>
-               {Object.values(Transmission).map((value) => (
-                  <Select.Item key={value} value={value}>
-                     {value}
+               {Object.values(Transmission).map((v) => (
+                  <Select.Item key={v} value={v}>
+                     {v[0].toUpperCase() + v.slice(1)}
                   </Select.Item>
                ))}
             </Select.Content>
@@ -193,9 +193,9 @@ export default function ListingFilters(props: Props) {
          >
             <Select.Trigger />
             <Select.Content>
-               {Object.entries(orderByStrMap).map(([key, value]) => (
-                  <Select.Item key={key} value={key}>
-                     {value}
+               {Object.entries(orderByStrMap).map(([k, v]) => (
+                  <Select.Item key={k} value={k}>
+                     {v[0].toUpperCase() + v.slice(1)}
                   </Select.Item>
                ))}
             </Select.Content>
